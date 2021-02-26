@@ -1,5 +1,5 @@
-﻿@attribute [RouteAttribute("/" + RelativePageUrls.MonthEdit + "/{Month:datetime?}")]
-@*@page "/MonthEdit"*@
+﻿@*@attribute [RouteAttribute("/" + RelativePageUrls.MonthEdit + "/{Month:datetime?}")]*@
+@page "/MonthEdit/{Month:datetime?}"
 @inject NavigationManager Nav
 @inject ILocalStorageService localStorage
 
@@ -125,7 +125,7 @@ else
         => HoursSum = Days!.Sum(d => d.HourSum ?? 0);
 
     void ChangeUrl(DateTime d)
-        => Nav.NavigateTo($"{RelativePageUrls.MonthEdit}/{d:yyyy-MM}");
+        => Nav.NavigateTo($"MonthEdit/{d:yyyy-MM}");
 
     private async Task HandleValidSubmitAsync()
         => await localStorage.SetItemAsync(Month!.Value.ToString("yyyy-MM"), Days.Where(d => d.AnyRelevantValueExists()).ToList());
