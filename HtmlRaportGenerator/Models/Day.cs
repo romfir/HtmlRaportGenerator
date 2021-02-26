@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HtmlRaportGenerator.Models
 {
-    //todo create minimalistic DayDto for saving in localstorage without useless properties like isHoliday/isToday
     public class Day : INotifyPropertyChanged
     {
         public Day()
@@ -71,7 +70,8 @@ namespace HtmlRaportGenerator.Models
                     to = new HourWithQuarter(DateTime.Now).GetHourWithQuarterSum()!.Value;
                 }
 
-                if (to < from) //when shift starts on one day and ends on the other
+                //when shift starts on one day and ends on the other
+                if (to < from)
                 {
                     to += 24;
                 }

@@ -27,13 +27,13 @@ namespace HtmlRaportGenerator.Models
         {
             Hour = date.Hour;
 
-            Quarter = date.Minute / 15; //todo check Leap second?
+            Quarter = date.Minute / 15;
         }
 
         public int? Hour { get; set; }
         public int? Quarter { get; set; }
 
-        public double? GetHourWithQuarterSum() //add GetHourWithQuarterSumFormatted/ StaticTools.FormatDoubleAstime(dt) which turns 12.75 into 12:45
+        public double? GetHourWithQuarterSum()
         {
             if (Hour is null)
             {

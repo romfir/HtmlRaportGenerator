@@ -1,9 +1,9 @@
 ﻿@attribute [RouteAttribute("/" + RelativePageUrls.MonthEdit + "/{Month:datetime?}")]
+
 @inject NavigationManager Nav
 @inject ILocalStorageService localStorage
 
 <h1>Miesiąc <input type="month" @bind="MonthForInput" /></h1>
-@*po zmianie miesiaca nie dziala walidacja godzin*@
 
 <p>Widok edycji miesiąca</p>
 
@@ -38,12 +38,11 @@ else
                 }
             </tbody>
             <tfoot class="tfoot-dark">
-                @*todo sticky tfoot?*@
                 <tr>
                     <td></td>
                     <td></td>
                     <td><b>Suma:</b></td>
-                    <td>@HoursSum</td> @*input na stawke i dodac suma * stawka*@
+                    <td>@HoursSum</td>
                 </tr>
 
             </tfoot>
@@ -93,9 +92,6 @@ else
 
     private async Task UpdateCalendarGridAsync()
     {
-        //todo load from localstorage
-        //clear IsToday during save!
-
         List<Day> days = await localStorage.GetItemAsync<List<Day>>(Month!.Value.ToString("yyyy-MM")) ?? new();
         Console.WriteLine("xd");
         foreach (DateTime day in Month.Value.AllDatesInMonth())
@@ -103,12 +99,10 @@ else
             Day? dayItem = days.FirstOrDefault(d => d.DayNumber == day.Day);
             if (dayItem is null)
             {
-                //todo handle other holidays? Some library mb
                 dayItem = new Day(day.Day, day.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday);
                 days.Add(dayItem);
             }
 
-            //todo if date is in the future disable inputs
             dayItem.IsToday = false;
             if (DateTime.Now.Date == day.Date)
             {

@@ -1,6 +1,23 @@
 ﻿@attribute [RouteAttribute("/" + RelativePageUrls.MainView)]
 
+@inject ILocalStorageService localStorage
+
 <h1>Hello, world!</h1>
 
-Welcome to your new app.
+<button class="btn btn-primary">@_buttonText</button>
+
+
+@code
+{
+    private string _buttonText => _isDayStarted ? "Sign in" : "Sign out";
+
+    private bool _isDayStarted;
+
+    private List<Day>? CurrentMonthDays { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+}
 
