@@ -1,0 +1,131 @@
+﻿@attribute [RouteAttribute(RelativePageUrls.MonthEdit + "/{Month:datetime?}")]
+@inject NavigationManager Nav
+@inject ILocalStorageService localStorage
+
+<h1>Miesiąc <input type="month" @bind="MonthForInput" /></h1>
+@*po zmianie miesiaca nie dziala walidacja godzin*@
+
+<p>Widok edycji miesiąca</p>
+
+@if (Days is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm Model="@_daysCollectionValidationModel" OnValidSubmit="@HandleValidSubmitAsync">
+        <ObjectGraphDataAnnotationsValidator />
+
+        <table class="table table-striped table-sm">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Dzień Miesiąca</th>
+                    <th>Godzina rozpoczęcia</th>
+                    <th>Godzina zakończenia</th>
+                    <th>Suma</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Day day in Days.OrderBy(d => d.DayNumber))
+                {
+
+                    <DayListItem CurrentDay="day" HoursHaveChanged="() =>
+                                                                    {
+                                                                        UpdateHourSum();
+                                                                        StateHasChanged();
+                                                                    }
+                                                                    " />
+                }
+            </tbody>
+            <tfoot class="tfoot-dark">
+                @*todo sticky tfoot?*@
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td><b>Suma:</b></td>
+                    <td>@HoursSum</td> @*input na stawke i dodac suma * stawka*@
+                </tr>
+
+            </tfoot>
+        </table>
+        <button type="submit">Submit</button>
+    </EditForm>
+}
+
+@code {
+
+    private DateTime? _month;
+
+    [Parameter]
+    public DateTime? Month
+    {
+        get => _month;
+        set
+        {
+            _month = value;
+            UpdateCalendarGrid();
+        }
+    }
+
+    public DateTime? MonthForInput
+    {
+        get => Month;
+        set
+        {
+            ChangeUrl(value!.Value);
+            Month = value;
+        }
+    }
+
+    private DaysCollectionValidationModel _daysCollectionValidationModel = new();
+
+    private IEnumerable<Day>? Days
+                => _daysCollectionValidationModel.Days;
+
+    private double HoursSum { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Month ??= DateTime.Now;
+    }
+
+    private async Task UpdateCalendarGrid()
+    {
+        //todo load from localstorage
+        //clear IsToday during save!
+
+        List<Day> days = await localStorage.GetItemAsync<List<Day>>(Month!.Value.ToString("yyyy-MM")) ?? new();
+        Console.WriteLine("xd");
+        foreach (DateTime day in Month.Value.AllDatesInMonth())
+        {
+            Day? dayItem = days.FirstOrDefault(d => d.DayNumber == day.Day);
+            if (dayItem is null)
+            {
+                //todo handle other holidays? Some library mb
+                dayItem = new Day(day.Day, day.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday);
+                days.Add(dayItem);
+            }
+
+            //todo if date is in the future disable inputs
+            dayItem.IsToday = false;
+            if (DateTime.Now.Date == day.Date)
+            {
+                dayItem!.IsToday = true;
+            }
+        }
+
+        _daysCollectionValidationModel.Days = days;
+
+        UpdateHourSum();
+        StateHasChanged();
+    }
+
+    private void UpdateHourSum()
+        => HoursSum = Days!.Sum(d => d.HourSum ?? 0);
+
+    void ChangeUrl(DateTime d)
+        => Nav.NavigateTo($"{RelativePageUrls.MonthEdit}/{d:yyyy-MM}");
+
+    private async Task HandleValidSubmitAsync()
+        => await localStorage.SetItemAsync(Month!.Value.ToString("yyyy-MM"), Days.Where(d => d.AnyRelevantValueExists()).ToList());
+}

@@ -1,0 +1,52 @@
+﻿<tr class="@TrClass()">
+    <td scope="col">
+        @CurrentDay.DayNumber
+    </td>
+    <td scope="col">
+        <InputNumber @bind-Value="CurrentDay.HourWithQuarterFromParsed" step=".25" />
+        <ValidationMessage For="@(()=> CurrentDay.HourWithQuarterFromParsed)" />
+    </td>
+
+    <td scope="col">
+        <InputNumber @bind-Value="CurrentDay.HourWithQuarterToParsed" step=".25" />
+        <ValidationMessage For="@(() => CurrentDay.HourWithQuarterToParsed)" />
+    </td>
+    <td scope="col">
+        @CurrentDay.HourSum
+    </td>
+</tr>
+
+
+
+@code
+{
+    [Parameter]
+    public Day CurrentDay { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback HoursHaveChanged { get; set; }
+
+    private string? TrClass()
+    {
+        if (CurrentDay.IsHoliday)
+        {
+            return "table-info";
+        }
+        else if (CurrentDay.IsToday)
+        {
+            return "table-warning";
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        CurrentDay.PropertyChanged += (s, e) =>
+        {
+            HoursHaveChanged.InvokeAsync();
+        };
+    }
+}
