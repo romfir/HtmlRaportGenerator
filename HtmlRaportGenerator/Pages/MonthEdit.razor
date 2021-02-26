@@ -63,7 +63,9 @@ else
         set
         {
             _month = value;
-            UpdateCalendarGrid();
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            UpdateCalendarGridAsync();
+#pragma warning restore CS4014
         }
     }
 
@@ -84,12 +86,12 @@ else
 
     private double HoursSum { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         Month ??= DateTime.Now;
     }
 
-    private async Task UpdateCalendarGrid()
+    private async Task UpdateCalendarGridAsync()
     {
         //todo load from localstorage
         //clear IsToday during save!
@@ -127,5 +129,5 @@ else
         => Nav.NavigateTo($"{RelativePageUrls.MonthEdit}/{d:yyyy-MM}");
 
     private async Task HandleValidSubmitAsync()
-        => await localStorage.SetItemAsync(Month!.Value.ToString("yyyy-MM"), Days.Where(d => d.AnyRelevantValueExists()).ToList());
+        => await localStorage.SetItemAsync(Month!.Value.ToString("yyyy-MM"), Preconditions.CheckNotNull(Days!, nameof(Days)).Where(d => d.AnyRelevantValueExists()).ToList());
 }
