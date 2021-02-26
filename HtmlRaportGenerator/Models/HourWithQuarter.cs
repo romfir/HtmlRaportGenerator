@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HtmlRaportGenerator.Shared.Models
+namespace HtmlRaportGenerator.Models
 {
     public class HourWithQuarter
     {

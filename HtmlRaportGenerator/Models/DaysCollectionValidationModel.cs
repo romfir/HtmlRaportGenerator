@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace HtmlRaportGenerator.Shared.Models
+namespace HtmlRaportGenerator.Models
 {
     public class DaysCollectionValidationModel
     {

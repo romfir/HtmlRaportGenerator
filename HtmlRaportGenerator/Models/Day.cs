@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace HtmlRaportGenerator.Shared.Models
+namespace HtmlRaportGenerator.Models
 {
     //todo create minimalistic DayDto for saving in localstorage without useless properties like isHoliday/isToday
     public class Day : INotifyPropertyChanged
