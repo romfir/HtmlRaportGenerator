@@ -1,23 +1,144 @@
 ﻿@attribute [RouteAttribute("/" + RelativePageUrls.MainView)]
 
 @inject ILocalStorageService localStorage
+@inject IModalService modalService
 
-<h1>Hello, world!</h1>
+<div class="container">
 
-<button class="btn btn-primary">@_buttonText</button>
+    <div class="text-center">
+        <h1>@_currentDate.ToShortDateString()</h1>
+    </div>
 
+    <div class="row">
+
+        @if (CurrentDay?.From is object)
+        {
+            <div class="col text-center">
+                <label>Shift Start: </label>
+                @CurrentDay.From?.GetHourWithQuarterSum()
+            </div>
+        }
+        @if (CurrentDay?.To is object)
+        {
+            <div class="col text-center">
+                <label>Shift End: </label>
+                @CurrentDay.To?.GetHourWithQuarterSum()
+            </div>
+        }
+    </div>
+
+    <div class="container my-4">
+        <div class="text-center">
+
+            <button class="btn btn-primary" disabled="@_isShiftEnded" @onclick="OnButtonClickAsync">@ButtonText</button>
+
+        </div>
+    </div>
+</div>
 
 @code
 {
-    private string _buttonText => _isDayStarted ? "Sign in" : "Sign out";
+    private string ButtonText
+    {
+        get
+        {
+            if (_isShiftEnded)
+            {
+                return "Shift Ended";
+            }
+            else if (_isShiftStarted)
+            {
+                return "Sign out";
+            }
+            return "Sign in";
+        }
+    }
 
-    private bool _isDayStarted;
+    private bool _isShiftStarted;
+
+    private bool _isShiftEnded;
 
     private List<Day>? CurrentMonthDays { get; set; }
 
+    private DateTime _currentDate = DateTime.Now;
+
+    private string CurrentYearMonth
+        => _currentDate.ToString(StaticHelpers.YearMonthFormat);
+
+    private Day? CurrentDay { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
+        CurrentMonthDays = await localStorage.GetItemAsync<List<Day>>(CurrentYearMonth);
 
+        int currentDayNumber = _currentDate.Day;
+
+        if (CurrentMonthDays is null)
+        {
+            CurrentMonthDays = new List<Day>();
+        }
+        else
+        {
+            CurrentDay = CurrentMonthDays.FirstOrDefault(d => d.DayNumber == currentDayNumber);
+        }
+
+        if (CurrentDay is null)
+        {
+            CurrentDay = new Day(currentDayNumber);
+
+            CurrentMonthDays.Add(CurrentDay);
+            return;
+        }
+
+        if (CurrentDay.From?.Hour is object)
+        {
+            _isShiftStarted = true;
+        }
+
+        if (CurrentDay.To?.Hour is object)
+        {
+            _isShiftEnded = true;
+        }
+    }
+
+    async Task OnButtonClickAsync()
+    {
+
+        ModalOptions options = new()
+        {
+            HideCloseButton = true,
+            DisableBackgroundCancel = true
+        };
+
+        ModalParameters parameters = new();
+
+        parameters.Add(nameof(HourInputModal.CurrentDate), _currentDate);
+        parameters.Add(nameof(HourInputModal.SetDefaultsToCurrentDate), true);
+
+        IModalReference hourInputModal = modalService.Show<HourInputModal>(ButtonText, parameters, options);
+
+
+        ModalResult result = await hourInputModal.Result;
+
+        if (result.Cancelled)
+        {
+            return;
+        }
+
+        if (!_isShiftStarted)
+        {
+            CurrentDay!.From = (HourWithQuarter)result.Data;
+
+            _isShiftStarted = true;
+        }
+        else
+        {
+            CurrentDay!.To = (HourWithQuarter)result.Data;
+
+            _isShiftEnded = true;
+        }
+
+        await localStorage.SetItemAsync(_currentDate!.ToString(StaticHelpers.YearMonthFormat), Preconditions.CheckNotNull(CurrentMonthDays!, nameof(CurrentMonthDays)));
     }
 }
 

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace HtmlRaportGenerator.Models
 {
+    //todo zrobic jego propsy nienullable
     public class HourWithQuarter
     {
         public HourWithQuarter()
@@ -30,7 +32,10 @@ namespace HtmlRaportGenerator.Models
             Quarter = date.Minute / 15;
         }
 
+        [Required, Range(0, 23)]
         public int? Hour { get; set; }
+
+        [Required, Range(0, 3)]
         public int? Quarter { get; set; }
 
         public double? GetHourWithQuarterSum()

@@ -13,5 +13,7 @@ namespace HtmlRaportGenerator.Tools
                 yield return new DateTime(month.Year, month.Month, day);
             }
         }
+
+        public const string YearMonthFormat = "yyyy-MM";
     }
 }

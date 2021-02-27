@@ -3,12 +3,12 @@
         @CurrentDay.DayNumber
     </td>
     <td scope="col">
-        <InputNumber @bind-Value="CurrentDay.HourWithQuarterFromParsed" step=".25" />
+        <InputNumber @bind-Value="CurrentDay.HourWithQuarterFromParsed" step=".25" class="small-width" />
         <ValidationMessage For="@(()=> CurrentDay.HourWithQuarterFromParsed)" />
     </td>
 
     <td scope="col">
-        <InputNumber @bind-Value="CurrentDay.HourWithQuarterToParsed" step=".25" />
+        <InputNumber @bind-Value="CurrentDay.HourWithQuarterToParsed" step=".25" class="small-width" />
         <ValidationMessage For="@(() => CurrentDay.HourWithQuarterToParsed)" />
     </td>
     <td scope="col">

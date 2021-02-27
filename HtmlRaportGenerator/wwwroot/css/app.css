@@ -48,3 +48,11 @@ a, .btn-link {
         right: 0.75rem;
         top: 0.5rem;
     }
+
+.small-width {
+    width: 5em;
+}
+
+h1 {
+    font-size: 4vw;
+}

@@ -1,4 +1,5 @@
 using Blazored.LocalStorage;
+using Blazored.Modal;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -19,6 +20,8 @@ namespace HtmlRaportGenerator
 
             builder.Services.AddBlazoredLocalStorage(config =>
                     config.JsonSerializerOptions.WriteIndented = true);
+
+            builder.Services.AddBlazoredModal();
 
             await builder.Build().RunAsync();
         }
