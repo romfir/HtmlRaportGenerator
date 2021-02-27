@@ -1,18 +1,46 @@
-﻿<tr class="@TrClass()">
+﻿@inject IModalService modalService
+<tr class="@TrClass()">
     <td scope="col">
-        @CurrentDay.DayNumber
+        <div class="col text-center">
+            <label> @CurrentDay.DayNumber</label>
+        </div>
     </td>
-    <td scope="col">
-        <InputNumber @bind-Value="CurrentDay.HourWithQuarterFromParsed" step=".25" class="small-width" />
-        <ValidationMessage For="@(()=> CurrentDay.HourWithQuarterFromParsed)" />
-    </td>
+    @if (InputNumberMode)
+    {
+        <td scope="col">
+            <div class="col text-center">
+                <InputNumber @bind-Value="CurrentDay.HourWithQuarterFromParsed" step=".25" class="small-width" style="text-align:center" />
+                <ValidationMessage For="@(()=> CurrentDay.HourWithQuarterFromParsed)" />
+            </div>
+        </td>
+
+        <td scope="col">
+            <div class="col text-center">
+                <InputNumber @bind-Value="CurrentDay.HourWithQuarterToParsed" step=".25" class="small-width" style="text-align:center" />
+                <ValidationMessage For="@(() => CurrentDay.HourWithQuarterToParsed)" />
+            </div>
+        </td>
+    }
+    else
+    {
+        <td scope="col" @onclick="() => DisplayModalAsync(CurrentDay.From, nameof(CurrentDay.From))" class="clicable">
+            <div class="col text-center">
+                <span>@CurrentDay.HourWithQuarterFromParsed?.FormatDoubleToTime()</span>
+            </div>
+        </td>
+
+        <td scope="col" @onclick="() => DisplayModalAsync(CurrentDay.To, nameof(CurrentDay.To))" class="clicable">
+            <div class="col text-center">
+                <span>@CurrentDay.HourWithQuarterToParsed?.FormatDoubleToTime()</span>
+            </div>
+        </td>
+    }
+
 
     <td scope="col">
-        <InputNumber @bind-Value="CurrentDay.HourWithQuarterToParsed" step=".25" class="small-width" />
-        <ValidationMessage For="@(() => CurrentDay.HourWithQuarterToParsed)" />
-    </td>
-    <td scope="col">
-        @CurrentDay.HourSum
+        <div class="col text-center">
+            <label>@CurrentDay.HourSum</label>
+        </div>
     </td>
 </tr>
 
@@ -24,7 +52,13 @@
     public Day CurrentDay { get; set; } = null!;
 
     [Parameter]
+    public DateTime CurrentDate { get; set; }
+
+    [Parameter]
     public EventCallback HoursHaveChanged { get; set; }
+
+    [Parameter]
+    public bool InputNumberMode { get; set; }
 
     private string? TrClass()
     {
@@ -44,9 +78,46 @@
 
     protected override void OnInitialized()
     {
-        CurrentDay.PropertyChanged += (s, e) =>
+        CurrentDay.To.PropertyChanged += (s, e) =>
         {
             HoursHaveChanged.InvokeAsync();
         };
+
+        CurrentDay.From.PropertyChanged += (s, e) =>
+        {
+            HoursHaveChanged.InvokeAsync();
+        };
+    }
+
+    private async Task DisplayModalAsync(HourWithQuarter modelToUpdate, string modalTitle)
+    {
+        bool hoursWereEmpty = modelToUpdate.Hour is null;
+
+        ModalOptions options = new()
+        {
+            HideCloseButton = true,
+            DisableBackgroundCancel = true
+        };
+
+        ModalParameters parameters = new();
+
+        parameters.Add(nameof(HourInputModal.HourWithQuarter), modelToUpdate);
+        parameters.Add(nameof(HourInputModal.CurrentDate), CurrentDate);
+
+        IModalReference hourInputModal = modalService.Show<HourInputModal>(modalTitle, parameters, options);
+
+
+        ModalResult result = await hourInputModal.Result;
+
+        if (result.Cancelled)
+        {
+            if (hoursWereEmpty)
+            {
+                modelToUpdate.Hour = null;
+            }
+            return;
+        }
+
+        modelToUpdate = (HourWithQuarter)result.Data;
     }
 }

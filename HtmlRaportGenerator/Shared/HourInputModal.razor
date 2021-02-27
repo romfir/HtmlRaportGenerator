@@ -8,26 +8,27 @@
 <div class="simple-form">
     <EditForm Model="HourWithQuarter" OnValidSubmit="SubmitForm">
         <DataAnnotationsValidator />
-
-        <div class="form-group">
-            <label for="hour">Hour</label>
-            <InputSelect @bind-Value="HourWithQuarter.Hour" class="form-control" id="hour">
-                @for (int i = 0; i < 23; i++)
-                {
-                    <option value="@i">@i</option>
-                }
-            </InputSelect>
-            <ValidationMessage For="@(() => HourWithQuarter.Hour)" />
-        </div>
-        <div class="form-group">
-            <label for="minutes">Minutes</label>
-            <InputSelect @bind-Value="HourWithQuarter.Quarter" class="form-control" id="minutes">
-                @for (int i = 0; i < 4; i++)
-                {
-                    <option value="@i">@(i*15)</option>
-                }
-            </InputSelect>
-            <ValidationMessage For="@(() => HourWithQuarter.Quarter)" />
+        <div class="row">
+            <div class="col form-group">
+                <label for="hour">Hour</label>
+                <InputSelect @bind-Value="HourWithQuarter.Hour" class="form-control" id="hour">
+                    @for (int i = 0; i < 23; i++)
+                    {
+                        <option value="@i">@i</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => HourWithQuarter.Hour)" />
+            </div>
+            <div class="col form-group">
+                <label for="minutes">Minutes</label>
+                <InputSelect @bind-Value="HourWithQuarter.Quarter" class="form-control" id="minutes">
+                    @for (int i = 0; i < 4; i++)
+                    {
+                        <option value="@i">@(i*15)</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => HourWithQuarter.Quarter)" />
+            </div>
         </div>
 
         <button type="submit" class="btn btn-primary">Submit</button>
@@ -59,9 +60,20 @@
             }
             else
             {
-                HourWithQuarter = new HourWithQuarter();
+                HourWithQuarter = new HourWithQuarter(0);
             }
         }
+
+        if (HourWithQuarter.Hour is null)
+        {
+            HourWithQuarter.Hour = 0;
+        }
+
+        if (HourWithQuarter.Quarter is null)
+        {
+            HourWithQuarter.Quarter = 0;
+        }
+
     }
 
     async Task SubmitForm()

@@ -56,3 +56,7 @@ a, .btn-link {
 h1 {
     font-size: 4vw;
 }
+
+.clicable {
+    cursor: pointer;
+}

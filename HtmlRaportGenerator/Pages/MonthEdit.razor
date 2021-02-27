@@ -19,44 +19,71 @@
 }
 else
 {
-<EditForm Model="@_daysCollectionValidationModel" OnValidSubmit="@HandleValidSubmitAsync">
-    <ObjectGraphDataAnnotationsValidator />
+    <EditForm Model="@_daysCollectionValidationModel" OnValidSubmit="@HandleValidSubmitAsync">
+        <ObjectGraphDataAnnotationsValidator />
 
-    <div class="table-responsive">
-        <table class="table table-striped table-sm">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Day of month</th>
-                    <th>Start time</th>
-                    <th>End time</th>
-                    <th>Hours Sum</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (Day day in Days.OrderBy(d => d.DayNumber))
-                {
+        <div class="table-responsive">
+            <table class="table table-striped table-sm table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>
+                            <div class="col text-center">
+                                <label>Day of month</label>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="col text-center">
+                                <label>Start time</label>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="col text-center">
+                                <label>End time</label>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="col text-center">
+                                <label>Hours Sum</label>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Day day in Days.OrderBy(d => d.DayNumber))
+                    {
 
-                    <DayListItem CurrentDay="day" HoursHaveChanged="() =>
-                                                                    {
-                                                                        UpdateHourSum();
-                                                                        StateHasChanged();
-                                                                    }
-                                                                    " />
-                }
-            </tbody>
-            <tfoot class="tfoot-dark">
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td><b>Sum:</b></td>
-                    <td>@HoursSum</td>
-                </tr>
+                        <DayListItem CurrentDate="new DateTime(_month!.Value.Year, _month.Value.Month, day.DayNumber)"
+                                     CurrentDay="day"
+                                     HoursHaveChanged="() =>
+                                                            {
+                                                                UpdateHourSum();
+                                                                StateHasChanged();
+                                                            }"
+                                     InputNumberMode="_inputMode" />
+                    }
+                </tbody>
+                <tfoot class="tfoot-dark">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><b>Sum:</b></td>
+                        <td>@HoursSum</td>
+                    </tr>
 
-            </tfoot>
-        </table>
+                </tfoot>
+            </table>
         </div>
-        <button type="submit" class="btn btn-primary">Save</button>
-</EditForm>
+        <div class="container">
+            <div class="row">
+                <div class="col text-center">
+                    <button type="submit" class="btn btn-primary col">Save</button>
+                </div>
+                <div class="col text-center">
+                    <button class="btn btn-primary col" @onclick="SwitchInputsAsync">@InputModeName</button>
+                </div>
+            </div>
+        </div>
+    </EditForm>
 }
 
 @code {
@@ -86,6 +113,11 @@ else
         }
     }
 
+    private bool _inputMode;
+
+    private string InputModeName
+        => _inputMode ? "Switch to modals" : "Switch to inputs";
+
     private DaysCollectionValidationModel _daysCollectionValidationModel = new();
 
     private IEnumerable<Day>? Days
@@ -93,9 +125,11 @@ else
 
     private double HoursSum { get; set; }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         Month ??= DateTime.Now;
+
+        _inputMode = await localStorage.GetItemAsync<bool>(StaticHelpers.InputKey);
     }
 
     private async Task UpdateCalendarGridAsync()
@@ -132,4 +166,11 @@ else
 
     private async Task HandleValidSubmitAsync()
         => await localStorage.SetItemAsync(Month!.Value.ToString(StaticHelpers.YearMonthFormat), Preconditions.CheckNotNull(Days!, nameof(Days)).Where(d => d.AnyRelevantValueExists()).ToList());
+
+    private async Task SwitchInputsAsync()
+    {
+        _inputMode = !_inputMode;
+
+        await localStorage.SetItemAsync(StaticHelpers.InputKey, _inputMode);
+    }
 }

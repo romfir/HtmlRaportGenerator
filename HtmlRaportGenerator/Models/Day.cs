@@ -19,9 +19,9 @@ namespace HtmlRaportGenerator.Models
 
         public int DayNumber { get; set; }
 
-        public HourWithQuarter From { get; set; } = null!;
+        public HourWithQuarter From { get; set; } = new();
 
-        [Range(0, 23.59), JsonIgnore]
+        [Range(0, 23.99), JsonIgnore]
         public double? HourWithQuarterFromParsed
         {
             get => From?.GetHourWithQuarterSum();
@@ -32,9 +32,10 @@ namespace HtmlRaportGenerator.Models
             }
         }
 
-        public HourWithQuarter To { get; set; } = null!;
+        public HourWithQuarter To { get; set; } = new();
 
-        [Range(0, 23.59), JsonIgnore]
+
+        [Range(0, 23.99), JsonIgnore]
         public double? HourWithQuarterToParsed
         {
             get => To?.GetHourWithQuarterSum();
@@ -44,6 +45,7 @@ namespace HtmlRaportGenerator.Models
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HourWithQuarterToParsed)));
             }
         }
+
 
         [JsonIgnore]
         public bool IsToday { get; set; }

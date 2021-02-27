@@ -11,18 +11,18 @@
 
     <div class="row">
 
-        @if (CurrentDay?.From is object)
+        @if (CurrentDay?.From?.Hour is object)
         {
             <div class="col text-center">
                 <label>Shift Start: </label>
-                @CurrentDay.From?.GetHourWithQuarterSum()
+                @CurrentDay.From?.GetHourWithQuarterSum()?.FormatDoubleToTime()
             </div>
         }
-        @if (CurrentDay?.To is object)
+        @if (CurrentDay?.To?.Hour is object)
         {
             <div class="col text-center">
                 <label>Shift End: </label>
-                @CurrentDay.To?.GetHourWithQuarterSum()
+                @CurrentDay.To?.GetHourWithQuarterSum()?.FormatDoubleToTime()
             </div>
         }
     </div>

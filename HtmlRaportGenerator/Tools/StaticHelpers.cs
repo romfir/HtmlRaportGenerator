@@ -15,5 +15,10 @@ namespace HtmlRaportGenerator.Tools
         }
 
         public const string YearMonthFormat = "yyyy-MM";
+
+        public const string InputKey = "input";
+
+        public static string FormatDoubleToTime(this double hour)
+            => TimeSpan.FromHours(hour).ToString(@"hh\:mm");
     }
 }

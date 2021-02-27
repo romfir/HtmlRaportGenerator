@@ -1,10 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace HtmlRaportGenerator.Models
 {
-    //todo zrobic jego propsy nienullable
-    public class HourWithQuarter
+    public class HourWithQuarter : INotifyPropertyChanged
     {
         public HourWithQuarter()
         {
@@ -32,11 +32,34 @@ namespace HtmlRaportGenerator.Models
             Quarter = date.Minute / 15;
         }
 
+        private int? _hour;
+
         [Required, Range(0, 23)]
-        public int? Hour { get; set; }
+        public int? Hour
+        {
+            get => _hour;
+            set
+            {
+                _hour = value;
+
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Hour)));
+            }
+        }
+
+        private int? _quarter;
+
 
         [Required, Range(0, 3)]
-        public int? Quarter { get; set; }
+        public int? Quarter
+        {
+            get => _quarter;
+            set
+            {
+                _quarter = value;
+
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Quarter)));
+            }
+        }
 
         public double? GetHourWithQuarterSum()
         {
@@ -54,5 +77,7 @@ namespace HtmlRaportGenerator.Models
 
             return from;
         }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
     }
 }
