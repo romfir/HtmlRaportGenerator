@@ -1,30 +1,30 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
-namespace HtmlRaportGenerator.Shared.Models
+namespace HtmlRaportGenerator.Models
 {
-    //todo create minimalistic DayDto for saving in localstorage without useless properties like isHoliday/isToday
     public class Day : INotifyPropertyChanged
     {
         public Day()
         {
         }
 
-        public Day(int dayNumber, bool isHoliday)
-        {
-            DayNumber = dayNumber;
-            IsHoliday = isHoliday;
-        }
+        public Day(int dayNumber)
+            => DayNumber = dayNumber;
+
+        public Day(int dayNumber, bool isHoliday) : this(dayNumber)
+            => IsHoliday = isHoliday;
 
         public int DayNumber { get; set; }
 
         public HourWithQuarter From { get; set; } = new();
 
-        [Range(0, 23.59)]
+        [Range(0, 23.99), JsonIgnore]
         public double? HourWithQuarterFromParsed
         {
-            get => From.GetHourWithQuarterSum();
+            get => From?.GetHourWithQuarterSum();
             set
             {
                 From = new HourWithQuarter(value);
@@ -34,10 +34,11 @@ namespace HtmlRaportGenerator.Shared.Models
 
         public HourWithQuarter To { get; set; } = new();
 
-        [Range(0, 23.59)]
+
+        [Range(0, 23.99), JsonIgnore]
         public double? HourWithQuarterToParsed
         {
-            get => To.GetHourWithQuarterSum();
+            get => To?.GetHourWithQuarterSum();
             set
             {
                 To = new HourWithQuarter(value);
@@ -45,10 +46,13 @@ namespace HtmlRaportGenerator.Shared.Models
             }
         }
 
+
+        [JsonIgnore]
         public bool IsToday { get; set; }
 
         public bool IsHoliday { get; set; }
 
+        [JsonIgnore]
         public double? HourSum
         {
             get
@@ -71,7 +75,8 @@ namespace HtmlRaportGenerator.Shared.Models
                     to = new HourWithQuarter(DateTime.Now).GetHourWithQuarterSum()!.Value;
                 }
 
-                if (to < from) //when shift starts on one day and ends on the other
+                //when shift starts on one day and ends on the other
+                if (to < from)
                 {
                     to += 24;
                 }

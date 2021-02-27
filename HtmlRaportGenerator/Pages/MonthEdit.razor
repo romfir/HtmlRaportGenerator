@@ -1,12 +1,17 @@
 ﻿@attribute [RouteAttribute("/" + RelativePageUrls.MonthEdit + "/{Month:datetime?}")]
-@*@page "/MonthEdit"*@
+
 @inject NavigationManager Nav
 @inject ILocalStorageService localStorage
 
-<h1>Miesiąc <input type="month" @bind="MonthForInput" /></h1>
-@*po zmianie miesiaca nie dziala walidacja godzin*@
+<div class="container">
+    <div class="row justify-content-center">
+        <h1>
+            <input type="month" @bind="MonthForInput" />
+        </h1>
+    </div>
+</div>
 
-<p>Widok edycji miesiąca</p>
+
 
 @if (Days is null)
 {
@@ -17,39 +22,67 @@ else
     <EditForm Model="@_daysCollectionValidationModel" OnValidSubmit="@HandleValidSubmitAsync">
         <ObjectGraphDataAnnotationsValidator />
 
-        <table class="table table-striped table-sm">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Dzień Miesiąca</th>
-                    <th>Godzina rozpoczęcia</th>
-                    <th>Godzina zakończenia</th>
-                    <th>Suma</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (Day day in Days.OrderBy(d => d.DayNumber))
-                {
+        <div class="table-responsive">
+            <table class="table table-striped table-sm table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>
+                            <div class="col text-center">
+                                <label>Day of month</label>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="col text-center">
+                                <label>Start time</label>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="col text-center">
+                                <label>End time</label>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="col text-center">
+                                <label>Hours Sum</label>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Day day in Days.OrderBy(d => d.DayNumber))
+                    {
 
-                    <DayListItem CurrentDay="day" HoursHaveChanged="() =>
-                                                                    {
-                                                                        UpdateHourSum();
-                                                                        StateHasChanged();
-                                                                    }
-                                                                    " />
-                }
-            </tbody>
-            <tfoot class="tfoot-dark">
-                @*todo sticky tfoot?*@
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td><b>Suma:</b></td>
-                    <td>@HoursSum</td> @*input na stawke i dodac suma * stawka*@
-                </tr>
+                        <DayListItem CurrentDate="new DateTime(_month!.Value.Year, _month.Value.Month, day.DayNumber)"
+                                     CurrentDay="day"
+                                     HoursHaveChanged="() =>
+                                                            {
+                                                                UpdateHourSum();
+                                                                StateHasChanged();
+                                                            }"
+                                     InputNumberMode="_inputMode" />
+                    }
+                </tbody>
+                <tfoot class="tfoot-dark">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><b>Sum:</b></td>
+                        <td>@HoursSum</td>
+                    </tr>
 
-            </tfoot>
-        </table>
-        <button type="submit">Submit</button>
+                </tfoot>
+            </table>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col text-center">
+                    <button type="submit" class="btn btn-primary col">Save</button>
+                </div>
+                <div class="col text-center">
+                    <button class="btn btn-primary col" @onclick="SwitchInputsAsync">@InputModeName</button>
+                </div>
+            </div>
+        </div>
     </EditForm>
 }
 
@@ -64,7 +97,9 @@ else
         set
         {
             _month = value;
-            UpdateCalendarGrid();
+#pragma warning disable CS4014
+            UpdateCalendarGridAsync();
+#pragma warning restore CS4014
         }
     }
 
@@ -78,6 +113,11 @@ else
         }
     }
 
+    private bool _inputMode;
+
+    private string InputModeName
+        => _inputMode ? "Switch to modals" : "Switch to inputs";
+
     private DaysCollectionValidationModel _daysCollectionValidationModel = new();
 
     private IEnumerable<Day>? Days
@@ -88,26 +128,23 @@ else
     protected override async Task OnInitializedAsync()
     {
         Month ??= DateTime.Now;
+
+        _inputMode = await localStorage.GetItemAsync<bool>(StaticHelpers.InputKey);
     }
 
-    private async Task UpdateCalendarGrid()
+    private async Task UpdateCalendarGridAsync()
     {
-        //todo load from localstorage
-        //clear IsToday during save!
+        List<Day> days = await localStorage.GetItemAsync<List<Day>>(Month!.Value.ToString(StaticHelpers.YearMonthFormat)) ?? new();
 
-        List<Day> days = await localStorage.GetItemAsync<List<Day>>(Month!.Value.ToString("yyyy-MM")) ?? new();
-        Console.WriteLine("xd");
         foreach (DateTime day in Month.Value.AllDatesInMonth())
         {
             Day? dayItem = days.FirstOrDefault(d => d.DayNumber == day.Day);
             if (dayItem is null)
             {
-                //todo handle other holidays? Some library mb
                 dayItem = new Day(day.Day, day.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday);
                 days.Add(dayItem);
             }
 
-            //todo if date is in the future disable inputs
             dayItem.IsToday = false;
             if (DateTime.Now.Date == day.Date)
             {
@@ -128,5 +165,12 @@ else
         => Nav.NavigateTo($"{RelativePageUrls.MonthEdit}/{d:yyyy-MM}");
 
     private async Task HandleValidSubmitAsync()
-        => await localStorage.SetItemAsync(Month!.Value.ToString("yyyy-MM"), Days.Where(d => d.AnyRelevantValueExists()).ToList());
+        => await localStorage.SetItemAsync(Month!.Value.ToString(StaticHelpers.YearMonthFormat), Preconditions.CheckNotNull(Days!, nameof(Days)).Where(d => d.AnyRelevantValueExists()).ToList());
+
+    private async Task SwitchInputsAsync()
+    {
+        _inputMode = !_inputMode;
+
+        await localStorage.SetItemAsync(StaticHelpers.InputKey, _inputMode);
+    }
 }

@@ -1,4 +1,4 @@
-﻿namespace HtmlRaportGenerator.Shared
+﻿namespace HtmlRaportGenerator.Tools
 {
     public static class RelativePageUrls
     {

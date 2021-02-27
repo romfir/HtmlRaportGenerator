@@ -1,0 +1,84 @@
+﻿<div class="container">
+    <div class="row justify-content-center">
+        <h2>
+            @CurrentDate.ToShortDateString()
+        </h2>
+    </div>
+</div>
+<div class="simple-form">
+    <EditForm Model="HourWithQuarter" OnValidSubmit="SubmitForm">
+        <DataAnnotationsValidator />
+        <div class="row">
+            <div class="col form-group">
+                <label for="hour">Hour</label>
+                <InputSelect @bind-Value="HourWithQuarter.Hour" class="form-control" id="hour">
+                    @for (int i = 0; i < 23; i++)
+                    {
+                        <option value="@i">@i</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => HourWithQuarter.Hour)" />
+            </div>
+            <div class="col form-group">
+                <label for="minutes">Minutes</label>
+                <InputSelect @bind-Value="HourWithQuarter.Quarter" class="form-control" id="minutes">
+                    @for (int i = 0; i < 4; i++)
+                    {
+                        <option value="@i">@(i*15)</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => HourWithQuarter.Quarter)" />
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <button @onclick="Cancel" class="btn btn-secondary">Cancel</button>
+    </EditForm>
+</div>
+
+@code {
+
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; } = null!;
+
+    [Parameter]
+    public DateTime CurrentDate { get; set; }
+
+    [Parameter]
+    public HourWithQuarter HourWithQuarter { get; set; } = null!;
+
+    [Parameter]
+    public bool SetDefaultsToCurrentDate { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (HourWithQuarter is null)
+        {
+            if (SetDefaultsToCurrentDate)
+            {
+                HourWithQuarter = new HourWithQuarter(CurrentDate);
+            }
+            else
+            {
+                HourWithQuarter = new HourWithQuarter(0);
+            }
+        }
+
+        if (HourWithQuarter.Hour is null)
+        {
+            HourWithQuarter.Hour = 0;
+        }
+
+        if (HourWithQuarter.Quarter is null)
+        {
+            HourWithQuarter.Quarter = 0;
+        }
+
+    }
+
+    async Task SubmitForm()
+        => await BlazoredModal.CloseAsync(ModalResult.Ok(HourWithQuarter));
+
+    async Task Cancel()
+        => await BlazoredModal.CancelAsync();
+}
