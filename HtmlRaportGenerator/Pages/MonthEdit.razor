@@ -13,7 +13,11 @@
 
 
 
-@if (Days is null)
+@if (_month is null)
+{
+    <p><em>Please choose a month</em></p>
+}
+else if (Days is null)
 {
     <p><em>Loading...</em></p>
 }
@@ -108,7 +112,7 @@ else
         get => Month;
         set
         {
-            ChangeUrl(value!.Value);
+            ChangeUrl(value);
             Month = value;
         }
     }
@@ -161,8 +165,17 @@ else
     private void UpdateHourSum()
         => HoursSum = Days!.Sum(d => d.HourSum ?? 0);
 
-    void ChangeUrl(DateTime d)
-        => Nav.NavigateTo($"{RelativePageUrls.MonthEdit}/{d:yyyy-MM}");
+    void ChangeUrl(DateTime? d)
+    {
+        if (d is object)
+        {
+            Nav.NavigateTo($"{RelativePageUrls.MonthEdit}/{d:yyyy-MM}");
+        }
+        else
+        {
+            Nav.NavigateTo(RelativePageUrls.MonthEdit);
+        }
+    }
 
     private async Task HandleValidSubmitAsync()
         => await localStorage.SetItemAsync(Month!.Value.ToString(StaticHelpers.YearMonthFormat), Preconditions.CheckNotNull(Days!, nameof(Days)).Where(d => d.AnyRelevantValueExists()).ToList());
