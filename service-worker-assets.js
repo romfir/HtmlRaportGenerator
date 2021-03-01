@@ -233,7 +233,7 @@
       "url": "_framework\/System.IO.Pipelines.dll"
     },
     {
-      "hash": "sha256-DXBWr6+0EVwAHdgdPjB7lM+S4Uv3TRSDctLWzys6ckg=",
+      "hash": "sha256-IUwDn1Px10l8yjyfZ9+m0hZIf1TcSlmCT5wH\/RzDSpc=",
       "url": "_framework\/HtmlRaportGenerator.dll"
     },
     {
@@ -381,7 +381,7 @@
       "url": "_framework\/zh-Hant\/Microsoft.VisualStudio.Validation.resources.dll"
     },
     {
-      "hash": "sha256-L+ww4jSJip+MKnFfHwVc7xNg2lmym6+bTjVr8vGVWeA=",
+      "hash": "sha256-rmM9gXjPdNTAAuSJ0oFiVGok\/bLpQHV2xu1hjY28+VY=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -389,5 +389,5 @@
       "url": "_framework\/blazor.webassembly.js"
     }
   ],
-  "version": "RgeF04WL"
+  "version": "mKNr+eH3"
 };
