@@ -7,33 +7,33 @@
     </td>
     @if (InputNumberMode)
     {
-        <td scope="col">
-            <div class="col text-center">
-                <InputNumber @bind-Value="CurrentDay.HourWithQuarterFromParsed" step=".25" class="small-width" style="text-align:center" />
-                <ValidationMessage For="@(()=> CurrentDay.HourWithQuarterFromParsed)" />
-            </div>
-        </td>
+    <td scope="col">
+        <div class="col text-center">
+            <InputNumber @bind-Value="CurrentDay.HourWithQuarterFromParsed" step=".25" class="small-width" style="text-align:center" />
+            <ValidationMessage For="@(()=> CurrentDay.HourWithQuarterFromParsed)" />
+        </div>
+    </td>
 
-        <td scope="col">
-            <div class="col text-center">
-                <InputNumber @bind-Value="CurrentDay.HourWithQuarterToParsed" step=".25" class="small-width" style="text-align:center" />
-                <ValidationMessage For="@(() => CurrentDay.HourWithQuarterToParsed)" />
-            </div>
-        </td>
+    <td scope="col">
+        <div class="col text-center">
+            <InputNumber @bind-Value="CurrentDay.HourWithQuarterToParsed" step=".25" class="small-width" style="text-align:center" />
+            <ValidationMessage For="@(() => CurrentDay.HourWithQuarterToParsed)" />
+        </div>
+    </td>
     }
     else
     {
-        <td scope="col" @onclick="() => DisplayModalAsync(CurrentDay.From, nameof(CurrentDay.From))" class="clicable">
-            <div class="col text-center">
-                <span>@CurrentDay.HourWithQuarterFromParsed?.FormatDoubleToTime()</span>
-            </div>
-        </td>
+    <td scope="col" @onclick="() => DisplayModalAsync(CurrentDay.From, nameof(CurrentDay.From))" class="clicable">
+        <div class="col text-center">
+            <span>@CurrentDay.HourWithQuarterFromParsed?.FormatDoubleToTime()</span>
+        </div>
+    </td>
 
-        <td scope="col" @onclick="() => DisplayModalAsync(CurrentDay.To, nameof(CurrentDay.To))" class="clicable">
-            <div class="col text-center">
-                <span>@CurrentDay.HourWithQuarterToParsed?.FormatDoubleToTime()</span>
-            </div>
-        </td>
+    <td scope="col" @onclick="() => DisplayModalAsync(CurrentDay.To, nameof(CurrentDay.To))" class="clicable">
+        <div class="col text-center">
+            <span>@CurrentDay.HourWithQuarterToParsed?.FormatDoubleToTime()</span>
+        </div>
+    </td>
     }
 
 
@@ -76,7 +76,7 @@
         }
     }
 
-    protected override void OnInitialized()
+    protected override void OnParametersSet()
     {
         CurrentDay.To.PropertyChanged += (s, e) =>
         {
