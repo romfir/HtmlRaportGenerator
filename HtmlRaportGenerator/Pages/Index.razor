@@ -1,7 +1,7 @@
 ﻿@attribute [RouteAttribute("/" + RelativePageUrls.MainView)]
 
-@inject ILocalStorageService localStorage
 @inject IModalService modalService
+@inject MonthStateService stateService
 
 <div class="container">
 
@@ -30,8 +30,10 @@
     <div class="container my-4">
         <div class="text-center">
 
-            <button class="btn btn-primary" disabled="@_isShiftEnded" @onclick="OnButtonClickAsync">@ButtonText</button>
-
+            <button disabled="@IsButtonDisabled" class="btn btn-primary" @onclick="OnButtonClickAsync">
+                <span class=@SaveSpanButtonClass></span>
+                @ButtonText
+            </button>
         </div>
     </div>
 </div>
@@ -42,21 +44,43 @@
     {
         get
         {
+            if (_isDataLoading)
+            {
+                return "Loading...";
+            }
+
+            if (_isDataSaving)
+            {
+                return "Saving...";
+            }
+
             if (_isShiftEnded)
             {
                 return "Shift Ended";
             }
+
             else if (_isShiftStarted)
             {
-                return "Sign out";
+                return "End Shift";
             }
-            return "Sign in";
+
+            return "Start Shift";
         }
     }
+
+    private string SaveSpanButtonClass
+      => (_isDataSaving || _isDataLoading) ? "spinner-border spinner-border-sm" : "";
 
     private bool _isShiftStarted;
 
     private bool _isShiftEnded;
+
+    private bool _isDataSaving;
+
+    private bool _isDataLoading;
+
+    private bool IsButtonDisabled
+        => _isDataSaving || _isShiftEnded || _isDataLoading;
 
     private List<Day>? CurrentMonthDays { get; set; }
 
@@ -69,8 +93,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        CurrentMonthDays = await localStorage.GetItemAsync<List<Day>>(CurrentYearMonth);
+        _isDataLoading = true;
 
+        CurrentMonthDays = await stateService.GetAsync(CurrentYearMonth);
         int currentDayNumber = _currentDate.Day;
 
         if (CurrentMonthDays is null)
@@ -82,11 +107,15 @@
             CurrentDay = CurrentMonthDays.FirstOrDefault(d => d.DayNumber == currentDayNumber);
         }
 
+        Console.WriteLine(3);
+
         if (CurrentDay is null)
         {
             CurrentDay = new Day(currentDayNumber);
 
             CurrentMonthDays.Add(CurrentDay);
+
+            _isDataLoading = false;
             return;
         }
 
@@ -99,11 +128,13 @@
         {
             _isShiftEnded = true;
         }
+
+        _isDataLoading = false;
     }
 
     async Task OnButtonClickAsync()
     {
-
+        _isDataSaving = true;
         ModalOptions options = new()
         {
             HideCloseButton = true,
@@ -138,7 +169,9 @@
             _isShiftEnded = true;
         }
 
-        await localStorage.SetItemAsync(_currentDate!.ToString(StaticHelpers.YearMonthFormat), Preconditions.CheckNotNull(CurrentMonthDays!, nameof(CurrentMonthDays)));
+        await stateService.SaveAsync(Preconditions.CheckNotNull(CurrentMonthDays!, nameof(CurrentMonthDays)), _currentDate!.ToString(StaticHelpers.YearMonthFormat));
+
+        _isDataSaving = false;
     }
 }
 

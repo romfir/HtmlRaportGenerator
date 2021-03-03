@@ -1,0 +1,42 @@
+﻿@attribute [RouteAttribute("/" + RelativePageUrls.Settings)]
+
+@inject MonthStateService stateService
+@inject AuthenticationStateProvider authenticationStateProvider
+
+<h3>Settings</h3>
+<form>
+    <div class="form-group form-group-sm ">
+        <label for="DataStore">Data Store:</label>
+        @*<div class="col">*@
+        <select class="form-control" id="DataStore" @bind="SelectedStorage">
+
+            <option value="@DataStore.LocalStorage">@DataStore.LocalStorage</option>
+            <option value="@DataStore.GoogleDrive" disabled="@(!_isUserAuthenticated)">@DataStore.GoogleDrive</option>
+        </select>
+        @*</div>*@
+    </div>
+</form>
+
+@code {
+    private bool _isUserAuthenticated;
+
+    private DataStore SelectedStorage
+    {
+        get => stateService.CurrentDataStore;
+#pragma warning disable CS4014
+        set => stateService.ChangeDataStoreAsync(value);
+#pragma warning restore CS4014
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Task loadConfigAsync = stateService.LoadConfigurationIfEmptyAsync();
+
+        Task<AuthenticationState> getAuthenticationAsync = authenticationStateProvider.GetAuthenticationStateAsync();
+
+        await loadConfigAsync.ConfigureAwait(false);
+        AuthenticationState state = await getAuthenticationAsync.ConfigureAwait(false);
+
+        _isUserAuthenticated = state.User.Identity?.IsAuthenticated is true;
+    }
+}

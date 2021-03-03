@@ -1,0 +1,10 @@
+﻿@page "/authentication/{action}"
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@inject MonthStateService monthStateService
+
+<RemoteAuthenticatorView Action="@Action" OnLogInSucceeded="() => monthStateService.LoadConfigurationFromGoogleDriveAsync()" />
+
+@code{
+    [Parameter]
+    public string Action { get; set; } = null!;
+}
