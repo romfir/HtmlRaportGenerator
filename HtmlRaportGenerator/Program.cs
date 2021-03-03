@@ -1,5 +1,6 @@
 using Blazored.LocalStorage;
 using Blazored.Modal;
+using HtmlRaportGenerator.Services;
 using HtmlRaportGenerator.Tools;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,7 +31,9 @@ namespace HtmlRaportGenerator
                 options.ProviderOptions.Authority = "https://accounts.google.com/";
                 options.ProviderOptions.RedirectUri = "https://localhost:5001/authentication/login-callback";
                 options.ProviderOptions.PostLogoutRedirectUri = "https://localhost:5001/authentication/logout-callback";
-                options.ProviderOptions.ClientId = "notaclientid";
+
+                //todo use dev secrets!
+                options.ProviderOptions.ClientId = "fakeClientId";
 
                 options.ProviderOptions.ResponseType = "token id_token";
 
@@ -41,9 +44,17 @@ namespace HtmlRaportGenerator
                 options.ProviderOptions.DefaultScopes.Add(@"https://www.googleapis.com/auth/drive.file");
             });
 
-            builder.Services.AddHttpClient("ServerAPI",
+            builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
+
+            builder.Services.AddHttpClient(StaticHelpers.HttpClientName,
                     client => client.BaseAddress = new Uri("https://www.googleapis.com/"))
                 .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
+
+            builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
+                .CreateClient(StaticHelpers.HttpClientName));
+
+            //todo addsingleton?
+            builder.Services.AddScoped<MonthStateService>();
 
             await builder.Build().RunAsync();
         }

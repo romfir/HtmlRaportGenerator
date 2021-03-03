@@ -2,6 +2,7 @@
 
 @inject NavigationManager Nav
 @inject ILocalStorageService localStorage
+@inject MonthStateService stateService
 
 <div class="container">
     <div class="row justify-content-center">
@@ -130,7 +131,9 @@ else
 
     private async Task UpdateCalendarGridAsync()
     {
-        List<Day> days = await localStorage.GetItemAsync<List<Day>>(Month!.Value.ToString(StaticHelpers.YearMonthFormat)) ?? new();
+        // List<Day> days = await localStorage.GetItemAsync<List<Day>>(Month!.Value.ToString(StaticHelpers.YearMonthFormat)) ?? new();
+
+        List<Day> days = await stateService.GetAsync(Month!.Value.ToString(StaticHelpers.YearMonthFormat)) ?? new();
 
         foreach (DateTime day in Month.Value.AllDatesInMonth())
         {
@@ -170,7 +173,8 @@ else
     }
 
     private async Task HandleValidSubmitAsync()
-        => await localStorage.SetItemAsync(Month!.Value.ToString(StaticHelpers.YearMonthFormat), Preconditions.CheckNotNull(Days!, nameof(Days)).Where(d => d.AnyRelevantValueExists()).ToList());
+            => await stateService.SaveAsync(Preconditions.CheckNotNull(Days!, nameof(Days)).Where(d => d.AnyRelevantValueExists()).ToList(), Month!.Value.ToString(StaticHelpers.YearMonthFormat));
+    //=> await localStorage.SetItemAsync(, );
 
     private async Task SwitchInputsAsync()
     {
