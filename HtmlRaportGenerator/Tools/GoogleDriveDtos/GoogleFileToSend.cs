@@ -1,6 +1,6 @@
 ﻿namespace HtmlRaportGenerator.Tools.GoogleDriveDtos
 {
-    class GoogleConfig
+    public class GoogleFileToSend
     {
         public string Name { get; set; } = null!;
 

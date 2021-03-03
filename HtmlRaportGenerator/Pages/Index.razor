@@ -1,7 +1,7 @@
 ﻿@attribute [RouteAttribute("/" + RelativePageUrls.MainView)]
 
-@inject ILocalStorageService localStorage
 @inject IModalService modalService
+@inject MonthStateService stateService
 
 <div class="container">
 
@@ -46,11 +46,13 @@
             {
                 return "Shift Ended";
             }
+
             else if (_isShiftStarted)
             {
-                return "Sign out";
+                return "End Shift";
             }
-            return "Sign in";
+
+            return "Start Shift";
         }
     }
 
@@ -69,7 +71,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        CurrentMonthDays = await localStorage.GetItemAsync<List<Day>>(CurrentYearMonth);
+        CurrentMonthDays = await stateService.GetAsync(CurrentYearMonth);
 
         int currentDayNumber = _currentDate.Day;
 
@@ -138,7 +140,7 @@
             _isShiftEnded = true;
         }
 
-        await localStorage.SetItemAsync(_currentDate!.ToString(StaticHelpers.YearMonthFormat), Preconditions.CheckNotNull(CurrentMonthDays!, nameof(CurrentMonthDays)));
+        await stateService.SaveAsync(Preconditions.CheckNotNull(CurrentMonthDays!, nameof(CurrentMonthDays)), _currentDate!.ToString(StaticHelpers.YearMonthFormat));
     }
 }
 

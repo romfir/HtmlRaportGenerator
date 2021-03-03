@@ -74,7 +74,7 @@ namespace HtmlRaportGenerator.Services
 
                 MultipartFormDataContent multipartContent = new MultipartFormDataContent("----" + Guid.NewGuid().ToString())
                 {
-                    { JsonContent.Create(new GoogleConfig { Description = $"File containing HtmlRaportGenerator data from month {yearMonth}", MimeType = "application/json", Name = yearMonth + ".json" }, new MediaTypeHeaderValue("application/json")), "Metadata" },
+                    { JsonContent.Create(new GoogleFileToSend { Description = $"File containing HtmlRaportGenerator data from month {yearMonth}", MimeType = "application/json", Name = yearMonth + ".json" }, new MediaTypeHeaderValue("application/json")), "Metadata" },
                     { JsonContent.Create(days, new MediaTypeHeaderValue("multipart/related")), "Media"}
                 };
 
@@ -157,7 +157,8 @@ namespace HtmlRaportGenerator.Services
                         matchingFileId = matchingFile.Id;
                     }
                 }
-                else
+
+                if (matchingFileId is null)
                 {
                     try
                     {
@@ -186,12 +187,6 @@ namespace HtmlRaportGenerator.Services
                     }
 
                     matchingFileId = matchingFile.Id;
-                }
-
-                //this shoul not be neccesary! fix logic!
-                if(matchingFileId is null)
-                {
-                    return null;
                 }
 
                 //todo add queryparams using build in methods, and dont use string interpolation

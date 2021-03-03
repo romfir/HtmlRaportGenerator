@@ -25,6 +25,9 @@ namespace HtmlRaportGenerator
 
             builder.Services.AddBlazoredModal();
 
+            builder.Services.AddOptions();
+            builder.Services.AddAuthorizationCore();
+
             builder.Services.AddOidcAuthentication(options =>
             {
                 //todo appsettings with two enviroments + use secret store for clientId
@@ -41,7 +44,7 @@ namespace HtmlRaportGenerator
                 options.ProviderOptions.DefaultScopes.Add("email");
                 options.ProviderOptions.DefaultScopes.Add("openid");
                 //todo use library?
-                options.ProviderOptions.DefaultScopes.Add(@"https://www.googleapis.com/auth/drive.file");
+                options.ProviderOptions.DefaultScopes.Add("https://www.googleapis.com/auth/drive.file");
             });
 
             builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
