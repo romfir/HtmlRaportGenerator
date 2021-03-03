@@ -3,6 +3,7 @@ using Blazored.Modal;
 using HtmlRaportGenerator.Services;
 using HtmlRaportGenerator.Tools;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;
@@ -29,23 +30,8 @@ namespace HtmlRaportGenerator
             builder.Services.AddAuthorizationCore();
 
             builder.Services.AddOidcAuthentication(options =>
-            {
-                //todo appsettings with two enviroments + use secret store for clientId
-                options.ProviderOptions.Authority = "https://accounts.google.com/";
-                options.ProviderOptions.RedirectUri = "https://localhost:5001/authentication/login-callback";
-                options.ProviderOptions.PostLogoutRedirectUri = "https://localhost:5001/authentication/logout-callback";
-
-                //todo use dev secrets!
-                options.ProviderOptions.ClientId = "fakeClientId";
-
-                options.ProviderOptions.ResponseType = "token id_token";
-
-                options.ProviderOptions.DefaultScopes.Add("profile");
-                options.ProviderOptions.DefaultScopes.Add("email");
-                options.ProviderOptions.DefaultScopes.Add("openid");
-                //todo use library?
-                options.ProviderOptions.DefaultScopes.Add("https://www.googleapis.com/auth/drive.file");
-            });
+                builder.Configuration.Bind("Google", options.ProviderOptions)
+            );
 
             builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
 
@@ -56,8 +42,8 @@ namespace HtmlRaportGenerator
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
                 .CreateClient(StaticHelpers.HttpClientName));
 
-            //todo addsingleton?
             builder.Services.AddScoped<MonthStateService>();
+            builder.Services.AddScoped<GoogleDriveService>();
 
             await builder.Build().RunAsync();
         }

@@ -18,6 +18,8 @@ namespace HtmlRaportGenerator.Tools
 
         public const string InputKey = "input";
 
+        public const string DataStoreTypeKey = "DataStore";
+
         public const string HttpClientName = "GoogleAuthClient";
 
         public static string FormatDoubleToTime(this double hour)

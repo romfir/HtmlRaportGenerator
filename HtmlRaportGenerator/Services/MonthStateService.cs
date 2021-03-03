@@ -1,41 +1,45 @@
 ﻿using Blazored.LocalStorage;
 using HtmlRaportGenerator.Models;
 using HtmlRaportGenerator.Tools;
-using HtmlRaportGenerator.Tools.GoogleDriveDtos;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
-using System;
+using Microsoft.AspNetCore.Components.Authorization;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace HtmlRaportGenerator.Services
 {
-    public class MonthStateService //: IMonthStateService todo + singleton?
+    public class MonthStateService
     {
-        private readonly HttpClient _httpClient;
         private readonly ILocalStorageService _localStorageService;
+        private readonly GoogleDriveService _googleDriveService;
 
-        private List<GoogleFile>? _googleFiles;
+        private readonly AuthenticationStateProvider _authenticationStateProvider;
 
-
-
-        public MonthStateService(IHttpClientFactory httpClientFactory, ILocalStorageService localStorageService)
+        public MonthStateService(GoogleDriveService googleDriveService, ILocalStorageService localStorageService, AuthenticationStateProvider authenticationStateProvider)
         {
-            _httpClient = httpClientFactory.CreateClient(StaticHelpers.HttpClientName);
             _localStorageService = localStorageService;
+            _googleDriveService = googleDriveService;
+            _authenticationStateProvider = authenticationStateProvider;
         }
 
-        //public DataStore CurrentDataStore { get; private set; } = DataStore.LocalStorage;
-        public DataStore CurrentDataStore { get; private set; } = DataStore.GoogleDrive;
+        private DataStore? _currentDataStore;
 
-        public bool ChangeDataStore(DataStore nextStore)
+        public DataStore CurrentDataStore
+            => _currentDataStore ?? DataStore.LocalStorage;
+
+        public async Task<bool> ChangeDataStoreAsync(DataStore nextStore)
         {
-            if (nextStore != CurrentDataStore)
+            if (nextStore != _currentDataStore)
             {
-                CurrentDataStore = nextStore;
+                _currentDataStore = nextStore;
+
+                await _localStorageService.SetItemAsync(StaticHelpers.DataStoreTypeKey, nextStore);
+
+                AuthenticationState state = await _authenticationStateProvider.GetAuthenticationStateAsync().ConfigureAwait(false);
+
+                if (state.User.Identity?.IsAuthenticated is true)
+                {
+                    await _googleDriveService.SaveAsync(StaticHelpers.DataStoreTypeKey, nextStore);
+                }
 
                 return true;
             }
@@ -45,158 +49,64 @@ namespace HtmlRaportGenerator.Services
 
         public async Task<bool> SaveAsync(List<Day> days, string yearMonth)
         {
-            //todo validaiton yearMOnth
+            await LoadConfigurationAsync().ConfigureAwait(false);
 
-            if (CurrentDataStore == DataStore.LocalStorage)
+            if (_currentDataStore == DataStore.LocalStorage)
             {
-                await _localStorageService.SetItemAsync(yearMonth, days);
+                await _localStorageService.SetItemAsync(yearMonth, days).ConfigureAwait(false); ;
 
                 return true;
             }
-            else if (CurrentDataStore == DataStore.GoogleDrive)
+            else if (_currentDataStore == DataStore.GoogleDrive)
             {
-                string fileName = yearMonth + ".json";
-
-                bool fileExists = false;
-                string? fileId = null;
-
-                if (_googleFiles is object)
-                {
-                    GoogleFile? existingFile = _googleFiles.FirstOrDefault(f => f.Name == fileName);
-
-                    if (existingFile is object)
-                    {
-                        fileExists = true;
-                        fileId = existingFile.Id;
-                    }
-                }
-
-
-                MultipartFormDataContent multipartContent = new MultipartFormDataContent("----" + Guid.NewGuid().ToString())
-                {
-                    { JsonContent.Create(new GoogleFileToSend { Description = $"File containing HtmlRaportGenerator data from month {yearMonth}", MimeType = "application/json", Name = yearMonth + ".json" }, new MediaTypeHeaderValue("application/json")), "Metadata" },
-                    { JsonContent.Create(days, new MediaTypeHeaderValue("multipart/related")), "Media"}
-                };
-
-                try
-                {
-                    HttpResponseMessage response;
-
-                    if (fileExists)
-                    {
-                        response = await _httpClient.PatchAsync(@$"upload/drive/v3/files/{fileId}?uploadType=multipart", multipartContent);  //cancelationtoken
-                    }
-                    else
-                    {
-                        response = await _httpClient.PostAsync(@"upload/drive/v3/files?uploadType=multipart", multipartContent);  //cancelationtoken
-                    }
-
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        Console.WriteLine(response.Content.ToString());
-                        return false;
-                    }
-
-                    //response to 
-                    GoogleFile? newFile = await response.Content.ReadFromJsonAsync<GoogleFile>().ConfigureAwait(false); //cancelationtoken
-
-                    if (newFile is null)
-                    {
-                        Console.WriteLine("Unable to pars Google Drive response");
-                        return false;
-                    }
-
-                    if (_googleFiles is null)
-                    {
-                        _googleFiles = new List<GoogleFile> { newFile };
-                    }
-                    else
-                    {
-                        _googleFiles.Add(newFile);
-                    }
-
-
-                    return false;
-                }
-                catch (AccessTokenNotAvailableException exception)
-                {
-                    //Console.WriteLine(exception.ToString());
-                    exception.Redirect();
-
-                    //after redirect can we try to save again? IS blazor able to keep state after redirection? Check it!
-                }
+                return await _googleDriveService.SaveAsync(yearMonth, days).ConfigureAwait(false);
             }
 
             return false;
         }
 
 
-        //todo create object containng List<day>? mb DaysCollectionValidationModel -> rename and add timestamp
-        //when miltiple ENums are chosem data is saved in each dataStore, and during load timestamps are checked?
-        //todo settings page!
-        //todo foreach enum
-        public async Task<List<Day>?> GetAsync(string yearMonth) //todo CancellationToken?
+        public async Task<List<Day>?> GetAsync(string yearMonth)
         {
-            //todo yearMonth validation!
+            await LoadConfigurationAsync().ConfigureAwait(false);
 
-            if (CurrentDataStore == DataStore.LocalStorage)
+            if (_currentDataStore == DataStore.LocalStorage)
             {
                 return await _localStorageService.GetItemAsync<List<Day>>(yearMonth);
             }
 
-            if (CurrentDataStore == DataStore.GoogleDrive)
+            if (_currentDataStore == DataStore.GoogleDrive)
             {
-                string? matchingFileId = null;
-
-                if (_googleFiles is object)
-                {
-                    GoogleFile? matchingFile = _googleFiles!.FirstOrDefault(f => f.Name == yearMonth + ".json");
-
-                    if (matchingFile is object)
-                    {
-                        matchingFileId = matchingFile.Id;
-                    }
-                }
-
-                if (matchingFileId is null)
-                {
-                    try
-                    {
-                        GoogleFilesResponse? response = await _httpClient.GetFromJsonAsync<GoogleFilesResponse>(@"drive/v3/files").ConfigureAwait(false);
-
-                        if (response?.Files is null || response.Files.Count == 0)
-                        {
-                            return null;
-                        }
-
-                        _googleFiles = response.Files;
-                    }
-                    catch (AccessTokenNotAvailableException exception)
-                    {
-                        //Console.WriteLine(exception.ToString());
-                        exception.Redirect();
-
-                        //after redirect can we try to save again?
-                    }
-
-                    GoogleFile? matchingFile = _googleFiles!.FirstOrDefault(f => f.Name == yearMonth + ".json");
-
-                    if (matchingFile is null)
-                    {
-                        return null;
-                    }
-
-                    matchingFileId = matchingFile.Id;
-                }
-
-                //todo add queryparams using build in methods, and dont use string interpolation
-                return await _httpClient.GetFromJsonAsync<List<Day>>($@"drive/v3/files/{Uri.EscapeDataString(matchingFileId!)}?alt=media").ConfigureAwait(false);
+                return await _googleDriveService.GetAsync<List<Day>>(yearMonth);
             }
 
             return null;
         }
 
+        public async Task LoadConfigurationAsync()
+        {
+            if (_currentDataStore is object)
+            {
+                return;
+            }
 
-        //todo loadConfiguration which will load enum first from google drive if user is authorized then from localstorage
+            DataStore? config = await _localStorageService.GetItemAsync<DataStore?>(StaticHelpers.DataStoreTypeKey);
+
+            if (config is object)
+            {
+                _currentDataStore = config.Value;
+            }
+            else
+            {
+                AuthenticationState state = await _authenticationStateProvider.GetAuthenticationStateAsync().ConfigureAwait(false);
+
+                if (state.User.Identity?.IsAuthenticated is true)
+                {
+                    _currentDataStore = await _googleDriveService.GetAsync<DataStore?>(StaticHelpers.DataStoreTypeKey);
+                }
+            }
+
+            _currentDataStore ??= DataStore.LocalStorage;
+        }
     }
 }

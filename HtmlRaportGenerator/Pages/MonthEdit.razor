@@ -58,13 +58,13 @@ else
                     {
 
                         <DayListItem CurrentDate="new DateTime(Month.Value.Year, Month.Value.Month, day.DayNumber)"
-                                     CurrentDay="day"
-                                     HoursHaveChanged="() =>
+                             CurrentDay="day"
+                             HoursHaveChanged="() =>
                                                             {
                                                                 UpdateHourSum();
                                                                 StateHasChanged();
                                                             }"
-                                     InputNumberMode="_inputMode" />
+                             InputNumberMode="_inputMode" />
                     }
                 </tbody>
                 <tfoot class="tfoot-dark">
@@ -131,8 +131,6 @@ else
 
     private async Task UpdateCalendarGridAsync()
     {
-        // List<Day> days = await localStorage.GetItemAsync<List<Day>>(Month!.Value.ToString(StaticHelpers.YearMonthFormat)) ?? new();
-
         List<Day> days = await stateService.GetAsync(Month!.Value.ToString(StaticHelpers.YearMonthFormat)) ?? new();
 
         foreach (DateTime day in Month.Value.AllDatesInMonth())
@@ -174,7 +172,6 @@ else
 
     private async Task HandleValidSubmitAsync()
             => await stateService.SaveAsync(Preconditions.CheckNotNull(Days!, nameof(Days)).Where(d => d.AnyRelevantValueExists()).ToList(), Month!.Value.ToString(StaticHelpers.YearMonthFormat));
-    //=> await localStorage.SetItemAsync(, );
 
     private async Task SwitchInputsAsync()
     {
