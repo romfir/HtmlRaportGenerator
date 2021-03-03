@@ -4,13 +4,18 @@
 @inject AuthenticationStateProvider authenticationStateProvider
 
 <h3>Settings</h3>
+<form>
+    <div class="form-group form-group-sm ">
+        <label for="DataStore">Data Store:</label>
+        @*<div class="col">*@
+        <select class="form-control" id="DataStore" @bind="SelectedStorage">
 
-<label for="DataStore">Data Store:</label>
-<select class="custom-select" id="DataStore" @bind="SelectedStorage">
-
-    <option value="@DataStore.LocalStorage">@DataStore.LocalStorage</option>
-    <option value="@DataStore.GoogleDrive" disabled="@(!_isUserAuthenticated)">@DataStore.GoogleDrive</option>
-</select>
+            <option value="@DataStore.LocalStorage">@DataStore.LocalStorage</option>
+            <option value="@DataStore.GoogleDrive" disabled="@(!_isUserAuthenticated)">@DataStore.GoogleDrive</option>
+        </select>
+        @*</div>*@
+    </div>
+</form>
 
 @code {
     private bool _isUserAuthenticated;
@@ -25,7 +30,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Task loadConfigAsync = stateService.LoadConfigurationAsync();
+        Task loadConfigAsync = stateService.LoadConfigurationIfEmptyAsync();
 
         Task<AuthenticationState> getAuthenticationAsync = authenticationStateProvider.GetAuthenticationStateAsync();
 

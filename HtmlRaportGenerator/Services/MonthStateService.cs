@@ -49,7 +49,7 @@ namespace HtmlRaportGenerator.Services
 
         public async Task<bool> SaveAsync(List<Day> days, string yearMonth)
         {
-            await LoadConfigurationAsync().ConfigureAwait(false);
+            await LoadConfigurationIfEmptyAsync().ConfigureAwait(false);
 
             if (_currentDataStore == DataStore.LocalStorage)
             {
@@ -68,45 +68,47 @@ namespace HtmlRaportGenerator.Services
 
         public async Task<List<Day>?> GetAsync(string yearMonth)
         {
-            await LoadConfigurationAsync().ConfigureAwait(false);
+            await LoadConfigurationIfEmptyAsync().ConfigureAwait(false);
 
-            if (_currentDataStore == DataStore.LocalStorage)
+            return _currentDataStore switch
             {
-                return await _localStorageService.GetItemAsync<List<Day>>(yearMonth);
+                DataStore.LocalStorage => await _localStorageService.GetItemAsync<List<Day>>(yearMonth),
+                DataStore.GoogleDrive => await _googleDriveService.GetAsync<List<Day>>(yearMonth),
+                _ => null
+            };
+        }
+
+        public Task LoadConfigurationIfEmptyAsync()
+        {
+            if (_currentDataStore is object)
+            {
+                return Task.CompletedTask;
             }
 
-            if (_currentDataStore == DataStore.GoogleDrive)
-            {
-                return await _googleDriveService.GetAsync<List<Day>>(yearMonth);
-            }
-
-            return null;
+            return LoadConfigurationAsync();
         }
 
         public async Task LoadConfigurationAsync()
         {
-            if (_currentDataStore is object)
-            {
-                return;
-            }
+            _currentDataStore = await _localStorageService.GetItemAsync<DataStore?>(StaticHelpers.DataStoreTypeKey);
 
-            DataStore? config = await _localStorageService.GetItemAsync<DataStore?>(StaticHelpers.DataStoreTypeKey);
-
-            if (config is object)
+            if (_currentDataStore is null)
             {
-                _currentDataStore = config.Value;
-            }
-            else
-            {
-                AuthenticationState state = await _authenticationStateProvider.GetAuthenticationStateAsync().ConfigureAwait(false);
-
-                if (state.User.Identity?.IsAuthenticated is true)
-                {
-                    _currentDataStore = await _googleDriveService.GetAsync<DataStore?>(StaticHelpers.DataStoreTypeKey);
-                }
+                await LoadConfigurationFromGoogleDriveAsync();
             }
 
             _currentDataStore ??= DataStore.LocalStorage;
+        }
+
+        public async Task LoadConfigurationFromGoogleDriveAsync()
+        {
+            AuthenticationState state = await _authenticationStateProvider.GetAuthenticationStateAsync().ConfigureAwait(false);
+
+            if (state.User.Identity?.IsAuthenticated is true)
+            {
+                _currentDataStore = await _googleDriveService.GetAsync<DataStore?>(StaticHelpers.DataStoreTypeKey).ConfigureAwait(false);
+                await _localStorageService.SetItemAsync(StaticHelpers.DataStoreTypeKey, CurrentDataStore).ConfigureAwait(false);
+            }
         }
     }
 }

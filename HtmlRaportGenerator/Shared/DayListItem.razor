@@ -10,14 +10,14 @@
     {
         <td scope="col">
             <div class="col text-center">
-                <InputNumber @bind-Value="CurrentDay.HourWithQuarterFromParsed" step=".25" class="small-width" style="text-align:center" />
+                <InputNumber @bind-Value="CurrentDay.HourWithQuarterFromParsed" step=".25" min="0" max="23.99" class="small-width" style="text-align:center" />
                 <ValidationMessage For="@(()=> CurrentDay.HourWithQuarterFromParsed)" />
             </div>
         </td>
 
         <td scope="col">
             <div class="col text-center">
-                <InputNumber @bind-Value="CurrentDay.HourWithQuarterToParsed" step=".25" class="small-width" style="text-align:center" />
+                <InputNumber @bind-Value="CurrentDay.HourWithQuarterToParsed" step=".25" min="0" max="23.99" class="small-width" style="text-align:center" />
                 <ValidationMessage For="@(() => CurrentDay.HourWithQuarterToParsed)" />
             </div>
         </td>

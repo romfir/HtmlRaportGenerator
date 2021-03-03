@@ -20,7 +20,11 @@
 }
 else if (Days is null)
 {
-    <p><em>Loading...</em></p>
+    <div class="text-center">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
 }
 else
 {
@@ -81,10 +85,13 @@ else
         <div class="container">
             <div class="row">
                 <div class="col text-center">
-                    <button type="submit" class="btn btn-primary col">Save</button>
+                    <button type="submit" disabled="@_isTableSaving" class="btn btn-primary col">
+                        <span class=@SaveSpanButtonClass></span>
+                        @SaveButtonText
+                    </button>
                 </div>
                 <div class="col text-center">
-                    <button class="btn btn-primary col" @onclick="SwitchInputsAsync">@InputModeName</button>
+                    <button type="button" class="btn btn-primary col" @onclick="SwitchInputsAsync">@InputModeName</button>
                 </div>
             </div>
         </div>
@@ -116,6 +123,15 @@ else
                 => _daysCollectionValidationModel.Days;
 
     private double HoursSum { get; set; }
+
+
+    private bool _isTableSaving = false;
+
+    private string SaveSpanButtonClass
+        => _isTableSaving ? "spinner-border spinner-border-sm" : "";
+
+    private string SaveButtonText
+        => _isTableSaving ? "Saving..." : "Save";
 
     protected override async Task OnInitializedAsync()
     {
@@ -171,7 +187,13 @@ else
     }
 
     private async Task HandleValidSubmitAsync()
-            => await stateService.SaveAsync(Preconditions.CheckNotNull(Days!, nameof(Days)).Where(d => d.AnyRelevantValueExists()).ToList(), Month!.Value.ToString(StaticHelpers.YearMonthFormat));
+    {
+        _isTableSaving = true;
+
+        await stateService.SaveAsync(Preconditions.CheckNotNull(Days!, nameof(Days)).Where(d => d.AnyRelevantValueExists()).ToList(), Month!.Value.ToString(StaticHelpers.YearMonthFormat));
+
+        _isTableSaving = false;
+    }
 
     private async Task SwitchInputsAsync()
     {
