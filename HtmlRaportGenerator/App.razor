@@ -15,8 +15,12 @@
                     </NotAuthorized>
 
                     <Authorizing>
-                        <h1>Authorization in progress</h1>
-                        <p>Only visible while authorization is in progress.</p>
+                        <div class="text-center">
+                            <h2>Authorization in progress</h2>
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
                     </Authorizing>
                 </AuthorizeRouteView>
             </Found>
