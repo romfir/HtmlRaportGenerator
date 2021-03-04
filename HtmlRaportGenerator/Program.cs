@@ -1,5 +1,8 @@
 using Blazored.LocalStorage;
 using Blazored.Modal;
+using Blazorise;
+using Blazorise.Bootstrap;
+using Blazorise.Icons.FontAwesome;
 using HtmlRaportGenerator.Services;
 using HtmlRaportGenerator.Tools;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -16,6 +19,16 @@ namespace HtmlRaportGenerator
         public static async Task Main(string[] args)
         {
             WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
+
+            builder.Services
+                          .AddBlazorise(options =>
+                          {
+                              options.ChangeTextOnKeyPress = true;
+                          })
+                          .AddBootstrapProviders()
+                          .AddFontAwesomeIcons();
+
+
             builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddScoped(sp =>
