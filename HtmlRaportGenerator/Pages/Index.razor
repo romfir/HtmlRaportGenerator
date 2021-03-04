@@ -107,8 +107,6 @@
             CurrentDay = CurrentMonthDays.FirstOrDefault(d => d.DayNumber == currentDayNumber);
         }
 
-        Console.WriteLine(3);
-
         if (CurrentDay is null)
         {
             CurrentDay = new Day(currentDayNumber);

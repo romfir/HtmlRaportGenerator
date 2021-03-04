@@ -17,6 +17,9 @@ namespace HtmlRaportGenerator.Services
 
         private List<GoogleFile>? _googleFiles;
 
+        private bool AnyFileExists
+            => _googleFiles is object && _googleFiles.Any();
+
         public GoogleDriveService(IHttpClientFactory httpClientFactory)
             => _httpClient = httpClientFactory.CreateClient(StaticHelpers.HttpClientName);
 
@@ -28,19 +31,14 @@ namespace HtmlRaportGenerator.Services
         {
             string fileName = key + ".json";
 
-            bool fileExists = false;
-            string? fileId = null;
+            GoogleFile? existingFile = _googleFiles?.FirstOrDefault(f => f.Name == fileName);
 
-            if (_googleFiles is object)
+            if (existingFile is null)
             {
-                GoogleFile? existingFile = _googleFiles.FirstOrDefault(f => f.Name == fileName);
-
-                if (existingFile is object)
-                {
-                    fileExists = true;
-                    fileId = existingFile.Id;
-                }
+                await LoadFilesFromDriveAsync();
+                existingFile = _googleFiles?.FirstOrDefault(f => f.Name == fileName);
             }
+
 
             MultipartFormDataContent multipartContent = new MultipartFormDataContent("----" + Guid.NewGuid().ToString())
                 {
@@ -52,9 +50,9 @@ namespace HtmlRaportGenerator.Services
             {
                 HttpResponseMessage response;
 
-                if (fileExists)
+                if (existingFile?.Id is object)
                 {
-                    response = await _httpClient.PatchAsync(@$"upload/drive/v3/files/{fileId}?uploadType=multipart", multipartContent);
+                    response = await _httpClient.PatchAsync(@$"upload/drive/v3/files/{existingFile.Id}?uploadType=multipart", multipartContent);
                 }
                 else
                 {
@@ -97,49 +95,44 @@ namespace HtmlRaportGenerator.Services
 
         public async Task<T?> GetAsync<T>(string key)
         {
-            string? matchingFileId = null;
-
             string fileName = key + ".json";
 
-            if (_googleFiles is object)
-            {
-                GoogleFile? matchingFile = _googleFiles!.FirstOrDefault(f => f.Name == fileName);
+            GoogleFile? matchingFile = _googleFiles?.FirstOrDefault(f => f.Name == fileName);
 
-                if (matchingFile is object)
-                {
-                    matchingFileId = matchingFile.Id;
-                }
+            if (matchingFile is null)
+            {
+                await LoadFilesFromDriveAsync().ConfigureAwait(false);
+
+                matchingFile = _googleFiles?.FirstOrDefault(f => f.Name == fileName);
             }
 
-            if (matchingFileId is null)
+            if (matchingFile?.Id is null)
             {
-                try
-                {
-                    GoogleFilesResponse? response = await _httpClient.GetFromJsonAsync<GoogleFilesResponse>(@"drive/v3/files").ConfigureAwait(false);
-
-                    if (response?.Files is null || response.Files.Count == 0)
-                    {
-                        return default;
-                    }
-
-                    _googleFiles = response.Files;
-                }
-                catch (AccessTokenNotAvailableException exception)
-                {
-                    exception.Redirect();
-                }
-
-                GoogleFile? matchingFile = _googleFiles!.FirstOrDefault(f => f.Name == fileName);
-
-                if (matchingFile is null)
-                {
-                    return default;
-                }
-
-                matchingFileId = matchingFile.Id;
+                return default;
             }
 
-            return await _httpClient.GetFromJsonAsync<T>($@"drive/v3/files/{Uri.EscapeDataString(matchingFileId!)}?alt=media").ConfigureAwait(false);
+            return await _httpClient.GetFromJsonAsync<T>($@"drive/v3/files/{Uri.EscapeDataString(matchingFile.Id)}?alt=media").ConfigureAwait(false);
+        }
+
+        public async Task LoadFilesFromDriveAsync()
+        {
+            try
+            {
+                GoogleFilesResponse? response = await _httpClient.GetFromJsonAsync<GoogleFilesResponse>(@"drive/v3/files").ConfigureAwait(false);
+
+                if (response?.Files is null || response.Files.Count == 0)
+                {
+                    _googleFiles = null;
+
+                    return;
+                }
+
+                _googleFiles = response.Files;
+            }
+            catch (AccessTokenNotAvailableException exception)
+            {
+                exception.Redirect();
+            }
         }
     }
 }
