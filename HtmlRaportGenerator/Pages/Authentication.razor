@@ -1,8 +1,20 @@
-﻿@page "/authentication/{action}"
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+﻿@attribute [RouteAttribute("/" + RelativePageUrls.Authentication + "/{action}")]
+
 @inject MonthStateService monthStateService
 
-<RemoteAuthenticatorView Action="@Action" OnLogInSucceeded="() => monthStateService.LoadConfigurationFromGoogleDriveAsync()" />
+<RemoteAuthenticatorView Action="@Action"
+                         OnLogInSucceeded="() => monthStateService.LoadConfigurationFromGoogleDriveAsync()"
+                         OnLogOutSucceeded="() => monthStateService.ChangeDataStoreAsync(DataStore.LocalStorage)">
+
+    <CompletingLoggingIn>
+        <PageProgress Visible="true" />
+    </CompletingLoggingIn>
+
+    <CompletingLogOut>
+        <PageProgress Visible="true" />
+    </CompletingLogOut>
+
+</RemoteAuthenticatorView>
 
 @code{
     [Parameter]

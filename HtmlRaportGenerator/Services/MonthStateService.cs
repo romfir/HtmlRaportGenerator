@@ -1,6 +1,7 @@
 ﻿using Blazored.LocalStorage;
 using HtmlRaportGenerator.Models;
 using HtmlRaportGenerator.Tools;
+using HtmlRaportGenerator.Tools.Enums;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Collections.Generic;
 using System.Threading.Tasks;

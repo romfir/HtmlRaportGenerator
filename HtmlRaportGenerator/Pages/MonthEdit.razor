@@ -147,7 +147,7 @@ else
 
     private async Task UpdateCalendarGridAsync()
     {
-        List<Day> days = await stateService.GetAsync(Month!.Value.ToString(StaticHelpers.YearMonthFormat)) ?? new();
+        List<Day> days = await stateService.GetAsync(Month!.Value.ToYearMonth()) ?? new();
 
         foreach (DateTime day in Month.Value.AllDatesInMonth())
         {
@@ -178,7 +178,7 @@ else
     {
         if (d is object)
         {
-            Nav.NavigateTo($"{RelativePageUrls.MonthEdit}/{d:yyyy-MM}");
+            Nav.NavigateTo($"{RelativePageUrls.MonthEdit}/{d.Value.ToYearMonth()}");
         }
         else
         {
@@ -190,7 +190,7 @@ else
     {
         _isTableSaving = true;
 
-        await stateService.SaveAsync(Preconditions.CheckNotNull(Days!, nameof(Days)).Where(d => d.AnyRelevantValueExists()).ToList(), Month!.Value.ToString(StaticHelpers.YearMonthFormat));
+        await stateService.SaveAsync(Preconditions.CheckNotNull(Days!, nameof(Days)).Where(d => d.AnyRelevantValueExists()).ToList(), Month!.Value.ToYearMonth());
 
         _isTableSaving = false;
     }

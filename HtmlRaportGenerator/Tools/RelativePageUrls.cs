@@ -7,5 +7,7 @@
         public const string MonthEdit = "MonthEdit";
 
         public const string Settings = "Settings";
+
+        public const string Authentication = "authentication";
     }
 }

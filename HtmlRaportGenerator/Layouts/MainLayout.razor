@@ -1,0 +1,90 @@
+﻿@layout RootLayout
+@inherits LayoutComponentBase
+@using System.Globalization
+@using Blazorise.Localization
+<Layout Sider="true">
+    <LayoutSider>
+        <LayoutSiderContent>
+            <Bar Breakpoint="Breakpoint.Desktop" NavigationBreakpoint="Breakpoint.Tablet" ThemeContrast="ThemeContrast.Dark"
+                 Mode="BarMode.VerticalInline" CollapseMode="BarCollapseMode.Small">
+                <BarToggler />
+                <BarBrand>
+                    <BarItem>
+                        <BarLink To=@RelativePageUrls.MainView>
+                            <BarIcon IconName="IconName.Dashboard" />
+                            @StaticHelpers.ProjectName
+                        </BarLink>
+                    </BarItem>
+                </BarBrand>
+                <BarMenu>
+                    <BarStart>
+                        <BarItem>
+                            <BarLink To=@RelativePageUrls.MainView>
+                                <BarIcon IconName="IconName.Add" />
+                                Current Day
+                            </BarLink>
+                        </BarItem>
+                        <BarItem>
+                            <BarLink To=@RelativePageUrls.MonthEdit>
+                                <BarIcon IconName="IconName.CalendarDay" />
+                                Month Edit
+                            </BarLink>
+                        </BarItem>
+
+                    </BarStart>
+                    <BarEnd>
+                        <BarItem>
+                            <BarLink To=@RelativePageUrls.Settings>
+                                <BarIcon IconName="IconName.Wrench" />
+                                Settings
+                            </BarLink>
+                        </BarItem>
+                    </BarEnd>
+                </BarMenu>
+            </Bar>
+        </LayoutSiderContent>
+    </LayoutSider>
+    <Layout>
+        <LayoutHeader Fixed="true">
+            <Bar @bind-Visible="@topbarVisible" Breakpoint="Breakpoint.Desktop" Background="Background.Primary" ThemeContrast="ThemeContrast.Light">
+                <BarBrand>
+                    <BarItem>
+                        <BarLink To=@RelativePageUrls.MainView>
+                            <BarIcon IconName="IconName.Dashboard" />
+                            @StaticHelpers.ProjectName
+                        </BarLink>
+                    </BarItem>
+                </BarBrand>
+                <BarToggler />
+                <BarMenu>
+                    <BarEnd>
+                        <LoginDisplay />
+                        <BarItem>
+                            <BarDropdown>
+                                <BarDropdownToggle><Icon Name="IconName.Wrench" /> Settings</BarDropdownToggle>
+                                <BarDropdownMenu Style="padding: 15px; min-width:550px;" RightAligned="true">
+                                    <Row>
+                                        <Column Margin="Margin.Is1.FromTop">
+                                            <Container Fluid="true">
+                                                <HtmlRaportGenerator.Pages.Settings></HtmlRaportGenerator.Pages.Settings>
+                                            </Container>
+                                        </Column>
+                                    </Row>
+                                </BarDropdownMenu>
+                            </BarDropdown>
+                        </BarItem>
+                    </BarEnd>
+                </BarMenu>
+            </Bar>
+        </LayoutHeader>
+        <LayoutContent Padding="Padding.Is4.OnX">
+            @Body
+        </LayoutContent>
+    </Layout>
+</Layout>
+
+@code
+{
+    //po co to jest?
+    private bool topbarVisible = false;
+}

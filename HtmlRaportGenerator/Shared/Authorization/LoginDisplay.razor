@@ -6,18 +6,32 @@
 
 <AuthorizeView>
     <Authorized>
-        Hello, @context.User.Identity!.Name!
-        <button class="nav-link btn btn-link" @onclick="BeginSignOut">Log out</button>
+        <BarItem>
+            <Addons>
+                <Addon AddonType="AddonType.Start">
+                    <AddonLabel>
+                        @context.User.Identity!.Name
+                    </AddonLabel>
+                </Addon>
+                <Addon AddonType="AddonType.End">
+                    <Button Color="Color.Dark" Clicked="BeginSignOutAsync">
+                        Log out
+                    </Button>
+                </Addon>
+            </Addons>
+        </BarItem>
     </Authorized>
     <NotAuthorized>
-        <a href="authentication/login">Log in</a>
+        <BarItem>
+            <Button Color="Color.Light" Type="ButtonType.Link" To=@($"{RelativePageUrls.Authentication}/login")> Log in </Button>
+        </BarItem>
     </NotAuthorized>
 </AuthorizeView>
 
 @code{
-    private async Task BeginSignOut(MouseEventArgs args)
+    private async Task BeginSignOutAsync()
     {
         await SignOutManager.SetSignOutState();
-        Navigation.NavigateTo("authentication/logout");
+        Navigation.NavigateTo(RelativePageUrls.Authentication + "/logout");
     }
 }

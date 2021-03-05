@@ -1,4 +1,4 @@
-﻿namespace HtmlRaportGenerator.Tools
+﻿namespace HtmlRaportGenerator.Tools.Enums
 {
     public enum DataStore
     {
