@@ -17,8 +17,8 @@
                         <Select TValue="int?" @bind-SelectedValue="HourWithQuarter.Hour">
                             <ChildContent>
                                 @foreach (int i in Enumerable.Range(0, 24))
-                                {
-                                    <SelectItem Value="@i">@i</SelectItem>
+                                        {
+                                <SelectItem Value="@i">@i</SelectItem>
                                 }
                             </ChildContent>
                             <Feedback>
@@ -35,8 +35,8 @@
                         <Select TValue="int?" @bind-SelectedValue="HourWithQuarter.Quarter">
                             <ChildContent>
                                 @foreach (int i in Enumerable.Range(0, 4))
-                                {
-                                    <SelectItem Value="@i">@(i*15)</SelectItem>
+                                        {
+                                <SelectItem Value="@i">@(i*15)</SelectItem>
                                 }
                             </ChildContent>
                             <Feedback>
@@ -50,14 +50,8 @@
             </Validations>
         </ModalBody>
         <ModalFooter>
-            <Row Display="Display.Flex">
-                <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
-                    <Button Color="Color.Primary" Clicked="SubmitAsync">Submit</Button>
-                </Column>
-                <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
-                    <Button Color="Color.Secondary" Clicked="CloseModalAsync">Cancel</Button>
-                </Column>
-            </Row>
+            <Button Color="Color.Primary" Clicked="SubmitAsync" Margin="Margin.IsAuto">Submit</Button>
+            <Button Color="Color.Secondary" Clicked="CloseModalAsync" Margin="Margin.IsAuto">Cancel</Button>
         </ModalFooter>
     </ModalContent>
 </Modal>
