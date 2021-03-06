@@ -3,15 +3,19 @@
 @inject MonthStateService stateService
 @inject AuthenticationStateProvider authenticationStateProvider
 
-<Field Horizontal="true" Margin="Margin.Is4.FromTop">
-    <FieldLabel ColumnSize="ColumnSize.Is1">Data Store</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is2">
-        <Select TValue="DataStore" @bind-SelectedValue="SelectedStorage">
-            <SelectItem Value="DataStore.LocalStorage">@DataStore.LocalStorage</SelectItem>
-            <SelectItem Value="DataStore.GoogleDrive" Disabled="(!_isUserAuthenticated)">@DataStore.GoogleDrive</SelectItem>
-        </Select>
-    </FieldBody>
-</Field>
+<Row Margin="Margin.Is4.FromTop">
+    <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
+        <Field Horizontal="true">
+            <FieldLabel ColumnSize="ColumnSize.IsAuto">Data Store</FieldLabel>
+            <FieldBody ColumnSize="ColumnSize.IsAuto">
+                <Select TValue="DataStore" @bind-SelectedValue="SelectedStorage">
+                    <SelectItem Value="DataStore.LocalStorage">@DataStore.LocalStorage</SelectItem>
+                    <SelectItem Value="DataStore.GoogleDrive" Disabled="(!_isUserAuthenticated)">@DataStore.GoogleDrive</SelectItem>
+                </Select>
+            </FieldBody>
+        </Field>
+    </Column>
+</Row>
 
 @code {
     private bool _isUserAuthenticated;
