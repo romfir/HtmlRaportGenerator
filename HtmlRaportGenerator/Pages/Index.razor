@@ -3,99 +3,162 @@
 @inject IModalService modalService
 @inject MonthStateService stateService
 
-<div class="container">
+<PageProgress Visible="_buttonState == DayInputState.DataLoading" />
 
-    <div class="text-center">
-        <h1>@_currentDate.ToShortDateString()</h1>
-    </div>
-
-    <div class="row">
-
+    @if (_buttonState != DayInputState.DataLoading)
+{
+    <Row Margin="Margin.Is4.FromBottom">
+        <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
+            <Heading Size="HeadingSize.Is1" Alignment="TextAlignment.Center">@_currentDate.ToShortDateString()</Heading>
+        </Column>
+    </Row>
+    <Row Margin="Margin.Is4.FromBottom" Display="Display.Flex">
         @if (CurrentDay?.From?.Hour is object)
         {
-            <div class="col text-center">
-                <label>Shift Start: </label>
-                @CurrentDay.From?.GetHourWithQuarterSum()?.FormatDoubleToTime()
-            </div>
+            <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
+                <Addons>
+                    <Addon AddonType="AddonType.Start">
+                        <AddonLabel>
+                            Shift Started
+                        </AddonLabel>
+                    </Addon>
+                    <Addon AddonType="AddonType.End" Class="text-center">
+                        <Button Color="Color.Primary" Clicked="() => _hourModalRef.ShowModal(_HourFromTitle, CurrentDay.From)">
+                            @CurrentDay.From.GetHourWithQuarterSum()?.FormatDoubleToTime()
+                        </Button>
+                    </Addon>
+                </Addons>
+            </Column>
         }
         @if (CurrentDay?.To?.Hour is object)
         {
-            <div class="col text-center">
-                <label>Shift End: </label>
-                @CurrentDay.To?.GetHourWithQuarterSum()?.FormatDoubleToTime()
-            </div>
+            <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
+                <Addons>
+                    <Addon AddonType="AddonType.Start">
+                        <AddonLabel>
+                            Shift Ended
+                        </AddonLabel>
+                    </Addon>
+                    <Addon AddonType="AddonType.End">
+                        <Button Color="Color.Primary" Clicked="() => _hourModalRef.ShowModal(_HourToTitle, CurrentDay.To)">
+                            @CurrentDay.To.GetHourWithQuarterSum()?.FormatDoubleToTime()
+                        </Button>
+                    </Addon>
+                </Addons>
+            </Column>
         }
-    </div>
-
-    <div class="container my-4">
-        <div class="text-center">
-
-            <button disabled="@IsButtonDisabled" class="btn btn-primary" @onclick="OnButtonClickAsync">
-                <span class=@SaveSpanButtonClass></span>
+    </Row>
+    @if (CurrentDay?.From?.Hour is object && CurrentDay.To?.Hour is object)
+    {
+        <Row Margin="Margin.Is4.FromBottom" Display="Display.Flex">
+            <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
+                <Addons>
+                    <Addon AddonType="AddonType.Start">
+                        <AddonLabel>
+                            Hours Worked
+                        </AddonLabel>
+                    </Addon>
+                    <Addon AddonType="AddonType.End">
+                        <AddonLabel>
+                            @CurrentDay.HourSum?.FormatDoubleToTime()
+                        </AddonLabel>
+                    </Addon>
+                </Addons>
+            </Column>
+        </Row>
+    }
+    <Row Margin="Margin.Is4.FromBottom">
+        <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
+            <Button Color="Color.Primary" Loading="IsButtonLoading" Disabled="IsButtonDisabled" Clicked="OnButtonClick" Margin="Margin.IsAuto">
                 @ButtonText
-            </button>
-        </div>
-    </div>
-</div>
+            </Button>
+        </Column>
+    </Row>
+
+    <HourInput @ref=_hourModalRef
+           OnFormSubmitted="async (hourWithQuarter) => await OnFormSubmittedAsync(hourWithQuarter)"
+           OnModalClosing="(closeReason) => OnModelClosing()"
+           SetDefaultsToCurrentDate="true"
+           HoursHaveChanged="StateHasChanged" />
+}
+
 
 @code
 {
-    private string ButtonText
+    private const string _HourFromTitle = "Hour From";
+    private const string _HourToTitle = "Hour To";
+
+    private HourInput _hourModalRef = null!;
+
+    private DayInputState? _buttonState = DayInputState.DataLoading;
+
+    private DayInputState ButtonState
     {
         get
         {
-            if (_isDataLoading)
+            if (_buttonState is object)
             {
-                return "Loading...";
+                return _buttonState.Value;
             }
 
-            if (_isDataSaving)
+            if (CurrentDay?.From?.Hour is null)
             {
-                return "Saving...";
+                return DayInputState.ShiftNotStarted;
             }
 
-            if (_isShiftEnded)
+            if (CurrentDay.To?.Hour is null)
             {
-                return "Shift Ended";
+                return DayInputState.ShiftStarted;
             }
 
-            else if (_isShiftStarted)
+            return DayInputState.ShiftEnded;
+        }
+        set
+        {
+            if (value is DayInputState.AwaitingInput or DayInputState.DataLoading or DayInputState.DataSaving)
             {
-                return "End Shift";
+                _buttonState = value;
             }
-
-            return "Start Shift";
+            else
+            {
+                _buttonState = null;
+            }
         }
     }
 
-    private string SaveSpanButtonClass
-      => (_isDataSaving || _isDataLoading) ? "spinner-border spinner-border-sm" : "";
+    private string ButtonText
+         => ButtonState switch
+         {
+             DayInputState.DataLoading => "Loading...",
+             DayInputState.DataSaving => "Saving...",
+             DayInputState.ShiftNotStarted => "Start Shift",
+             DayInputState.ShiftStarted => "End Shift",
+             DayInputState.ShiftEnded => "Shift Ended",
+             DayInputState.AwaitingInput => "Awaiting Input",
+             _ => throw new InvalidOperationException()
+         };
 
-    private bool _isShiftStarted;
-
-    private bool _isShiftEnded;
-
-    private bool _isDataSaving;
-
-    private bool _isDataLoading;
 
     private bool IsButtonDisabled
-        => _isDataSaving || _isShiftEnded || _isDataLoading;
+        => IsButtonLoading || ButtonState == DayInputState.ShiftEnded;
+
+    private bool IsButtonLoading
+        => ButtonState is DayInputState.DataSaving or DayInputState.DataLoading or DayInputState.AwaitingInput;
 
     private List<Day>? CurrentMonthDays { get; set; }
 
     private DateTime _currentDate = DateTime.Now;
 
     private string CurrentYearMonth
-        => _currentDate.ToString(StaticHelpers.YearMonthFormat);
+        => _currentDate.ToYearMonth();
 
     private Day? CurrentDay { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        _isDataLoading = true;
+        ButtonState = DayInputState.DataLoading;
 
-        CurrentMonthDays = await stateService.GetAsync(CurrentYearMonth);
+        CurrentMonthDays = await stateService.GetAsync(CurrentYearMonth).ConfigureAwait(false);
         int currentDayNumber = _currentDate.Day;
 
         if (CurrentMonthDays is null)
@@ -112,64 +175,52 @@
             CurrentDay = new Day(currentDayNumber);
 
             CurrentMonthDays.Add(CurrentDay);
-
-            _isDataLoading = false;
-            return;
         }
 
-        if (CurrentDay.From?.Hour is object)
-        {
-            _isShiftStarted = true;
-        }
-
-        if (CurrentDay.To?.Hour is object)
-        {
-            _isShiftEnded = true;
-        }
-
-        _isDataLoading = false;
+        ButtonState = (DayInputState)0;
     }
 
-    async Task OnButtonClickAsync()
+    private async Task OnFormSubmittedAsync(HourWithQuarter hourWithQuarter)
     {
-        _isDataSaving = true;
-        ModalOptions options = new()
+        if (CurrentDay?.From?.Hour is null)
         {
-            HideCloseButton = true,
-            DisableBackgroundCancel = true
-        };
-
-        ModalParameters parameters = new();
-
-        parameters.Add(nameof(HourInputModal.CurrentDate), _currentDate);
-        parameters.Add(nameof(HourInputModal.SetDefaultsToCurrentDate), true);
-
-        IModalReference hourInputModal = modalService.Show<HourInputModal>(ButtonText, parameters, options);
-
-
-        ModalResult result = await hourInputModal.Result;
-
-        if (result.Cancelled)
-        {
-            return;
+            CurrentDay!.From = hourWithQuarter;
         }
-
-        if (!_isShiftStarted)
+        else if (CurrentDay.To?.Hour is null)
         {
-            CurrentDay!.From = (HourWithQuarter)result.Data;
-
-            _isShiftStarted = true;
+            CurrentDay!.To = hourWithQuarter;
         }
         else
         {
-            CurrentDay!.To = (HourWithQuarter)result.Data;
-
-            _isShiftEnded = true;
+            Console.WriteLine("Existing data edit");
         }
 
-        await stateService.SaveAsync(Preconditions.CheckNotNull(CurrentMonthDays!, nameof(CurrentMonthDays)), _currentDate!.ToString(StaticHelpers.YearMonthFormat));
+        ButtonState = DayInputState.DataSaving;
 
-        _isDataSaving = false;
+        await stateService.SaveAsync(CurrentMonthDays!, _currentDate!.ToYearMonth());
+
+        ButtonState = (DayInputState)0;
+    }
+
+    private void OnModelClosing()
+        => ButtonState = (DayInputState)0;
+
+
+    private void OnButtonClick()
+    {
+        string title = null!;
+        if (CurrentDay?.From?.Hour is null)
+        {
+            title = "Hour From";
+        }
+        else if (CurrentDay.To?.Hour is null)
+        {
+            title = "Hour To";
+        }
+
+        ButtonState = DayInputState.AwaitingInput;
+
+        _hourModalRef.ShowModal(title, new HourWithQuarter(DateTime.Now));
     }
 }
 

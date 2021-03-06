@@ -1,42 +1,71 @@
-﻿<div class="container">
-    <div class="row justify-content-center">
-        <h2>
-            @CurrentDate.ToShortDateString()
-        </h2>
-    </div>
-</div>
-<div class="simple-form">
-    <EditForm Model="HourWithQuarter" OnValidSubmit="SubmitForm">
-        <DataAnnotationsValidator />
-        <div class="row">
-            <div class="col form-group">
-                <label for="hour">Hour</label>
-                <InputSelect @bind-Value="HourWithQuarter.Hour" class="form-control" id="hour">
-                    @for (int i = 0; i < 24; i++)
-                    {
-                        <option value="@i">@i</option>
-                    }
-                </InputSelect>
-                <ValidationMessage For="@(() => HourWithQuarter.Hour)" />
-            </div>
-            <div class="col form-group">
-                <label for="minutes">Minutes</label>
-                <InputSelect @bind-Value="HourWithQuarter.Quarter" class="form-control" id="minutes">
-                    @for (int i = 0; i < 4; i++)
-                    {
-                        <option value="@i">@(i*15)</option>
-                    }
-                </InputSelect>
-                <ValidationMessage For="@(() => HourWithQuarter.Quarter)" />
-            </div>
-        </div>
+﻿<Row>
+    <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
+        <Heading Size="HeadingSize.Is2" Alignment="TextAlignment.Center"> @CurrentDate.ToShortDateString()</Heading>
+    </Column>
+</Row>
 
-        <button type="submit" class="btn btn-primary">Submit</button>
-        <button @onclick="Cancel" class="btn btn-secondary">Cancel</button>
-    </EditForm>
-</div>
+<Validations Mode="ValidationMode.Auto" Model="@HourWithQuarter" @ref="validations">
+    <Fields>
+        <Validation>
+            <Field ColumnSize="ColumnSize.Is6">
+                <FieldLabel>Hour</FieldLabel>
+                <Select TValue="int?" @bind-SelectedValue="HourWithQuarter.Hour">
+                    <ChildContent>
+                        @foreach (int i in Enumerable.Range(0, 24))
+                        {
+                            <SelectItem Value="@i">@i</SelectItem>
+                        }
+                    </ChildContent>
+                    <Feedback>
+                        <ValidationNone />
+                        <ValidationSuccess />
+                        <ValidationError />
+                    </Feedback>
+                </Select>
+            </Field>
+        </Validation>
+        <Validation>
+            <Field ColumnSize="ColumnSize.Is6">
+                <FieldLabel>Minutes</FieldLabel>
+                <Select TValue="int?" @bind-SelectedValue="HourWithQuarter.Quarter">
+                    <ChildContent>
+                        @foreach (int i in Enumerable.Range(0, 4))
+                        {
+                            <SelectItem Value="@i">@(i*15)</SelectItem>
+                        }
+                    </ChildContent>
+                    <Feedback>
+                        <ValidationNone />
+                        <ValidationSuccess />
+                        <ValidationError />
+                    </Feedback>
+                </Select>
+            </Field>
+        </Validation>
+    </Fields>
+    <Row>
+        <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
+            <Button Color="Color.Primary" Clicked="x => Submit()">Submit</Button>
+        </Column>
+        <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
+            <Button Color="Color.Secondary" Clicked="Cancel">Cancel</Button>
+        </Column>
+    </Row>
+
+
+</Validations>
 
 @code {
+
+    private Validations? validations;
+
+    async Task Submit()
+    {
+        if (validations!.ValidateAll())
+        {
+            await SubmitFormAsync();
+        }
+    }
 
     [CascadingParameter]
     BlazoredModalInstance BlazoredModal { get; set; } = null!;
@@ -76,9 +105,9 @@
 
     }
 
-    async Task SubmitForm()
-        => await BlazoredModal.CloseAsync(ModalResult.Ok(HourWithQuarter));
+    private Task SubmitFormAsync()
+        => BlazoredModal.CloseAsync(ModalResult.Ok(HourWithQuarter));
 
-    async Task Cancel()
-        => await BlazoredModal.CancelAsync();
+    private Task Cancel()
+        => BlazoredModal.CancelAsync();
 }

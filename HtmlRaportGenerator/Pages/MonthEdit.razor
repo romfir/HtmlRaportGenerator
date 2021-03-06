@@ -4,27 +4,27 @@
 @inject ILocalStorageService localStorage
 @inject MonthStateService stateService
 
-<div class="container">
-    <div class="row justify-content-center">
-        <h1>
-            <input type="month" @bind="MonthForInput" />
-        </h1>
-    </div>
-</div>
+<Row Margin="Margin.Is2.FromTop">
+    <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
+        <Heading Size="HeadingSize.Is1" Alignment="TextAlignment.Center">
+            <DateEdit TValue="DateTime?" @bind-Date="@MonthForInput" />
+        </Heading>
+    </Column>
+</Row>
 
 
 
 @if (Month is null)
 {
-    <p><em>Please choose a month</em></p>
+    <Row Margin="Margin.Is4.FromTop">
+        <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
+            <Heading Size="HeadingSize.Is1" Alignment="TextAlignment.Center">Please choose a month</Heading>
+        </Column>
+    </Row>
 }
 else if (Days is null)
 {
-    <div class="text-center">
-        <div class="spinner-border text-primary" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div>
+    <PageProgress Visible="true" />
 }
 else
 {
@@ -147,7 +147,7 @@ else
 
     private async Task UpdateCalendarGridAsync()
     {
-        List<Day> days = await stateService.GetAsync(Month!.Value.ToString(StaticHelpers.YearMonthFormat)) ?? new();
+        List<Day> days = await stateService.GetAsync(Month!.Value.ToYearMonth()) ?? new();
 
         foreach (DateTime day in Month.Value.AllDatesInMonth())
         {
@@ -178,7 +178,7 @@ else
     {
         if (d is object)
         {
-            Nav.NavigateTo($"{RelativePageUrls.MonthEdit}/{d:yyyy-MM}");
+            Nav.NavigateTo($"{RelativePageUrls.MonthEdit}/{d.Value.ToYearMonth()}");
         }
         else
         {
@@ -190,7 +190,7 @@ else
     {
         _isTableSaving = true;
 
-        await stateService.SaveAsync(Preconditions.CheckNotNull(Days!, nameof(Days)).Where(d => d.AnyRelevantValueExists()).ToList(), Month!.Value.ToString(StaticHelpers.YearMonthFormat));
+        await stateService.SaveAsync(Preconditions.CheckNotNull(Days!, nameof(Days)).Where(d => d.AnyRelevantValueExists()).ToList(), Month!.Value.ToYearMonth());
 
         _isTableSaving = false;
     }

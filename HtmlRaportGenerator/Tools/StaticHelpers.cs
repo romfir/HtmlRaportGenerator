@@ -22,6 +22,8 @@ namespace HtmlRaportGenerator.Tools
 
         public const string HttpClientName = "GoogleAuthClient";
 
+        public const string ProjectName = "Raport Generator";
+
         public static string FormatDoubleToTime(this double hour)
             => TimeSpan.FromHours(hour).ToString(@"hh\:mm");
     }
