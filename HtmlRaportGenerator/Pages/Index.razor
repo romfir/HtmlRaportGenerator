@@ -5,7 +5,7 @@
 
 <PageProgress Visible="_buttonState == DayInputState.DataLoading" />
 
-@if (_buttonState != DayInputState.DataLoading)
+    @if (_buttonState != DayInputState.DataLoading)
 {
     <Row Margin="Margin.Is4.FromBottom">
         <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
@@ -18,12 +18,14 @@
             <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
                 <Addons>
                     <Addon AddonType="AddonType.Start">
-                        <AddonLabel>Shift Started</AddonLabel>
+                        <AddonLabel>
+                            Shift Started
+                        </AddonLabel>
                     </Addon>
                     <Addon AddonType="AddonType.End" Class="text-center">
-                        <AddonLabel>
+                        <Button Color="Color.Primary" Clicked="() => _hourModalRef.ShowModal(_HourFromTitle, CurrentDay.From)">
                             @CurrentDay.From.GetHourWithQuarterSum()?.FormatDoubleToTime()
-                        </AddonLabel>
+                        </Button>
                     </Addon>
                 </Addons>
             </Column>
@@ -33,17 +35,38 @@
             <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
                 <Addons>
                     <Addon AddonType="AddonType.Start">
-                        <AddonLabel>Shift Ended</AddonLabel>
+                        <AddonLabel>
+                            Shift Ended
+                        </AddonLabel>
                     </Addon>
                     <Addon AddonType="AddonType.End">
-                        <AddonLabel>
+                        <Button Color="Color.Primary" Clicked="() => _hourModalRef.ShowModal(_HourToTitle, CurrentDay.To)">
                             @CurrentDay.To.GetHourWithQuarterSum()?.FormatDoubleToTime()
-                        </AddonLabel>
+                        </Button>
                     </Addon>
                 </Addons>
             </Column>
         }
     </Row>
+    @if (CurrentDay?.From?.Hour is object && CurrentDay.To?.Hour is object)
+    {
+        <Row Margin="Margin.Is4.FromBottom" Display="Display.Flex">
+            <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
+                <Addons>
+                    <Addon AddonType="AddonType.Start">
+                        <AddonLabel>
+                            Hours Worked
+                        </AddonLabel>
+                    </Addon>
+                    <Addon AddonType="AddonType.End">
+                        <AddonLabel>
+                            @CurrentDay.HourSum?.FormatDoubleToTime()
+                        </AddonLabel>
+                    </Addon>
+                </Addons>
+            </Column>
+        </Row>
+    }
     <Row Margin="Margin.Is4.FromBottom">
         <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
             <Button Color="Color.Primary" Loading="IsButtonLoading" Disabled="IsButtonDisabled" Clicked="OnButtonClick" Margin="Margin.IsAuto">
@@ -55,11 +78,16 @@
     <HourInput @ref=_hourModalRef
            OnFormSubmitted="async (hourWithQuarter) => await OnFormSubmittedAsync(hourWithQuarter)"
            OnModalClosing="(closeReason) => OnModelClosing()"
-           SetDefaultsToCurrentDate="true" />
+           SetDefaultsToCurrentDate="true"
+           HoursHaveChanged="StateHasChanged" />
 }
+
 
 @code
 {
+    private const string _HourFromTitle = "Hour From";
+    private const string _HourToTitle = "Hour To";
+
     private HourInput _hourModalRef = null!;
 
     private DayInputState? _buttonState = DayInputState.DataLoading;
@@ -165,7 +193,7 @@
         }
         else
         {
-            throw new InvalidOperationException();
+            Console.WriteLine("Existing data edit");
         }
 
         ButtonState = DayInputState.DataSaving;
@@ -193,7 +221,7 @@
 
         ButtonState = DayInputState.AwaitingInput;
 
-        _hourModalRef.ShowModal(title);
+        _hourModalRef.ShowModal(title, new HourWithQuarter(DateTime.Now));
     }
 }
 

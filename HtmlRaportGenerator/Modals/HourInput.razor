@@ -10,11 +10,11 @@
             <CloseButton />
         </ModalHeader>
         <ModalBody>
-            <Validations Mode="ValidationMode.Auto" Model="@HourWithQuarter" @ref="_validations">
+            <Validations Mode="ValidationMode.Auto" Model="@_dataToEdit" @ref="_validations">
                 <Validation>
                     <Field>
                         <FieldLabel>Hour</FieldLabel>
-                        <Select TValue="int?" @bind-SelectedValue="HourWithQuarter.Hour">
+                        <Select TValue="int?" @bind-SelectedValue="_dataToEdit.Hour">
                             <ChildContent>
                                 @foreach (int i in Enumerable.Range(0, 24))
                                         {
@@ -32,7 +32,7 @@
                 <Validation>
                     <Field>
                         <FieldLabel>Minutes</FieldLabel>
-                        <Select TValue="int?" @bind-SelectedValue="HourWithQuarter.Quarter">
+                        <Select TValue="int?" @bind-SelectedValue="_dataToEdit.Quarter">
                             <ChildContent>
                                 @foreach (int i in Enumerable.Range(0, 4))
                                         {
@@ -51,17 +51,17 @@
         </ModalBody>
         <ModalFooter>
             <Button Color="Color.Primary" Clicked="SubmitAsync" Margin="Margin.IsAuto">Submit</Button>
-            <Button Color="Color.Secondary" Clicked="CloseModalAsync" Margin="Margin.IsAuto">Cancel</Button>
+            <Button Color="Color.Secondary" Clicked="CancelAsync" Margin="Margin.IsAuto">Cancel</Button>
         </ModalFooter>
     </ModalContent>
 </Modal>
 
  @code {
-    [Parameter]
-    public DateTime? Date { get; set; }
+    [Inject]
+    protected IMapper Mapper { get; set; } = null!;
 
     [Parameter]
-    public HourWithQuarter HourWithQuarter { get; set; } = null!;
+    public DateTime? Date { get; set; }
 
     [Parameter]
     public bool SetDefaultsToCurrentDate { get; set; }
@@ -72,11 +72,18 @@
     [Parameter]
     public EventCallback<CloseReason> OnModalClosing { get; set; }
 
+    [Parameter]
+    public EventCallback HoursHaveChanged { get; set; }
+
+    private HourWithQuarter _dataToEdit { get; set; } = null!;
+
     private Modal _modalRef = null!;
 
     private Validations? _validations;
 
     private string _title = null!;
+
+    private HourWithQuarter? _unchangedCopy;
 
     private async Task SubmitAsync()
     {
@@ -84,49 +91,65 @@
         {
             HideModal();
 
-            await OnFormSubmitted.InvokeAsync(HourWithQuarter);
+            await OnFormSubmitted.InvokeAsync(_dataToEdit);
         }
     }
 
     private void HideModal()
         => _modalRef.Hide();
 
-    public void ShowModal(string title)
+    private void ShowModal(string title)
     {
         _title = title;
         _modalRef.Show();
     }
 
-    private async Task CloseModalAsync()
+    public void ShowModal(string title, HourWithQuarter existingHour)
+    {
+        existingHour.PropertyChanged += async (s, e) => await HoursHaveChanged.InvokeAsync();
+
+        _unchangedCopy = Mapper.Map<HourWithQuarter>(existingHour);
+        _dataToEdit = existingHour;
+
+        ShowModal(title);
+    }
+
+    private async Task CancelAsync()
     {
         HideModal();
+
+        if (IsDataChanged())
+        {
+            await RestoreOriginalStateAsync();
+        }
+
         await OnModalClosing.InvokeAsync(CloseReason.UserClosing);
     }
 
 
     protected override void OnParametersSet()
     {
-        if (HourWithQuarter is null)
+        if (_dataToEdit is null)
         {
             if (SetDefaultsToCurrentDate)
             {
-                HourWithQuarter = new HourWithQuarter(Date ?? DateTime.Now);
+                _dataToEdit = new HourWithQuarter(Date ?? DateTime.Now);
             }
             else
             {
-                HourWithQuarter = new HourWithQuarter(0);
+                _dataToEdit = new HourWithQuarter(0);
             }
         }
         else
         {
-            if (HourWithQuarter.Hour is null)
+            if (_dataToEdit.Hour is null)
             {
-                HourWithQuarter.Hour = 0;
+                _dataToEdit.Hour = 0;
             }
 
-            if (HourWithQuarter.Quarter is null)
+            if (_dataToEdit.Quarter is null)
             {
-                HourWithQuarter.Quarter = 0;
+                _dataToEdit.Quarter = 0;
             }
         }
     }
@@ -139,7 +162,22 @@
         }
         else
         {
+            if (IsDataChanged())
+            {
+                await RestoreOriginalStateAsync();
+            }
+
             await OnModalClosing.InvokeAsync(e.CloseReason);
         }
+    }
+
+    private bool IsDataChanged() =>
+        !_dataToEdit.Equals(_unchangedCopy);
+
+
+    private Task RestoreOriginalStateAsync()
+    {
+        Mapper.Map(_unchangedCopy, _dataToEdit);
+        return HoursHaveChanged.InvokeAsync();
     }
  }
