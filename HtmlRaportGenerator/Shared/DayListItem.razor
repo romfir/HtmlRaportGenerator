@@ -63,14 +63,15 @@
 
     private string? TrClass()
     {
-        if (CurrentDay.IsHoliday)
-        {
-            return "table-info";
-        }
-        else if (CurrentDay.IsToday)
+        if (CurrentDay.IsToday)
         {
             return "table-warning";
         }
+        else if (CurrentDay.IsHoliday)
+        {
+            return "table-info";
+        }
+
         else
         {
             return null;

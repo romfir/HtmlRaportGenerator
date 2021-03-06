@@ -1,0 +1,151 @@
+﻿<Modal @ref="_modalRef" Closing="async e => await OnModalClosingInternalAsync(e)">
+    <ModalContent Centered="true" Size="ModalSize.Small">
+        <ModalHeader>
+            <Heading Size="HeadingSize.Is1" Alignment="TextAlignment.Center">
+                <ModalTitle>
+                    @_title
+                </ModalTitle>
+            </Heading>
+
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            <Validations Mode="ValidationMode.Auto" Model="@HourWithQuarter" @ref="_validations">
+                <Validation>
+                    <Field>
+                        <FieldLabel>Hour</FieldLabel>
+                        <Select TValue="int?" @bind-SelectedValue="HourWithQuarter.Hour">
+                            <ChildContent>
+                                @foreach (int i in Enumerable.Range(0, 24))
+                                {
+                                    <SelectItem Value="@i">@i</SelectItem>
+                                }
+                            </ChildContent>
+                            <Feedback>
+                                <ValidationNone />
+                                <ValidationSuccess />
+                                <ValidationError />
+                            </Feedback>
+                        </Select>
+                    </Field>
+                </Validation>
+                <Validation>
+                    <Field>
+                        <FieldLabel>Minutes</FieldLabel>
+                        <Select TValue="int?" @bind-SelectedValue="HourWithQuarter.Quarter">
+                            <ChildContent>
+                                @foreach (int i in Enumerable.Range(0, 4))
+                                {
+                                    <SelectItem Value="@i">@(i*15)</SelectItem>
+                                }
+                            </ChildContent>
+                            <Feedback>
+                                <ValidationNone />
+                                <ValidationSuccess />
+                                <ValidationError />
+                            </Feedback>
+                        </Select>
+                    </Field>
+                </Validation>
+            </Validations>
+        </ModalBody>
+        <ModalFooter>
+            <Row Display="Display.Flex">
+                <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
+                    <Button Color="Color.Primary" Clicked="SubmitAsync">Submit</Button>
+                </Column>
+                <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
+                    <Button Color="Color.Secondary" Clicked="CloseModalAsync">Cancel</Button>
+                </Column>
+            </Row>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+ @code {
+    [Parameter]
+    public DateTime? Date { get; set; }
+
+    [Parameter]
+    public HourWithQuarter HourWithQuarter { get; set; } = null!;
+
+    [Parameter]
+    public bool SetDefaultsToCurrentDate { get; set; }
+
+    [Parameter]
+    public EventCallback<HourWithQuarter> OnFormSubmitted { get; set; }
+
+    [Parameter]
+    public EventCallback<CloseReason> OnModalClosing { get; set; }
+
+    private Modal _modalRef = null!;
+
+    private Validations? _validations;
+
+    private string _title = null!;
+
+    private async Task SubmitAsync()
+    {
+        if (_validations!.ValidateAll())
+        {
+            HideModal();
+
+            await OnFormSubmitted.InvokeAsync(HourWithQuarter);
+        }
+    }
+
+    private void HideModal()
+        => _modalRef.Hide();
+
+    public void ShowModal(string title)
+    {
+        _title = title;
+        _modalRef.Show();
+    }
+
+    private async Task CloseModalAsync()
+    {
+        HideModal();
+        await OnModalClosing.InvokeAsync(CloseReason.UserClosing);
+    }
+
+
+    protected override void OnParametersSet()
+    {
+        if (HourWithQuarter is null)
+        {
+            if (SetDefaultsToCurrentDate)
+            {
+                HourWithQuarter = new HourWithQuarter(Date ?? DateTime.Now);
+            }
+            else
+            {
+                HourWithQuarter = new HourWithQuarter(0);
+            }
+        }
+        else
+        {
+            if (HourWithQuarter.Hour is null)
+            {
+                HourWithQuarter.Hour = 0;
+            }
+
+            if (HourWithQuarter.Quarter is null)
+            {
+                HourWithQuarter.Quarter = 0;
+            }
+        }
+    }
+
+    private async Task OnModalClosingInternalAsync(ModalClosingEventArgs e)
+    {
+        if (e.CloseReason == CloseReason.FocusLostClosing)
+        {
+            e.Cancel = true;
+        }
+        else
+        {
+            await OnModalClosing.InvokeAsync(e.CloseReason);
+        }
+    }
+ }

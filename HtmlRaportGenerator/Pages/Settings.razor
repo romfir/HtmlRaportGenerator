@@ -3,9 +3,9 @@
 @inject MonthStateService stateService
 @inject AuthenticationStateProvider authenticationStateProvider
 
-<Field Horizontal="true">
-    <FieldLabel ColumnSize="ColumnSize.Is4">Data Store</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is8">
+<Field Horizontal="true" Margin="Margin.Is4.FromTop">
+    <FieldLabel ColumnSize="ColumnSize.Is1">Data Store</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is2">
         <Select TValue="DataStore" @bind-SelectedValue="SelectedStorage">
             <SelectItem Value="DataStore.LocalStorage">@DataStore.LocalStorage</SelectItem>
             <SelectItem Value="DataStore.GoogleDrive" Disabled="(!_isUserAuthenticated)">@DataStore.GoogleDrive</SelectItem>

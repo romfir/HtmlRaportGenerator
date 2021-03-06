@@ -5,9 +5,11 @@
 <Layout Sider="true">
     <LayoutSider>
         <LayoutSiderContent>
-            <Bar Breakpoint="Breakpoint.Desktop" NavigationBreakpoint="Breakpoint.Tablet" ThemeContrast="ThemeContrast.Dark"
+            <Bar @bind-Visible="_isLeftBarVisible" Breakpoint="Breakpoint.Desktop" NavigationBreakpoint="Breakpoint.Tablet" ThemeContrast="ThemeContrast.Dark"
                  Mode="BarMode.VerticalInline" CollapseMode="BarCollapseMode.Small">
                 <BarToggler />
+                @if(_isLeftBarVisible)
+                {
                 <BarBrand>
                     <BarItem>
                         <BarLink To=@RelativePageUrls.MainView>
@@ -16,6 +18,8 @@
                         </BarLink>
                     </BarItem>
                 </BarBrand>
+                }
+
                 <BarMenu>
                     <BarStart>
                         <BarItem>
@@ -47,6 +51,8 @@
     <Layout>
         <LayoutHeader Fixed="true">
             <Bar @bind-Visible="@topbarVisible" Breakpoint="Breakpoint.Desktop" Background="Background.Primary" ThemeContrast="ThemeContrast.Light">
+                @if(!_isLeftBarVisible)
+                {
                 <BarBrand>
                     <BarItem>
                         <BarLink To=@RelativePageUrls.MainView>
@@ -55,6 +61,8 @@
                         </BarLink>
                     </BarItem>
                 </BarBrand>
+                }
+                
                 <BarToggler />
                 <BarMenu>
                     <BarEnd>
@@ -89,4 +97,6 @@
 {
     //po co to jest?
     private bool topbarVisible = false;
+
+    private bool _isLeftBarVisible;
 }
