@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace HtmlRaportGenerator
@@ -21,15 +22,15 @@ namespace HtmlRaportGenerator
             WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
 
             builder.Services
-                          .AddBlazorise(options =>
-                          {
-                              options.ChangeTextOnKeyPress = true;
-                          })
+                          .AddBlazorise(options
+                            => options.ChangeTextOnKeyPress = true)
                           .AddBootstrapProviders()
                           .AddFontAwesomeIcons();
 
 
             builder.RootComponents.Add<App>("#app");
+
+            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             builder.Services.AddScoped(sp =>
                     new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
