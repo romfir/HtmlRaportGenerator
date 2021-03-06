@@ -17,9 +17,6 @@ namespace HtmlRaportGenerator.Services
 
         private List<GoogleFile>? _googleFiles;
 
-        private bool AnyFileExists
-            => _googleFiles is object && _googleFiles.Any();
-
         public GoogleDriveService(IHttpClientFactory httpClientFactory)
             => _httpClient = httpClientFactory.CreateClient(StaticHelpers.HttpClientName);
 

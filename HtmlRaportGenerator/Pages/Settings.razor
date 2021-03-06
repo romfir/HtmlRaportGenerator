@@ -3,19 +3,15 @@
 @inject MonthStateService stateService
 @inject AuthenticationStateProvider authenticationStateProvider
 
-<h3>Settings</h3>
-<form>
-    <div class="form-group form-group-sm ">
-        <label for="DataStore">Data Store:</label>
-        @*<div class="col">*@
-        <select class="form-control" id="DataStore" @bind="SelectedStorage">
-
-            <option value="@DataStore.LocalStorage">@DataStore.LocalStorage</option>
-            <option value="@DataStore.GoogleDrive" disabled="@(!_isUserAuthenticated)">@DataStore.GoogleDrive</option>
-        </select>
-        @*</div>*@
-    </div>
-</form>
+<Field Horizontal="true" Margin="Margin.Is4.FromTop">
+    <FieldLabel ColumnSize="ColumnSize.Is1">Data Store</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is2">
+        <Select TValue="DataStore" @bind-SelectedValue="SelectedStorage">
+            <SelectItem Value="DataStore.LocalStorage">@DataStore.LocalStorage</SelectItem>
+            <SelectItem Value="DataStore.GoogleDrive" Disabled="(!_isUserAuthenticated)">@DataStore.GoogleDrive</SelectItem>
+        </Select>
+    </FieldBody>
+</Field>
 
 @code {
     private bool _isUserAuthenticated;

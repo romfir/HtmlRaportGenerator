@@ -1,11 +1,14 @@
-﻿using System;
+﻿using HtmlRaportGenerator.Tools.Mapper;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace HtmlRaportGenerator.Models
 {
-    public class HourWithQuarter : INotifyPropertyChanged
+    public class HourWithQuarter : INotifyPropertyChanged, IMapFrom<HourWithQuarter>, IEquatable<HourWithQuarter>
     {
+        public event PropertyChangedEventHandler? PropertyChanged;
+
         public HourWithQuarter()
         {
         }
@@ -78,6 +81,20 @@ namespace HtmlRaportGenerator.Models
             return from;
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public bool Equals(HourWithQuarter? other)
+        {
+            if (other is null)
+            {
+                return false;
+            }
+
+            return GetHashCode() == other.GetHashCode();
+        }
+
+        public override bool Equals(object? obj)
+            => Equals(obj as HourWithQuarter);
+
+        public override int GetHashCode()
+            => HashCode.Combine(Hour, Quarter);
     }
 }
