@@ -1,11 +1,10 @@
 ﻿@attribute [RouteAttribute("/" + RelativePageUrls.MainView)]
 
-@inject IModalService modalService
 @inject MonthStateService stateService
 
 <PageProgress Visible="_buttonState == DayInputState.DataLoading" />
 
-    @if (_buttonState != DayInputState.DataLoading)
+@if (_buttonState != DayInputState.DataLoading)
 {
     <Row Margin="Margin.Is4.FromBottom.Is4.FromTop">
         <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
@@ -15,37 +14,15 @@
     <Row Margin="Margin.Is4.FromBottom" Display="Display.Flex">
         @if (CurrentDay?.From?.Hour is object)
         {
-            <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
-                <Addons>
-                    <Addon AddonType="AddonType.Start">
-                        <AddonLabel>
-                            Shift Started
-                        </AddonLabel>
-                    </Addon>
-                    <Addon AddonType="AddonType.End" Class="text-center">
-                        <Button Color="Color.Primary" Clicked="() => _hourModalRef.ShowModal(_HourFromTitle, CurrentDay.From)">
-                            @CurrentDay.From.GetHourWithQuarterSum()?.FormatDoubleToTime()
-                        </Button>
-                    </Addon>
-                </Addons>
-            </Column>
+            <WorkTimeAddon Clicked="() => _hourModalRef.ShowModal(_hourFromTitle, CurrentDay.From, false)"
+                   ButtonText="@CurrentDay.From.GetHourWithQuarterSum()?.FormatDoubleToTime()"
+                   LabelText="Shift Started" />
         }
         @if (CurrentDay?.To?.Hour is object)
         {
-            <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
-                <Addons>
-                    <Addon AddonType="AddonType.Start">
-                        <AddonLabel>
-                            Shift Ended
-                        </AddonLabel>
-                    </Addon>
-                    <Addon AddonType="AddonType.End">
-                        <Button Color="Color.Primary" Clicked="() => _hourModalRef.ShowModal(_HourToTitle, CurrentDay.To)">
-                            @CurrentDay.To.GetHourWithQuarterSum()?.FormatDoubleToTime()
-                        </Button>
-                    </Addon>
-                </Addons>
-            </Column>
+            <WorkTimeAddon Clicked="() => _hourModalRef.ShowModal(_hourToTitle, CurrentDay.To, false)"
+                   ButtonText="@CurrentDay.To.GetHourWithQuarterSum()?.FormatDoubleToTime()"
+                   LabelText="Shift Ended" />
         }
     </Row>
     @if (CurrentDay?.From?.Hour is object && CurrentDay.To?.Hour is object)
@@ -55,7 +32,7 @@
                 <Addons>
                     <Addon AddonType="AddonType.Start">
                         <AddonLabel>
-                            Hours Worked
+                            Time Worked
                         </AddonLabel>
                     </Addon>
                     <Addon AddonType="AddonType.End">
@@ -77,16 +54,15 @@
 
     <HourInput @ref=_hourModalRef
            OnFormSubmitted="async (hourWithQuarter) => await OnFormSubmittedAsync(hourWithQuarter)"
-           OnModalClosing="(closeReason) => OnModelClosing()"
+           OnFormCancell="OnFormCancell"
            SetDefaultsToCurrentDate="true"
            HoursHaveChanged="StateHasChanged" />
 }
 
-
 @code
 {
-    private const string _HourFromTitle = "Hour From";
-    private const string _HourToTitle = "Hour To";
+    private const string _hourFromTitle = "Hour From";
+    private const string _hourToTitle = "Hour To";
 
     private HourInput _hourModalRef = null!;
 
@@ -182,19 +158,6 @@
 
     private async Task OnFormSubmittedAsync(HourWithQuarter hourWithQuarter)
     {
-        if (CurrentDay?.From?.Hour is null)
-        {
-            CurrentDay!.From = hourWithQuarter;
-        }
-        else if (CurrentDay.To?.Hour is null)
-        {
-            CurrentDay!.To = hourWithQuarter;
-        }
-        else
-        {
-            Console.WriteLine("Existing data edit");
-        }
-
         ButtonState = DayInputState.DataSaving;
 
         await stateService.SaveAsync(CurrentMonthDays!, _currentDate!.ToYearMonth());
@@ -202,25 +165,48 @@
         ButtonState = (DayInputState)0;
     }
 
-    private void OnModelClosing()
-        => ButtonState = (DayInputState)0;
+    private void OnFormCancell(HourWithQuarter? modelToDelete)
+    {
+        if (modelToDelete is null)
+        {
+            ButtonState = (DayInputState)0;
+            return;
+        }
+
+        if (CurrentDay!.From == modelToDelete)
+        {
+            CurrentDay.From.Clear();
+        }
+        else if (CurrentDay.To == modelToDelete)
+        {
+            CurrentDay.To.Clear();
+        }
+
+        StateHasChanged();
+
+        ButtonState = (DayInputState)0;
+    }
 
 
     private void OnButtonClick()
     {
         string title = null!;
-        if (CurrentDay?.From?.Hour is null)
+        HourWithQuarter model = new(DateTime.Now);
+        if (CurrentDay!.From?.Hour is null)
         {
-            title = "Hour From";
+            title = _hourFromTitle;
+            CurrentDay.From = model;
         }
         else if (CurrentDay.To?.Hour is null)
         {
-            title = "Hour To";
+            title = _hourToTitle;
+            CurrentDay.To = model;
         }
 
         ButtonState = DayInputState.AwaitingInput;
 
-        _hourModalRef.ShowModal(title, new HourWithQuarter(DateTime.Now));
+        _hourModalRef.ShowModal(title, model, true);
     }
+
 }
 

@@ -96,5 +96,11 @@ namespace HtmlRaportGenerator.Models
 
         public override int GetHashCode()
             => HashCode.Combine(Hour, Quarter);
+
+        public void Clear()
+        {
+            Quarter = null;
+            Hour = null;
+        }
     }
 }
