@@ -1,5 +1,4 @@
 using Blazored.LocalStorage;
-using Blazored.Modal;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
@@ -37,8 +36,6 @@ namespace HtmlRaportGenerator
 
             builder.Services.AddBlazoredLocalStorage(config =>
                     config.JsonSerializerOptions.WriteIndented = true);
-
-            builder.Services.AddBlazoredModal();
 
             builder.Services.AddOptions();
             builder.Services.AddAuthorizationCore();

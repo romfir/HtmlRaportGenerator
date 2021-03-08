@@ -1,4 +1,4 @@
-﻿<Modal @ref="_modalRef" Closing="async e => await OnModalClosingInternalAsync(e)">
+﻿<Modal @ref="_modalRef" Closing="OnModalClosingInternal">
     <ModalContent Centered="true" Size="ModalSize.Small">
         <ModalHeader>
             <Heading Size="HeadingSize.Is1" Alignment="TextAlignment.Center">
@@ -7,7 +7,7 @@
                 </ModalTitle>
             </Heading>
 
-            <CloseButton />
+            <CloseButton Clicked="async () => await RestoreEditedOrSendNewAsync().ConfigureAwait(false)" />
         </ModalHeader>
         <ModalBody>
             <Validations Mode="ValidationMode.Auto" Model="@_dataToEdit" @ref="_validations">
@@ -50,7 +50,7 @@
             </Validations>
         </ModalBody>
         <ModalFooter>
-            <Button Color="Color.Primary" Clicked="SubmitAsync" Margin="Margin.IsAuto">Submit</Button>
+            <Button Color="Color.Primary" Clicked="SubmitAsync" Disabled="!_isObjectNew && !IsDataChanged()" Margin="Margin.IsAuto">Submit</Button>
             <Button Color="Color.Secondary" Clicked="CancelAsync" Margin="Margin.IsAuto">Cancel</Button>
         </ModalFooter>
     </ModalContent>
@@ -70,7 +70,7 @@
     public EventCallback<HourWithQuarter> OnFormSubmitted { get; set; }
 
     [Parameter]
-    public EventCallback<CloseReason> OnModalClosing { get; set; }
+    public EventCallback<HourWithQuarter?> OnFormCancell { get; set; }
 
     [Parameter]
     public EventCallback HoursHaveChanged { get; set; }
@@ -84,6 +84,8 @@
     private string _title = null!;
 
     private HourWithQuarter? _unchangedCopy;
+
+    private bool _isObjectNew;
 
     private async Task SubmitAsync()
     {
@@ -104,8 +106,10 @@
         _modalRef.Show();
     }
 
-    public void ShowModal(string title, HourWithQuarter existingHour)
+    public void ShowModal(string title, HourWithQuarter existingHour, bool isObjectNew)
     {
+        _isObjectNew = isObjectNew;
+
         existingHour.PropertyChanged += async (s, e) => await HoursHaveChanged.InvokeAsync();
 
         _unchangedCopy = Mapper.Map<HourWithQuarter>(existingHour);
@@ -118,56 +122,35 @@
     {
         HideModal();
 
-        if (IsDataChanged())
-        {
-            await RestoreOriginalStateAsync();
-        }
-
-        await OnModalClosing.InvokeAsync(CloseReason.UserClosing);
+        await RestoreEditedOrSendNewAsync().ConfigureAwait(false);
     }
 
+    private async Task RestoreEditedOrSendNewAsync()
+    {
+        if (_isObjectNew)
+        {
+            await OnFormCancell.InvokeAsync(_dataToEdit).ConfigureAwait(false);
+        }
+        else if (IsDataChanged())
+        {
+            await RestoreOriginalStateAsync();
+            await OnFormCancell.InvokeAsync(null).ConfigureAwait(false);
+        }
+    }
 
     protected override void OnParametersSet()
     {
         if (_dataToEdit is null)
         {
-            if (SetDefaultsToCurrentDate)
-            {
-                _dataToEdit = new HourWithQuarter(Date ?? DateTime.Now);
-            }
-            else
-            {
-                _dataToEdit = new HourWithQuarter(0);
-            }
-        }
-        else
-        {
-            if (_dataToEdit.Hour is null)
-            {
-                _dataToEdit.Hour = 0;
-            }
-
-            if (_dataToEdit.Quarter is null)
-            {
-                _dataToEdit.Quarter = 0;
-            }
+            _dataToEdit = new HourWithQuarter(Date ?? DateTime.Now);
         }
     }
 
-    private async Task OnModalClosingInternalAsync(ModalClosingEventArgs e)
+    private void OnModalClosingInternal(ModalClosingEventArgs e)
     {
         if (e.CloseReason == CloseReason.FocusLostClosing)
         {
             e.Cancel = true;
-        }
-        else
-        {
-            if (IsDataChanged())
-            {
-                await RestoreOriginalStateAsync();
-            }
-
-            await OnModalClosing.InvokeAsync(e.CloseReason);
         }
     }
 

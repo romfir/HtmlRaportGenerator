@@ -22,83 +22,113 @@
         </Column>
     </Row>
 }
-else if (Days is null)
+else if (_days is null)
 {
     <PageProgress Visible="true" />
 }
 else
 {
-    <EditForm Model="@_daysCollectionValidationModel" OnValidSubmit="@HandleValidSubmitAsync">
-        <ObjectGraphDataAnnotationsValidator />
+    <DataGrid TItem="Day"
+          ShowCaptions="true"
+          CommandMode="DataGridCommandMode.Default"
+          Editable="true"
+          Data="@_days"
+          @bind-SelectedRow="@_selectedDay"
+          PageSize="_days.Count()"
+          Striped="true"
+          Bordered="true"
+          Hoverable="true"
+          Responsive="true"
+          Sortable="true"
+          SortMode="DataGridSortMode.Single"
+          UseInternalEditing="true"
+          EditMode="DataGridEditMode.Inline"
+          RowRemoving="OnRowRemoving"
+          RowStyling="@OnRowStyling"
+          Narrow="true"
+          ShowValidationFeedback="true">
 
-        <div class="table-responsive">
-            <table class="table table-striped table-sm table-bordered">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>
-                            <div class="col text-center">
-                                <label>Day of month</label>
-                            </div>
-                        </th>
-                        <th>
-                            <div class="col text-center">
-                                <label>Start time</label>
-                            </div>
-                        </th>
-                        <th>
-                            <div class="col text-center">
-                                <label>End time</label>
-                            </div>
-                        </th>
-                        <th>
-                            <div class="col text-center">
-                                <label>Hours Sum</label>
-                            </div>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (Day day in Days.OrderBy(d => d.DayNumber))
+        <DataGridAggregates>
+            <DataGridAggregate TItem="Day" Field="@nameof(Day.HourSum)" Aggregate="DataGridAggregateType.Sum" DisplayFormat="Hour Sum: {0}" />
+        </DataGridAggregates>
+
+        <DataGridColumns>
+            <DataGridCommandColumn TItem="Day" Width="170px">
+                <NewCommandTemplate>
+                </NewCommandTemplate>
+                <EditCommandTemplate>
+                    <Button Color="Color.Primary" Clicked="@context.Clicked">@context.LocalizationString</Button>
+                </EditCommandTemplate>
+                <SaveCommandTemplate>
+                    <Button Color="Color.Primary" Clicked="@context.Clicked">@context.LocalizationString</Button>
+                </SaveCommandTemplate>
+                <DeleteCommandTemplate>
+                    @if(context.Item.AnyRelevantValueExists())
                     {
-
-                        <DayListItem CurrentDate="new DateTime(Month.Value.Year, Month.Value.Month, day.DayNumber)"
-                             CurrentDay="day"
-                             HoursHaveChanged="() =>
-                                                            {
-                                                                UpdateHourSum();
-                                                                StateHasChanged();
-                                                            }"
-                             InputNumberMode="_inputMode" />
+                        <Button Color="Color.Danger" Clicked="@context.Clicked" >Clear</Button>
                     }
-                </tbody>
-                <tfoot class="tfoot-dark">
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td><b>Sum:</b></td>
-                        <td>@HoursSum</td>
-                    </tr>
+                </DeleteCommandTemplate>
+                <CancelCommandTemplate>
+                    <Button Color="Color.Secondary" Clicked="@context.Clicked">@context.LocalizationString</Button>
+                </CancelCommandTemplate>
+                <ClearFilterCommandTemplate>
+                    <Button Color="Color.Warning" Clicked="@context.Clicked">@context.LocalizationString</Button>
+                </ClearFilterCommandTemplate>
+            </DataGridCommandColumn>
+            <DataGridNumericColumn TItem="Day"
+                               Field="@nameof(Day.DayNumber)"
+                               Caption="Day of Month"
+                               Readonly="true"
+                               Direction="SortDirection.Ascending"
+                               HeaderTextAlignment="TextAlignment.Center"
+                               TextAlignment="TextAlignment.Center">
+                <DisplayTemplate>
+                    <Text Alignment="TextAlignment.Center">
+                        @context.DayNumber
+                    </Text>
+                </DisplayTemplate>
+            </DataGridNumericColumn>
+            <DataGridNumericColumn TItem="Day" Field="@nameof(Day.HourWithQuarterFromParsed)" Caption="Start Time" Editable="true" HeaderTextAlignment="TextAlignment.Center" TextAlignment="TextAlignment.Center">
+                <DisplayTemplate>
+                    @context.HourWithQuarterFromParsed?.FormatDoubleToTime()
+                </DisplayTemplate>
 
-                </tfoot>
-            </table>
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col text-center">
-                    <button type="submit" disabled="@_isTableSaving" class="btn btn-primary col">
-                        <span class=@SaveSpanButtonClass></span>
-                        @SaveButtonText
-                    </button>
-                </div>
-                <div class="col text-center">
-                    <button type="button" class="btn btn-primary col" @onclick="SwitchInputsAsync">@InputModeName</button>
-                </div>
-            </div>
-        </div>
-    </EditForm>
+                <EditTemplate>
+                    <NumericEdit Style="text-align:center;" TValue="double?" Value="@((double?)((context).CellValue))" Min="0" Max="23.99" Step="(decimal?)0.25" ValueChanged="@(v => context.CellValue = v)" />
+                </EditTemplate>
+            </DataGridNumericColumn>
+
+            <DataGridNumericColumn TItem="Day" Field="@nameof(Day.HourWithQuarterToParsed)" Caption="End Time" Editable="true" HeaderTextAlignment="TextAlignment.Center" TextAlignment="TextAlignment.Center">
+                <DisplayTemplate>
+                    @context.HourWithQuarterToParsed?.FormatDoubleToTime()
+                </DisplayTemplate>
+                <EditTemplate>
+                    <NumericEdit Style="text-align:center;" TValue="double?" Value="@((double?)((context).CellValue))" Min="0" Max="23.99" Step="(decimal?)0.25" ValueChanged="@(v => context.CellValue = v)" />
+                </EditTemplate>
+            </DataGridNumericColumn>
+
+            <DataGridNumericColumn TItem="Day" Field="@nameof(Day.HourSum)" Caption="Hours Sum" HeaderTextAlignment="TextAlignment.Center" TextAlignment="TextAlignment.Center">
+                <DisplayTemplate>
+                    <Text Alignment="TextAlignment.Center">
+                        @context.HourSum?.FormatDoubleToTime()
+                    </Text>
+                </DisplayTemplate>
+            </DataGridNumericColumn>
+        </DataGridColumns>
+    </DataGrid>
+
+    <Row>
+        <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
+            <Button Color="Color.Primary" Loading="_isTableSaving" Disabled="_isTableSaving" Clicked="HandleValidSubmitAsync">
+                @SaveButtonText
+            </Button>
+        </Column>
+    </Row>
 }
 
 @code {
+    private Day _selectedDay = null!;
+
     [Parameter]
     public DateTime? Month { get; set; }
 
@@ -107,42 +137,54 @@ else
         get => Month;
         set
         {
-            _daysCollectionValidationModel.Days = null!;
-            ChangeUrl(value);
+            if (UrlChanged(value))
+            {
+                _days = null!;
+                ChangeUrl(value);
+            }
+            else
+            {
+                //temporary till I get input type month working, just to keep datepicker correct state
+                Month = value;
+            }
         }
     }
 
-    private bool _inputMode;
+    private IEnumerable<Day>? _days;
 
-    private string InputModeName
-        => _inputMode ? "Switch to modals" : "Switch to inputs";
 
-    private DaysCollectionValidationModel _daysCollectionValidationModel = new();
-
-    private IEnumerable<Day>? Days
-                => _daysCollectionValidationModel.Days;
-
-    private double HoursSum { get; set; }
-
+    private double HoursSum => _days?.Sum(d => d.HourSum ?? 0) ?? 0;
 
     private bool _isTableSaving = false;
 
-    private string SaveSpanButtonClass
-        => _isTableSaving ? "spinner-border spinner-border-sm" : "";
-
     private string SaveButtonText
-        => _isTableSaving ? "Saving..." : "Save";
-
-    protected override async Task OnInitializedAsync()
-    {
-        _inputMode = await localStorage.GetItemAsync<bool>(StaticHelpers.InputKey);
-    }
+        => _isTableSaving ? "Saving..." : "Save Changes";
 
     protected override Task OnParametersSetAsync()
     {
         Month ??= DateTime.Now;
 
         return UpdateCalendarGridAsync();
+    }
+
+    private void OnRowStyling(Day model, DataGridRowStyling styling)
+    {
+        if (model.IsToday)
+        {
+            styling.Color = Color.Warning;
+        }
+        else if (model.IsHoliday)
+        {
+            styling.Color = Color.Info;
+        }
+    }
+
+    private void OnRowRemoving(CancellableRowChange<Day> rowChange)
+    {
+        rowChange.Cancel = true;
+
+        rowChange.Item.From.Clear();
+        rowChange.Item.To.Clear();
     }
 
     private async Task UpdateCalendarGridAsync()
@@ -165,14 +207,10 @@ else
             }
         }
 
-        _daysCollectionValidationModel.Days = days;
+        _days = days.OrderBy(d => d.DayNumber).ToList();
 
-        UpdateHourSum();
         StateHasChanged();
     }
-
-    private void UpdateHourSum()
-        => HoursSum = Days!.Sum(d => d.HourSum ?? 0);
 
     void ChangeUrl(DateTime? d)
     {
@@ -186,19 +224,15 @@ else
         }
     }
 
+    private bool UrlChanged(DateTime? newDate)
+        => newDate?.ToYearMonth() != Month?.ToYearMonth();
+
     private async Task HandleValidSubmitAsync()
     {
         _isTableSaving = true;
 
-        await stateService.SaveAsync(Preconditions.CheckNotNull(Days!, nameof(Days)).Where(d => d.AnyRelevantValueExists()).ToList(), Month!.Value.ToYearMonth());
+        await stateService.SaveAsync(Preconditions.CheckNotNull(_days!, nameof(_days)).Where(d => d.AnyRelevantValueExists()).ToList(), Month!.Value.ToYearMonth());
 
         _isTableSaving = false;
-    }
-
-    private async Task SwitchInputsAsync()
-    {
-        _inputMode = !_inputMode;
-
-        await localStorage.SetItemAsync(StaticHelpers.InputKey, _inputMode);
     }
 }
