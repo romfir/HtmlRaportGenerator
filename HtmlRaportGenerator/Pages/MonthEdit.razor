@@ -3,6 +3,7 @@
 @inject NavigationManager Nav
 @inject ILocalStorageService localStorage
 @inject MonthStateService stateService
+@inject IMapper mapper
 
 <Row Margin="Margin.Is2.FromTop.Is4.FromTop">
     <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
@@ -60,68 +61,76 @@ else
                     <Button Color="Color.Primary" Clicked="@context.Clicked">@context.LocalizationString</Button>
                 </EditCommandTemplate>
                 <SaveCommandTemplate>
-                    <Button Color="Color.Primary" Clicked="@context.Clicked">@context.LocalizationString</Button>
+                    <Button Color="Color.Primary" Clicked="() =>
+                    {
+                        context.Clicked.InvokeAsync();
+                        StateHasChanged();
+                    }">
+                        @context.LocalizationString
+                    </Button>
                 </SaveCommandTemplate>
                 <DeleteCommandTemplate>
-                    @if(context.Item.AnyRelevantValueExists())
+                    @if (context.Item.AnyRelevantValueExists())
                     {
-                        <Button Color="Color.Danger" Clicked="@context.Clicked" >Clear</Button>
-                    }
-                </DeleteCommandTemplate>
-                <CancelCommandTemplate>
-                    <Button Color="Color.Secondary" Clicked="@context.Clicked">@context.LocalizationString</Button>
-                </CancelCommandTemplate>
-                <ClearFilterCommandTemplate>
-                    <Button Color="Color.Warning" Clicked="@context.Clicked">@context.LocalizationString</Button>
-                </ClearFilterCommandTemplate>
-            </DataGridCommandColumn>
-            <DataGridNumericColumn TItem="Day"
+                <Button Color="Color.Danger" Clicked="@context.Clicked">Clear</Button>
+                }
+            </DeleteCommandTemplate>
+            <CancelCommandTemplate>
+                <Button Color="Color.Secondary" Clicked="@context.Clicked">@context.LocalizationString</Button>
+            </CancelCommandTemplate>
+            <ClearFilterCommandTemplate>
+                <Button Color="Color.Warning" Clicked="@context.Clicked">@context.LocalizationString</Button>
+            </ClearFilterCommandTemplate>
+        </DataGridCommandColumn>
+        <DataGridNumericColumn TItem="Day"
                                Field="@nameof(Day.DayNumber)"
                                Caption="Day of Month"
                                Readonly="true"
                                Direction="SortDirection.Ascending"
                                HeaderTextAlignment="TextAlignment.Center"
                                TextAlignment="TextAlignment.Center">
-                <DisplayTemplate>
-                    <Text Alignment="TextAlignment.Center">
-                        @context.DayNumber
-                    </Text>
-                </DisplayTemplate>
-            </DataGridNumericColumn>
-            <DataGridNumericColumn TItem="Day" Field="@nameof(Day.HourWithQuarterFromParsed)" Caption="Start Time" Editable="true" HeaderTextAlignment="TextAlignment.Center" TextAlignment="TextAlignment.Center">
-                <DisplayTemplate>
-                    @context.HourWithQuarterFromParsed?.FormatDoubleToTime()
-                </DisplayTemplate>
+            <DisplayTemplate>
+                <Text Alignment="TextAlignment.Center">
+                    @context.DayNumber
+                </Text>
+            </DisplayTemplate>
+        </DataGridNumericColumn>
+        <DataGridNumericColumn TItem="Day" Field="@nameof(Day.HourWithQuarterFromParsed)" Caption="Start Time" Editable="true" HeaderTextAlignment="TextAlignment.Center" TextAlignment="TextAlignment.Center">
+            <DisplayTemplate>
+                @context.HourWithQuarterFromParsed?.FormatDoubleToTime()
+            </DisplayTemplate>
 
-                <EditTemplate>
-                    <NumericEdit Style="text-align:center;" TValue="double?" Value="@((double?)((context).CellValue))" Min="0" Max="23.99" Step="(decimal?)0.25" ValueChanged="@(v => context.CellValue = v)" />
-                </EditTemplate>
-            </DataGridNumericColumn>
+            <EditTemplate>
+                <NumericEdit Style="text-align:center;" TValue="double?" Value="@((double?)((context).CellValue))" Min="0" Max="23.99" Step="(decimal?)0.25" ValueChanged="@(v => context.CellValue = v)" />
+            </EditTemplate>
+        </DataGridNumericColumn>
 
-            <DataGridNumericColumn TItem="Day" Field="@nameof(Day.HourWithQuarterToParsed)" Caption="End Time" Editable="true" HeaderTextAlignment="TextAlignment.Center" TextAlignment="TextAlignment.Center">
-                <DisplayTemplate>
-                    @context.HourWithQuarterToParsed?.FormatDoubleToTime()
-                </DisplayTemplate>
-                <EditTemplate>
-                    <NumericEdit Style="text-align:center;" TValue="double?" Value="@((double?)((context).CellValue))" Min="0" Max="23.99" Step="(decimal?)0.25" ValueChanged="@(v => context.CellValue = v)" />
-                </EditTemplate>
-            </DataGridNumericColumn>
+        <DataGridNumericColumn TItem="Day" Field="@nameof(Day.HourWithQuarterToParsed)" Caption="End Time" Editable="true" HeaderTextAlignment="TextAlignment.Center" TextAlignment="TextAlignment.Center">
+            <DisplayTemplate>
+                @context.HourWithQuarterToParsed?.FormatDoubleToTime()
+            </DisplayTemplate>
+            <EditTemplate>
+                <NumericEdit Style="text-align:center;" TValue="double?" Value="@((double?)((context).CellValue))" Min="0" Max="23.99" Step="(decimal?)0.25" ValueChanged="@(v => context.CellValue = v)" />
+            </EditTemplate>
+        </DataGridNumericColumn>
 
-            <DataGridNumericColumn TItem="Day" Field="@nameof(Day.HourSum)" Caption="Hours Sum" HeaderTextAlignment="TextAlignment.Center" TextAlignment="TextAlignment.Center">
-                <DisplayTemplate>
-                    <Text Alignment="TextAlignment.Center">
-                        @context.HourSum?.FormatDoubleToTime()
-                    </Text>
-                </DisplayTemplate>
-            </DataGridNumericColumn>
-        </DataGridColumns>
-    </DataGrid>
+        <DataGridNumericColumn TItem="Day" Field="@nameof(Day.HourSum)" Caption="Hours Sum" HeaderTextAlignment="TextAlignment.Center" TextAlignment="TextAlignment.Center">
+            <DisplayTemplate>
+                <Text Alignment="TextAlignment.Center">
+                    @context.HourSum?.FormatDoubleToTime()
+                </Text>
+            </DisplayTemplate>
+        </DataGridNumericColumn>
+    </DataGridColumns>
+</DataGrid>
 
     <Row>
         <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
-            <Button Color="Color.Primary" Loading="_isTableSaving" Disabled="_isTableSaving" Clicked="HandleValidSubmitAsync">
-                @SaveButtonText
-            </Button>
+            <Tooltip Text=@(IsDataChanged ? null : "Unchanged Data") Placement="Placement.Top" Margin="Margin.IsAuto">
+                <Button Color="Color.Primary" Loading="_isTableSaving" Disabled="_isTableSaving || !IsDataChanged" Clicked="HandleValidSubmitAsync">
+                    @SaveButtonText
+                </Button>
+            </Tooltip>
         </Column>
     </Row>
 }
@@ -150,7 +159,9 @@ else
         }
     }
 
-    private IEnumerable<Day>? _days;
+    private List<Day>? _originalDays;
+
+    private List<Day>? _days;
 
 
     private double HoursSum => _days?.Sum(d => d.HourSum ?? 0) ?? 0;
@@ -159,6 +170,34 @@ else
 
     private string SaveButtonText
         => _isTableSaving ? "Saving..." : "Save Changes";
+
+    private bool IsDataChanged
+    {
+        get
+        {
+            if (_originalDays is null || _days is null)
+            {
+                return false;
+            }
+
+            Console.WriteLine(1);
+
+
+            foreach (int x in _originalDays.Select(x => x.GetHashCode()))
+            {
+                Console.WriteLine(x);
+            }
+
+            Console.WriteLine(2);
+
+            foreach (int x in _days.Where(d => d.AnyRelevantValueExists()).Select(x => x.GetHashCode()))
+            {
+                Console.WriteLine(x);
+            }
+
+            return !_originalDays.SequenceEqual(_days.Where(d => d.AnyRelevantValueExists()));
+        }
+    }
 
     protected override Task OnParametersSetAsync()
     {
@@ -190,6 +229,8 @@ else
     private async Task UpdateCalendarGridAsync()
     {
         List<Day> days = await stateService.GetAsync(Month!.Value.ToYearMonth()) ?? new();
+
+        _originalDays = mapper.Map<List<Day>>(days.Where(d => d.AnyRelevantValueExists()));
 
         foreach (DateTime day in Month.Value.AllDatesInMonth())
         {
@@ -234,5 +275,7 @@ else
         await stateService.SaveAsync(Preconditions.CheckNotNull(_days!, nameof(_days)).Where(d => d.AnyRelevantValueExists()).ToList(), Month!.Value.ToYearMonth());
 
         _isTableSaving = false;
+
+        StateHasChanged();
     }
 }

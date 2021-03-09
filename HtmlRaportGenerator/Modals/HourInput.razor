@@ -1,4 +1,6 @@
-﻿<Modal @ref="_modalRef" Closing="OnModalClosingInternal">
+﻿@inject IMapper mapper
+
+<Modal @ref="_modalRef" Closing="OnModalClosingInternal">
     <ModalContent Centered="true" Size="ModalSize.Small">
         <ModalHeader>
             <Heading Size="HeadingSize.Is1" Alignment="TextAlignment.Center">
@@ -50,16 +52,15 @@
             </Validations>
         </ModalBody>
         <ModalFooter>
-            <Button Color="Color.Primary" Clicked="SubmitAsync" Disabled="!_isObjectNew && !IsDataChanged()" Margin="Margin.IsAuto">Submit</Button>
+            <Tooltip Text=@((!_isObjectNew && !IsDataChanged()) ? "Unchanged Data" : null) Placement="Placement.Top" Margin="Margin.IsAuto">
+                <Button Color="Color.Primary" Clicked="SubmitAsync" Disabled="!_isObjectNew && !IsDataChanged()">Submit</Button>
+            </Tooltip>
             <Button Color="Color.Secondary" Clicked="CancelAsync" Margin="Margin.IsAuto">Cancel</Button>
         </ModalFooter>
     </ModalContent>
 </Modal>
 
  @code {
-    [Inject]
-    protected IMapper Mapper { get; set; } = null!;
-
     [Parameter]
     public DateTime? Date { get; set; }
 
@@ -112,7 +113,7 @@
 
         existingHour.PropertyChanged += async (s, e) => await HoursHaveChanged.InvokeAsync();
 
-        _unchangedCopy = Mapper.Map<HourWithQuarter>(existingHour);
+        _unchangedCopy = mapper.Map<HourWithQuarter>(existingHour);
         _dataToEdit = existingHour;
 
         ShowModal(title);
@@ -160,7 +161,7 @@
 
     private Task RestoreOriginalStateAsync()
     {
-        Mapper.Map(_unchangedCopy, _dataToEdit);
+        mapper.Map(_unchangedCopy, _dataToEdit);
         return HoursHaveChanged.InvokeAsync();
     }
  }

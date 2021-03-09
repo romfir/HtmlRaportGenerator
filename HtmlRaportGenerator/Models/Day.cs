@@ -1,12 +1,16 @@
-﻿using System;
+﻿using AutoMapper;
+using HtmlRaportGenerator.Tools.Mapper;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace HtmlRaportGenerator.Models
 {
-    public class Day : INotifyPropertyChanged
+    public class Day : INotifyPropertyChanged, IMapFrom<Day>, IEquatable<Day>
     {
+        public event PropertyChangedEventHandler? PropertyChanged;
+
         public Day()
         {
         }
@@ -88,6 +92,27 @@ namespace HtmlRaportGenerator.Models
         public bool AnyRelevantValueExists()
             => From?.Hour is object || To?.Hour is object;
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public bool Equals(Day? other)
+        {
+            if (other is null)
+            {
+                return false;
+            }
+
+            return GetHashCode() == other.GetHashCode();
+        }
+
+        public override bool Equals(object? obj)
+            => Equals(obj as Day);
+
+        public override int GetHashCode()
+            => HashCode.Combine(DayNumber, To, From);
+
+        public void Mapping(Profile profile)
+            => profile.CreateMap<Day, Day>()
+                .IgnoreAllPropertiesWithAnInaccessibleSetter()
+                .ForMember(dest => dest.IsToday, opt => opt.Ignore())
+                .ForMember(dest => dest.HourWithQuarterFromParsed, opt => opt.Ignore())
+                .ForMember(dest => dest.HourWithQuarterToParsed, opt => opt.Ignore());
     }
 }
