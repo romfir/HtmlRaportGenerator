@@ -26,5 +26,28 @@ namespace HtmlRaportGenerator.Tools
 
         public static string FormatDoubleToTime(this double hour)
             => TimeSpan.FromHours(hour).ToString(@"hh\:mm");
+
+        /// <summary>
+        /// use only when comparing collections of the same type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection"></param>
+        /// <returns></returns>
+        public static int GetCollectionHashCode<T>(this ICollection<T> collection)
+        {
+            if (collection is null)
+            {
+                return 0;
+            }
+
+            int hc = 0;
+
+            foreach (T item in collection)
+            {
+                hc ^= item?.GetHashCode() ?? 0;
+            }
+
+            return hc;
+        }
     }
 }
