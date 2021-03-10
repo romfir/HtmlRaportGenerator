@@ -21,10 +21,7 @@ namespace HtmlRaportGenerator.Models
 
                 int quarer = (int)Math.Floor((time.Value - Hour.Value) * 4);
 
-                if (quarer != 0)
-                {
-                    Quarter = quarer;
-                }
+                Quarter = quarer;
             }
         }
 

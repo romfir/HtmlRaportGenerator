@@ -1,4 +1,4 @@
-﻿@inject IMapper mapper
+﻿@inject IPreviousState<HourWithQuarter> previousStateService
 
 <Modal @ref="_modalRef" Closing="OnModalClosingInternal">
     <ModalContent Centered="true" Size="ModalSize.Small">
@@ -19,8 +19,8 @@
                         <Select TValue="int?" @bind-SelectedValue="_dataToEdit.Hour">
                             <ChildContent>
                                 @foreach (int i in Enumerable.Range(0, 24))
-                                {
-                                    <SelectItem Value="@i">@i</SelectItem>
+                                        {
+                                <SelectItem Value="@i">@i</SelectItem>
                                 }
                             </ChildContent>
                             <Feedback>
@@ -37,8 +37,8 @@
                         <Select TValue="int?" @bind-SelectedValue="_dataToEdit.Quarter">
                             <ChildContent>
                                 @foreach (int i in Enumerable.Range(0, 4))
-                                {
-                                    <SelectItem Value="@i">@(i*15)</SelectItem>
+                                        {
+                                <SelectItem Value="@i">@(i*15)</SelectItem>
                                 }
                             </ChildContent>
                             <Feedback>
@@ -52,23 +52,17 @@
             </Validations>
         </ModalBody>
         <ModalFooter>
-            <Tooltip Text=@((!_isObjectNew && !IsDataChanged()) ? "Unchanged Data" : null) Placement="Placement.Top" Margin="Margin.IsAuto">
-                <Button Color="Color.Primary" Clicked="SubmitAsync" Disabled="!_isObjectNew && !IsDataChanged()">Submit</Button>
+            <Tooltip Text=@((!_isObjectNew && !previousStateService.IsValueChanged()) ? "Unchanged Data" : null) Placement="Placement.Top" Margin="Margin.IsAuto">
+                <Button Color="Color.Primary" Clicked="SubmitAsync" Disabled="!_isObjectNew && !previousStateService.IsValueChanged()">Submit</Button>
             </Tooltip>
             <Button Color="Color.Secondary" Clicked="CancelAsync" Margin="Margin.IsAuto">Cancel</Button>
         </ModalFooter>
     </ModalContent>
 </Modal>
 
- @code {
+@code {
     [Parameter]
-    public DateTime? Date { get; set; }
-
-    [Parameter]
-    public bool SetDefaultsToCurrentDate { get; set; }
-
-    [Parameter]
-    public EventCallback<HourWithQuarter> OnFormSubmitted { get; set; }
+    public EventCallback OnFormSubmitted { get; set; }
 
     [Parameter]
     public EventCallback<HourWithQuarter?> OnFormCancell { get; set; }
@@ -84,8 +78,6 @@
 
     private string _title = null!;
 
-    private HourWithQuarter? _unchangedCopy;
-
     private bool _isObjectNew;
 
     private async Task SubmitAsync()
@@ -94,18 +86,12 @@
         {
             HideModal();
 
-            await OnFormSubmitted.InvokeAsync(_dataToEdit);
+            await OnFormSubmitted.InvokeAsync();
         }
     }
 
     private void HideModal()
         => _modalRef.Hide();
-
-    private void ShowModal(string title)
-    {
-        _title = title;
-        _modalRef.Show();
-    }
 
     public void ShowModal(string title, HourWithQuarter existingHour, bool isObjectNew)
     {
@@ -113,10 +99,18 @@
 
         existingHour.PropertyChanged += async (s, e) => await HoursHaveChanged.InvokeAsync();
 
-        _unchangedCopy = mapper.Map<HourWithQuarter>(existingHour);
+        previousStateService.Load(existingHour);
+
         _dataToEdit = existingHour;
 
         ShowModal(title);
+    }
+
+    private void ShowModal(string title)
+    {
+        _title = title;
+
+        _modalRef.Show();
     }
 
     private async Task CancelAsync()
@@ -132,7 +126,7 @@
         {
             await OnFormCancell.InvokeAsync(_dataToEdit).ConfigureAwait(false);
         }
-        else if (IsDataChanged())
+        else if (previousStateService.IsValueChanged())
         {
             await RestoreOriginalStateAsync();
             await OnFormCancell.InvokeAsync(null).ConfigureAwait(false);
@@ -143,7 +137,7 @@
     {
         if (_dataToEdit is null)
         {
-            _dataToEdit = new HourWithQuarter(Date ?? DateTime.Now);
+            _dataToEdit = new HourWithQuarter(DateTime.Now);
         }
     }
 
@@ -155,13 +149,9 @@
         }
     }
 
-    private bool IsDataChanged() =>
-        !_dataToEdit.Equals(_unchangedCopy);
-
-
     private Task RestoreOriginalStateAsync()
     {
-        mapper.Map(_unchangedCopy, _dataToEdit);
+        previousStateService.Rollback();
         return HoursHaveChanged.InvokeAsync();
     }
  }

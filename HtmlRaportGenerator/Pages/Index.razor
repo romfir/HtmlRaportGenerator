@@ -53,9 +53,8 @@
     </Row>
 
     <HourInput @ref=_hourModalRef
-           OnFormSubmitted="async (hourWithQuarter) => await OnFormSubmittedAsync(hourWithQuarter)"
+           OnFormSubmitted="async () => await OnFormSubmittedAsync()"
            OnFormCancell="OnFormCancell"
-           SetDefaultsToCurrentDate="true"
            HoursHaveChanged="StateHasChanged" />
 }
 
@@ -156,7 +155,7 @@
         ButtonState = (DayInputState)0;
     }
 
-    private async Task OnFormSubmittedAsync(HourWithQuarter hourWithQuarter)
+    private async Task OnFormSubmittedAsync()
     {
         ButtonState = DayInputState.DataSaving;
 
