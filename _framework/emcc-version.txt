@@ -1,1 +1,1 @@
-emcc (Emscripten gcc/clang-like replacement) 2.0.11 (6e28e4fa4fa1bc50d58b9ddbbb9603a3cf21ea9e)
+emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 2.0.12 (d0e647bf266caad50943e78c9841e05e9c499a5d)
