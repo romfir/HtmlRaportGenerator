@@ -111,17 +111,23 @@ else
                                HeaderTextAlignment="TextAlignment.Center"
                                TextAlignment="TextAlignment.Center">
             <DisplayTemplate>
-                @context.HourWithQuarterFromParsed?.FormatDoubleToTime()
+                @if (context.HourWithQuarterFromParsed is object)
+                    {
+                <TimeEdit Style="text-align:center;"
+                          TValue="TimeSpan?"
+                          Time="TimeSpan.FromHours((double)context.HourWithQuarterFromParsed)"
+                          ReadOnly="true" />
+                }
             </DisplayTemplate>
 
             <EditTemplate>
-                <NumericEdit Style="text-align:center;"
-                             TValue="double?"
-                             Value="((double?)((context).CellValue))"
-                             Min="0"
-                             Max="23.99"
-                             Step="(decimal?)0.25"
-                             ValueChanged="@(v => context.CellValue = v)" />
+                <TimeEdit Style="text-align:center;"
+                          TValue="TimeSpan?"
+                          Time="(context.CellValue is object ? TimeSpan.FromHours((double)context.CellValue) : null)"
+                          DelayTextOnKeyPress="true"
+                          DelayTextOnKeyPressInterval="300"
+                          step="900"
+                          TimeChanged="@(v => context.CellValue = v?.TotalHours)" />
             </EditTemplate>
         </DataGridNumericColumn>
 
@@ -132,16 +138,22 @@ else
                                HeaderTextAlignment="TextAlignment.Center"
                                TextAlignment="TextAlignment.Center">
             <DisplayTemplate>
-                @context.HourWithQuarterToParsed?.FormatDoubleToTime()
+                @if (context.HourWithQuarterToParsed is object)
+                    {
+                <TimeEdit Style="text-align:center;"
+                          TValue="TimeSpan?"
+                          Time="TimeSpan.FromHours((double)context.HourWithQuarterToParsed)"
+                          ReadOnly="true" />
+                }
             </DisplayTemplate>
             <EditTemplate>
-                <NumericEdit Style="text-align:center;"
-                             TValue="double?"
-                             Value="((double?)((context).CellValue))"
-                             Min="0"
-                             Max="23.99"
-                             Step="(decimal?)0.25"
-                             ValueChanged="@(v => context.CellValue = v)" />
+                <TimeEdit Style="text-align:center;"
+                          TValue="TimeSpan?"
+                          Time="context.CellValue is object ? TimeSpan.FromHours((double)context.CellValue) : null"
+                          DelayTextOnKeyPress="true"
+                          DelayTextOnKeyPressInterval="300"
+                          step="900"
+                          TimeChanged="@(v => context.CellValue = v?.TotalHours)" />
             </EditTemplate>
         </DataGridNumericColumn>
 
@@ -155,6 +167,11 @@ else
                     @context.HourSum?.FormatDoubleToTime()
                 </Text>
             </DisplayTemplate>
+            <EditTemplate>
+                <Text Alignment="TextAlignment.Center">
+                    @context.Item.HourSum?.FormatDoubleToTime()
+                </Text>
+            </EditTemplate>
         </DataGridNumericColumn>
     </DataGridColumns>
 </DataGrid>
