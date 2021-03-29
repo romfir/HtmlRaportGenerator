@@ -8,6 +8,7 @@
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
     <RepositoryUrl>https://github.com/romfir/HtmlRaportGenerator</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <MSBuildGitHashCommand>git describe --long --always</MSBuildGitHashCommand>
   </PropertyGroup>
 
   <ItemGroup>
