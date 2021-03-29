@@ -5,7 +5,7 @@ namespace HtmlRaportGenerator.Tools
 {
     public static class Preconditions
     {
-        public static T CheckNotNull<T>([ValidatedNotNull] T? value, string paramName)
+        public static T CheckNotNull<T>([ValidatedNotNull] this T? value, string paramName)
             where T : class
         {
             if (value is null)
