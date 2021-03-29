@@ -121,7 +121,7 @@
       "url": "_content\/Blazorise.DataGrid\/blazorise.datagrid.css"
     },
     {
-      "hash": "sha256-HGvu31WrulqCEQLQ6uBMHvHe5MqYy3DrEoC\/QnkxK3U=",
+      "hash": "sha256-Xa7bQnc8XgL1bwQ6yhJvlC58A5xuna47dkvH+Jix+dM=",
       "url": "_content\/Blazorise.DataGrid\/blazorise.datagrid.js"
     },
     {
@@ -153,7 +153,7 @@
       "url": "_framework\/Blazorise.Bootstrap.dll"
     },
     {
-      "hash": "sha256-NGKy3XZH2lMdYWtOK8Nh4W7JJ+DJ\/kUaEGPNslcq\/8E=",
+      "hash": "sha256-dPzdjuRSRkAJadkbRnYoAasRUQ4WCN74NtnMlM7KhQ8=",
       "url": "_framework\/Blazorise.DataGrid.dll"
     },
     {
@@ -253,7 +253,7 @@
       "url": "_framework\/System.IO.Pipelines.dll"
     },
     {
-      "hash": "sha256-YNh8+uceYdvifDszrDCG\/qpQy+KUImuMA99y8uUrxKA=",
+      "hash": "sha256-C0cTFVSuJddAnLSQjGeYltn1\/dffSK84kXNv6wkccdw=",
       "url": "_framework\/HtmlRaportGenerator.dll"
     },
     {
@@ -425,7 +425,7 @@
       "url": "_framework\/zh-Hant\/Microsoft.VisualStudio.Validation.resources.dll"
     },
     {
-      "hash": "sha256-ovtej6HgySrp\/fTV+BUddkltscrmhJrg+iGwzWbqRbc=",
+      "hash": "sha256-2R93H5XLhiWCFYXR9mSJyQcXe14M1FsaiAHfJm+wYdU=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -433,5 +433,5 @@
       "url": "_framework\/blazor.webassembly.js"
     }
   ],
-  "version": "FLVN50eG"
+  "version": "6DNaLVuz"
 };
