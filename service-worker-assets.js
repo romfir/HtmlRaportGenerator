@@ -253,7 +253,7 @@
       "url": "_framework\/System.IO.Pipelines.dll"
     },
     {
-      "hash": "sha256-1MUqZ4uGjKAIfNp1JSc2VNVqi6Ov2uVAKuHKy\/oAXrE=",
+      "hash": "sha256-qz02KWOyZmLl5pbnkE6z3Gs7bBlTnWe+rfpwArHIqQk=",
       "url": "_framework\/HtmlRaportGenerator.dll"
     },
     {
@@ -349,6 +349,10 @@
       "url": "_framework\/System.Runtime.CompilerServices.Unsafe.dll"
     },
     {
+      "hash": "sha256-i614sFaKD9xefWnCtktDPp+bVJ9m+MAVBi2Ldh8iu58=",
+      "url": "_framework\/System.Runtime.InteropServices.RuntimeInformation.dll"
+    },
+    {
       "hash": "sha256-CwjIcozkBw0OxmxZXnVyF8wyyypq1tFM1uhGlI37zLA=",
       "url": "_framework\/System.Runtime.Serialization.Primitives.dll"
     },
@@ -369,7 +373,7 @@
       "url": "_framework\/System.Text.RegularExpressions.dll"
     },
     {
-      "hash": "sha256-WU5dv1xu6K5Zegh4sWg8fSFm54D+y8tlZnNHDh8TLp4=",
+      "hash": "sha256-\/h5CpaB4k9OrlN6S07Oal9BZd5Sd6ezZ7ml1KpRAfho=",
       "url": "_framework\/System.Private.CoreLib.dll"
     },
     {
@@ -425,7 +429,7 @@
       "url": "_framework\/zh-Hant\/Microsoft.VisualStudio.Validation.resources.dll"
     },
     {
-      "hash": "sha256-oPfLKnw6aVOi1LJMXFR\/QGQmmPEHX9cu3phmzFtoG1g=",
+      "hash": "sha256-DKw8qzpGkRS\/Y4WXJXi15hoKYbSXLhx\/I0DaiXCloMo=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -433,5 +437,5 @@
       "url": "_framework\/blazor.webassembly.js"
     }
   ],
-  "version": "AntqOHt4"
+  "version": "DNQGpH+u"
 };
