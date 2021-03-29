@@ -304,7 +304,7 @@ else
     {
         _isTableSaving = true;
 
-        await stateService.SaveAsync(Preconditions.CheckNotNull(_days!, nameof(_days)).Where(d => d.AnyRelevantValueExists()).ToList(), Month!.Value.ToYearMonth());
+        await stateService.SaveAsync(_days.CheckNotNull(nameof(_days)).Where(d => d.AnyRelevantValueExists()).ToList(), Month!.Value.ToYearMonth());
 
         previousStateDayService.Update();
 

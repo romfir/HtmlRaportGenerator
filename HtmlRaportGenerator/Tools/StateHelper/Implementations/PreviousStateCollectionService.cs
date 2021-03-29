@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using HtmlRaportGenerator.Models;
 using HtmlRaportGenerator.Tools.Mapper;
 using System.Collections.Generic;
 
@@ -25,7 +26,7 @@ namespace HtmlRaportGenerator.Tools.StateHelper.Implementations
 
         public void Load(ICollection<T> current)
         {
-            Preconditions.CheckNotNull(current, nameof(current));
+            current.CheckNotNull(nameof(current));
 
             OriginalValue = _mapper.Map<ICollection<T>>(current);
             CurrentValue = current;

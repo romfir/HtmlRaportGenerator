@@ -23,7 +23,7 @@ namespace HtmlRaportGenerator.Tools.StateHelper.Implementations
 
         public void Load(T current)
         {
-            Preconditions.CheckNotNull(current, nameof(current));
+            current.CheckNotNull(nameof(current));
 
             OriginalValue = _mapper.Map<T>(current);
             CurrentValue = current;

@@ -76,10 +76,38 @@
         <LayoutContent Padding="Padding.Is4.OnX">
             @Body
         </LayoutContent>
+        <LayoutFooter Fixed="true">
+            <Bar Breakpoint="Breakpoint.Desktop" Background="Background.Primary" ThemeContrast="ThemeContrast.Light" Alignment="Alignment.Center">
+                <Heading Size="HeadingSize.Is6" Alignment="TextAlignment.Center">Powered By @RuntimeInformation.FrameworkDescription and deployed from <Link Style="color: #212529;" To="@_repositoryUri?.ToString()">@_gitHash</Link></Heading>
+            </Bar>
+        </LayoutFooter>
     </Layout>
 </Layout>
 
 @code
 {
     private bool _isLeftBarVisible;
+
+    private string? _gitHash;
+
+    private Uri? _repositoryUri;
+
+    protected override void OnInitialized()
+    {
+        IEnumerable<AssemblyMetadataAttribute> customAttributes = Assembly
+                                                                            .GetAssembly(typeof(Program))
+                                                                            .CheckNotNull("Assembly")
+                                                                            .GetCustomAttributes<AssemblyMetadataAttribute>();
+
+        string? gitHash = customAttributes.FirstOrDefault(attr => attr.Key == "GitHash")?.Value;
+        string? repositoryUri = customAttributes.FirstOrDefault(attr => attr.Key == "RepositoryUrl")?.Value;
+
+        if (gitHash is object && repositoryUri is object)
+        {
+            _gitHash = gitHash;
+
+            _repositoryUri = new Uri($"{repositoryUri}/commit/{gitHash}");
+
+        }
+    }
 }

@@ -26,7 +26,7 @@ namespace HtmlRaportGenerator.Tools.Mapper
             {
                 object instance = Activator.CreateInstance(type)!;
 
-                Preconditions.CheckNotNull(instance, nameof(instance));
+                instance.CheckNotNull(nameof(instance));
 
                 string mappingMethodName = nameof(IMapFrom<object>.Mapping);
 
