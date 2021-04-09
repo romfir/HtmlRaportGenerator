@@ -29,6 +29,7 @@ int GlobalizationNative_GetLocaleTimeFormat (int,int,int,int);
 int GlobalizationNative_GetSortHandle (int,int);
 int GlobalizationNative_GetSortKey (int,int,int,int,int,int);
 int GlobalizationNative_GetSortVersion (int);
+int GlobalizationNative_GetTimeZoneDisplayName (int,int,int,int,int);
 int GlobalizationNative_IndexOf (int,int,int,int,int,int,int);
 void GlobalizationNative_InitICUFunctions (int,int,int,int);
 void GlobalizationNative_InitOrdinalCasingPage (int,int);
@@ -40,6 +41,7 @@ int GlobalizationNative_NormalizeString (int,int,int,int,int);
 int GlobalizationNative_StartsWith (int,int,int,int,int,int,int);
 int GlobalizationNative_ToAscii (int,int,int,int,int);
 int GlobalizationNative_ToUnicode (int,int,int,int,int);
+int GlobalizationNative_WindowsIdToIanaId (int,int,int);
 int SystemNative_Access (int,int);
 int SystemNative_ChDir (int);
 int SystemNative_ChMod (int,int);
@@ -71,6 +73,13 @@ int SystemNative_LChflagsCanSetHiddenFlag ();
 int SystemNative_Link (int,int);
 int SystemNative_LockFileRegion (int,int64_t,int64_t,int);
 void SystemNative_Log (int,int);
+void SystemNative_LowLevelMonitor_Acquire (int);
+int SystemNative_LowLevelMonitor_Create ();
+void SystemNative_LowLevelMonitor_Destroy (int);
+void SystemNative_LowLevelMonitor_Release (int);
+void SystemNative_LowLevelMonitor_Signal_Release (int);
+int SystemNative_LowLevelMonitor_TimedWait (int,int);
+void SystemNative_LowLevelMonitor_Wait (int);
 int64_t SystemNative_LSeek (int,int64_t,int);
 int SystemNative_LStat (int,int);
 int SystemNative_MAdvise (int,uint64_t,int);
@@ -135,6 +144,13 @@ static PinvokeImport libSystem_Native_imports [] = {
 {"SystemNative_Link", SystemNative_Link}, // System.IO.FileSystem
 {"SystemNative_LockFileRegion", SystemNative_LockFileRegion}, // System.Private.CoreLib
 {"SystemNative_Log", SystemNative_Log}, // System.Private.CoreLib
+{"SystemNative_LowLevelMonitor_Acquire", SystemNative_LowLevelMonitor_Acquire}, // System.Private.CoreLib
+{"SystemNative_LowLevelMonitor_Create", SystemNative_LowLevelMonitor_Create}, // System.Private.CoreLib
+{"SystemNative_LowLevelMonitor_Destroy", SystemNative_LowLevelMonitor_Destroy}, // System.Private.CoreLib
+{"SystemNative_LowLevelMonitor_Release", SystemNative_LowLevelMonitor_Release}, // System.Private.CoreLib
+{"SystemNative_LowLevelMonitor_Signal_Release", SystemNative_LowLevelMonitor_Signal_Release}, // System.Private.CoreLib
+{"SystemNative_LowLevelMonitor_TimedWait", SystemNative_LowLevelMonitor_TimedWait}, // System.Private.CoreLib
+{"SystemNative_LowLevelMonitor_Wait", SystemNative_LowLevelMonitor_Wait}, // System.Private.CoreLib
 {"SystemNative_LSeek", SystemNative_LSeek}, // System.Private.CoreLib
 {"SystemNative_LStat", SystemNative_LStat}, // System.IO.FileSystem, System.Private.CoreLib
 {"SystemNative_MAdvise", SystemNative_MAdvise}, // System.IO.MemoryMappedFiles
@@ -202,6 +218,7 @@ static PinvokeImport libSystem_Globalization_Native_imports [] = {
 {"GlobalizationNative_GetSortHandle", GlobalizationNative_GetSortHandle}, // System.Private.CoreLib
 {"GlobalizationNative_GetSortKey", GlobalizationNative_GetSortKey}, // System.Private.CoreLib
 {"GlobalizationNative_GetSortVersion", GlobalizationNative_GetSortVersion}, // System.Private.CoreLib
+{"GlobalizationNative_GetTimeZoneDisplayName", GlobalizationNative_GetTimeZoneDisplayName}, // System.Private.CoreLib
 {"GlobalizationNative_IndexOf", GlobalizationNative_IndexOf}, // System.Private.CoreLib
 {"GlobalizationNative_InitICUFunctions", GlobalizationNative_InitICUFunctions}, // System.Private.CoreLib
 {"GlobalizationNative_InitOrdinalCasingPage", GlobalizationNative_InitOrdinalCasingPage}, // System.Private.CoreLib
@@ -213,6 +230,7 @@ static PinvokeImport libSystem_Globalization_Native_imports [] = {
 {"GlobalizationNative_StartsWith", GlobalizationNative_StartsWith}, // System.Private.CoreLib
 {"GlobalizationNative_ToAscii", GlobalizationNative_ToAscii}, // System.Private.CoreLib
 {"GlobalizationNative_ToUnicode", GlobalizationNative_ToUnicode}, // System.Private.CoreLib
+{"GlobalizationNative_WindowsIdToIanaId", GlobalizationNative_WindowsIdToIanaId}, // System.Private.CoreLib
 {NULL, NULL}
 };
 static void *pinvoke_tables[] = { libSystem_Native_imports,libSystem_IO_Compression_Native_imports,libSystem_Globalization_Native_imports,};
