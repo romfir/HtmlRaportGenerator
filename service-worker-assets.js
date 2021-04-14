@@ -13,7 +13,7 @@
       "url": "appsettings.json"
     },
     {
-      "hash": "sha256-tLjD5XJv4sqIuhR5jUcu49wut4jrwmj\/IBwHr3HfvAM=",
+      "hash": "sha256-NF996c44nrhJm7GBUIUBsJ7ePhGfyccrCs9HQC4sSDg=",
       "url": "css\/app.css"
     },
     {
@@ -257,7 +257,7 @@
       "url": "_framework\/System.IO.Pipelines.dll"
     },
     {
-      "hash": "sha256-Yy66kc+6Ljn5AcGNola2\/FbJdwZXDAW73l3VZZqkTzU=",
+      "hash": "sha256-QsyCsNbtihig0he6xkNo4WXCFmTpGcN3C6QXzZ6VxW8=",
       "url": "_framework\/HtmlRaportGenerator.dll"
     },
     {
@@ -433,7 +433,7 @@
       "url": "_framework\/zh-Hant\/Microsoft.VisualStudio.Validation.resources.dll"
     },
     {
-      "hash": "sha256-9OBOIQAIk723KgcQXxYA8bNQw\/7XVROGaxywXfgqTnY=",
+      "hash": "sha256-Zi6iDUHA\/07A5zDQI5Q9Ps2XkLYuAbcJECTGJ79wdBc=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -441,5 +441,5 @@
       "url": "_framework\/blazor.webassembly.js"
     }
   ],
-  "version": "598JlqN4"
+  "version": "P\/61qlRw"
 };
