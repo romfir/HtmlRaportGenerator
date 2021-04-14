@@ -34,7 +34,6 @@ namespace HtmlRaportGenerator.Tools.Mapper
                     ?? type.GetInterface(typeof(IMapFrom<>).Name)!.GetMethod(mappingMethodName);
 
                 methodInfo?.Invoke(instance, new object[] { this });
-
             }
         }
     }

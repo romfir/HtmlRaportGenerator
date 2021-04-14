@@ -38,7 +38,6 @@ namespace HtmlRaportGenerator.Models
 
         public HourWithQuarter To { get; set; } = new();
 
-
         [Range(0, 23.99), JsonIgnore]
         public double? HourWithQuarterToParsed
         {
@@ -49,7 +48,6 @@ namespace HtmlRaportGenerator.Models
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HourWithQuarterToParsed)));
             }
         }
-
 
         [JsonIgnore]
         public bool IsToday { get; set; }

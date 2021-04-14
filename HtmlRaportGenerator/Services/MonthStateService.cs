@@ -54,7 +54,7 @@ namespace HtmlRaportGenerator.Services
 
             if (_currentDataStore == DataStore.LocalStorage)
             {
-                await _localStorageService.SetItemAsync(yearMonth, days).ConfigureAwait(false); ;
+                await _localStorageService.SetItemAsync(yearMonth, days).ConfigureAwait(false);
 
                 return true;
             }
@@ -65,7 +65,6 @@ namespace HtmlRaportGenerator.Services
 
             return false;
         }
-
 
         public async Task<List<Day>?> GetAsync(string yearMonth)
         {

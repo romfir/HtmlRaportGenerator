@@ -24,7 +24,6 @@ namespace HtmlRaportGenerator
                           .AddBootstrapProviders()
                           .AddFontAwesomeIcons();
 
-
             builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
@@ -35,7 +34,6 @@ namespace HtmlRaportGenerator
             builder.Services.AddGoogleHttpClient();
 
             builder.Services.AddGoogleAuthentication(builder);
-
 
             builder.Services.AddBlazoredLocalStorage(config =>
                     config.JsonSerializerOptions.WriteIndented = true);

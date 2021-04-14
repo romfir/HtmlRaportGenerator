@@ -48,7 +48,6 @@ namespace HtmlRaportGenerator.Models
 
         private int? _quarter;
 
-
         [Required, Range(0, 3)]
         public int? Quarter
         {
