@@ -47,6 +47,8 @@ namespace HtmlRaportGenerator.Services
                 await _googleDriveService.SaveAsync(StaticHelpers.DataStoreTypeKey, nextStore);
             }
 
+            ClearCache();
+
             return true;
 
         }

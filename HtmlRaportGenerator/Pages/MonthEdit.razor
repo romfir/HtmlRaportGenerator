@@ -259,7 +259,6 @@ else
 	{
 		List<Day> days = await _stateService.GetAsync(Month!.Value.ToYearMonth()) ?? new List<Day>();
 
-
 		foreach (DateTime day in Month.Value.AllDatesInMonth())
 		{
 			Day? dayItem = days.FirstOrDefault(d => d.DayNumber == day.Day);
