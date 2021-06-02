@@ -28,7 +28,7 @@ namespace HtmlRaportGenerator.Tools.Mapper
 
                 instance.CheckNotNull(nameof(instance));
 
-                string mappingMethodName = nameof(IMapFrom<object>.Mapping);
+                const string mappingMethodName = nameof(IMapFrom<object>.Mapping);
 
                 MethodInfo? methodInfo = type.GetMethod(mappingMethodName)
                     ?? type.GetInterface(typeof(IMapFrom<>).Name)!.GetMethod(mappingMethodName);

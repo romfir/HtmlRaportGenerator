@@ -1,37 +1,37 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
-@inject NavigationManager Navigation
-@inject SignOutSessionStateManager SignOutManager
+@inject NavigationManager _navigation
+@inject SignOutSessionStateManager _signOutManager
 
 <AuthorizeView>
-    <Authorized>
-        <BarItem>
-            <Addons>
-                <Addon AddonType="AddonType.Start">
-                    <AddonLabel>
-                        @context.User.Identity!.Name
-                    </AddonLabel>
-                </Addon>
-                <Addon AddonType="AddonType.End">
-                    <Button Color="Color.Dark" Clicked="BeginSignOutAsync">
-                        Log out
-                    </Button>
-                </Addon>
-            </Addons>
-        </BarItem>
-    </Authorized>
-    <NotAuthorized>
-        <BarItem>
-            <Button Color="Color.Light" Type="ButtonType.Link" To=@($"{RelativePageUrls.Authentication}/login")> Log in </Button>
-        </BarItem>
-    </NotAuthorized>
+	<Authorized>
+		<BarItem>
+			<Addons>
+				<Addon AddonType="AddonType.Start">
+					<AddonLabel>
+						@context.User.Identity!.Name
+					</AddonLabel>
+				</Addon>
+				<Addon AddonType="AddonType.End">
+					<Button Color="Color.Dark" Clicked="BeginSignOutAsync">
+						Log out
+					</Button>
+				</Addon>
+			</Addons>
+		</BarItem>
+	</Authorized>
+	<NotAuthorized>
+		<BarItem>
+			<Button Color="Color.Light" Type="ButtonType.Link" To=@($"{RelativePageUrls.Authentication}/login")> Log in </Button>
+		</BarItem>
+	</NotAuthorized>
 </AuthorizeView>
 
-@code{
-    private async Task BeginSignOutAsync()
-    {
-        await SignOutManager.SetSignOutState();
-        Navigation.NavigateTo(RelativePageUrls.Authentication + "/logout");
-    }
+@code {
+	private async Task BeginSignOutAsync()
+	{
+		await _signOutManager.SetSignOutState();
+		_navigation.NavigateTo(RelativePageUrls.Authentication + "/logout");
+	}
 }

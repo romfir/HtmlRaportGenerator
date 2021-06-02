@@ -68,7 +68,7 @@ namespace HtmlRaportGenerator.Models
 
                 double to;
 
-                if (To?.Hour is object)
+                if (To?.Hour is not null)
                 {
                     to = To.GetHourWithQuarterSum()!.Value;
                 }
@@ -88,7 +88,7 @@ namespace HtmlRaportGenerator.Models
         }
 
         public bool AnyRelevantValueExists()
-            => From?.Hour is object || To?.Hour is object;
+            => From?.Hour is not null || To?.Hour is not null;
 
         public bool Equals(Day? other)
         {

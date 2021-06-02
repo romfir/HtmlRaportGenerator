@@ -36,18 +36,17 @@ namespace HtmlRaportGenerator.Services
                 existingFile = _googleFiles?.FirstOrDefault(f => f.Name == fileName);
             }
 
-
-            MultipartFormDataContent multipartContent = new MultipartFormDataContent("----" + Guid.NewGuid().ToString())
-                {
-                    { JsonContent.Create(new GoogleFileToSend { Description = $"File used by HtmlRaportGenerator", MimeType = "application/json", Name = key + ".json" }, new MediaTypeHeaderValue("application/json")), "Metadata" },
-                    { JsonContent.Create(data, new MediaTypeHeaderValue("multipart/related")), "Media"}
-                };
+            MultipartFormDataContent multipartContent = new("----" + Guid.NewGuid())
+            {
+                { JsonContent.Create(new GoogleFileToSend { Description = $"File used by HtmlRaportGenerator", MimeType = "application/json", Name = key + ".json" }, new MediaTypeHeaderValue("application/json")), "Metadata" },
+                { JsonContent.Create(data, new MediaTypeHeaderValue("multipart/related")), "Media" }
+            };
 
             try
             {
                 HttpResponseMessage response;
 
-                if (existingFile?.Id is object)
+                if (existingFile?.Id is not null)
                 {
                     response = await _httpClient.PatchAsync(@$"upload/drive/v3/files/{existingFile.Id}?uploadType=multipart", multipartContent);
                 }
@@ -78,7 +77,6 @@ namespace HtmlRaportGenerator.Services
                 {
                     _googleFiles.Add(newFile);
                 }
-
 
                 return true;
             }

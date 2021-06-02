@@ -26,20 +26,11 @@ namespace HtmlRaportGenerator.Tools.ServicesExtensions
         }
 
         public static IServiceCollection AddPreviousStateServices(this IServiceCollection serviceCollection)
-        {
-            serviceCollection.AddScoped(typeof(IPreviousState<HourWithQuarter>), typeof(PreviousStateService<HourWithQuarter>));
-
-            serviceCollection.AddScoped(typeof(IPreviousState<ICollection<Day>>), typeof(PreviousStateCollectionService<Day>));
-
-            return serviceCollection;
-        }
+            => serviceCollection.AddScoped(typeof(IPreviousState<HourWithQuarter>), typeof(PreviousStateService<HourWithQuarter>))
+                .AddScoped(typeof(IPreviousState<ICollection<Day>>), typeof(PreviousStateCollectionService<Day>));
 
         public static IServiceCollection AddGoogleDriveService(this IServiceCollection serviceCollection)
-        {
-            serviceCollection.AddScoped<GoogleDriveService>();
-
-            return serviceCollection;
-        }
+            => serviceCollection.AddScoped<GoogleDriveService>();
 
         public static IServiceCollection AddGoogleAuthentication(this IServiceCollection serviceCollection, WebAssemblyHostBuilder builder)
         {
@@ -53,10 +44,6 @@ namespace HtmlRaportGenerator.Tools.ServicesExtensions
         }
 
         public static IServiceCollection AddMonthStateService(this IServiceCollection serviceCollection)
-        {
-            serviceCollection.AddScoped<MonthStateService>();
-
-            return serviceCollection;
-        }
+            => serviceCollection.AddScoped<MonthStateService>();
     }
 }
