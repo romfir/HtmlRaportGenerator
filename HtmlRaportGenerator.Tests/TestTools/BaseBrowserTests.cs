@@ -6,7 +6,7 @@ namespace HtmlRaportGenerator.Tests.TestTools
 {
     public abstract class BaseBrowserTests : IAsyncDisposable
     {
-        protected const float ActionTimeOut = 1000;
+        protected const float ActionTimeOut = 3000;
 
         protected const int FirstLoadTimeOut = 3000;
 
