@@ -14,8 +14,6 @@ namespace HtmlRaportGenerator.Tests.TestTools
 
         protected const string MonthEditUrl = BaseUrl + "/MonthEdit";
 
-        private readonly Uri _baseUri = new(BaseUrl);
-
         private readonly IPlaywright _playwright;
         protected readonly IBrowser Browser;
         protected readonly IPage Page;
@@ -26,14 +24,11 @@ namespace HtmlRaportGenerator.Tests.TestTools
 
             Browser = _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Timeout = 5000, Headless = headless }).Result;
 
-            Page = Browser.NewPageAsync().Result;
+            Page = Browser.NewPageAsync(new BrowserNewPageOptions { IgnoreHTTPSErrors = true }).Result;
 
             Page.SetDefaultTimeout(ActionTimeOut);
             Page.SetDefaultNavigationTimeout(FirstLoadTimeOut);
         }
-
-        protected string GetUrl(string relativeUrl)
-            => new Uri(_baseUri, relativeUrl).ToString();
 
         public async ValueTask DisposeAsync()
         {

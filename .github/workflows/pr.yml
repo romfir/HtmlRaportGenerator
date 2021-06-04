@@ -20,11 +20,6 @@ jobs:
         dotnet-version: 6.*
         include-prerelease: True
 
-    - name: install dev certs
-      run: |
-        sudo dotnet dev-certs https -ep /usr/local/share/ca-certificates/aspnet/https.crt --format PEM
-        sudo update-ca-certificates
-
     - name: build project
       run: dotnet build ./HtmlRaportGenerator/HtmlRaportGenerator.csproj -c Release
 
