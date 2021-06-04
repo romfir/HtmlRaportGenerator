@@ -50,7 +50,6 @@ namespace HtmlRaportGenerator.Services
             ClearCache();
 
             return true;
-
         }
 
         public async Task<bool> SaveAsync(List<Day> days, string yearMonth)

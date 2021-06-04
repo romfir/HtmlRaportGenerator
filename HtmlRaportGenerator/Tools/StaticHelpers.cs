@@ -6,7 +6,6 @@ namespace HtmlRaportGenerator.Tools
 {
     public static class StaticHelpers
     {
-
         public const string YearMonthFormat = "yyyy-MM";
 
         public const string DataStoreTypeKey = "DataStore";

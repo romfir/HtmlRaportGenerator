@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Tests
 
 on:
   pull_request:
@@ -21,7 +21,7 @@ jobs:
         include-prerelease: True
 
     - name: start site
-      run: dotnet run ./HtmlRaportGenerator/HtmlRaportGenerator.csproj -c Release &
+      run: dotnet run --project ./HtmlRaportGenerator/HtmlRaportGenerator.csproj -c Release &
 
     - name: run tests
       run: dotnet test ./HtmlRaportGenerator.Tests/HtmlRaportGenerator.Tests.csproj -c Release
