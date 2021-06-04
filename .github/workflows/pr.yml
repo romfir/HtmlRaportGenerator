@@ -20,6 +20,12 @@ jobs:
         dotnet-version: 6.*
         include-prerelease: True
 
+    - name: install dev certs
+      run: dotnet dev-certs https --trust
+
+    - name: build project
+      run: dotnet build ./HtmlRaportGenerator/HtmlRaportGenerator.csproj -c Release
+
     - name: start site
       run: dotnet run --project ./HtmlRaportGenerator/HtmlRaportGenerator.csproj -c Release &
 
