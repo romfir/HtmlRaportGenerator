@@ -4,11 +4,15 @@ using System.Threading.Tasks;
 
 namespace HtmlRaportGenerator.Tests.TestTools
 {
-    public class BaseBrowserTests : IAsyncDisposable
+    public abstract class BaseBrowserTests : IAsyncDisposable
     {
-        protected const float TimeOut = 1000;
+        protected const float ActionTimeOut = 1000;
+
+        protected const int FirstLoadTimeOut = 3000;
 
         protected const string BaseUrl = "https://localhost:5001";
+
+        protected const string MonthEditUrl = BaseUrl + "/MonthEdit";
 
         private readonly Uri _baseUri = new(BaseUrl);
 
@@ -16,16 +20,16 @@ namespace HtmlRaportGenerator.Tests.TestTools
         protected readonly IBrowser Browser;
         protected readonly IPage Page;
 
-        public BaseBrowserTests()
+        protected BaseBrowserTests(bool headless = true)
         {
             _playwright = Playwright.CreateAsync().Result;
 
-            Browser = _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Timeout = 5000 }).Result;
+            Browser = _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Timeout = 5000, Headless = headless }).Result;
 
             Page = Browser.NewPageAsync().Result;
 
-            Page.SetDefaultTimeout(TimeOut);
-            Page.SetDefaultNavigationTimeout(3000);
+            Page.SetDefaultTimeout(ActionTimeOut);
+            Page.SetDefaultNavigationTimeout(FirstLoadTimeOut);
         }
 
         protected string GetUrl(string relativeUrl)
@@ -38,6 +42,22 @@ namespace HtmlRaportGenerator.Tests.TestTools
             await Browser.DisposeAsync();
 
             GC.SuppressFinalize(this);
+        }
+
+        protected Task StartWorkAsync(string hour, string quarter)
+            => InputWorkAsync(hour, quarter, "Start Shift");
+
+        protected Task EndWorkAsync(string hour, string quarter)
+            => InputWorkAsync(hour, quarter, "End Shift");
+
+        private async Task InputWorkAsync(string hour, string quarter, string inputButtonText)
+        {
+            await Page.ClickAsync($"text={inputButtonText}");
+
+            await Page.SelectOptionAsync("select:below(label:text(\"Hour\"))", hour);
+            await Page.SelectOptionAsync("select:below(label:text(\"Minutes\"))", quarter);
+
+            await Page.ClickAsync("text=Submit");
         }
     }
 }

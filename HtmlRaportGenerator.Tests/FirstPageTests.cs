@@ -1,21 +1,19 @@
 using System.Threading.Tasks;
 using HtmlRaportGenerator.Tests.TestTools;
-using Microsoft.Playwright;
 using Xunit;
 
 namespace HtmlRaportGenerator.Tests
 {
     public class FirstPageTests : BaseBrowserTests
     {
-
         [Fact]
         public async Task Start_Shift_Works()
         {
             await Page.GotoAsync(BaseUrl);
 
-            await Task.Delay(3000);
+            await Task.Delay(FirstLoadTimeOut);
 
-            await StartWorkAsync(Page, "18", "3");
+            await StartWorkAsync("18", "3");
 
             string shiftStartedText = await Page.TextContentAsync("button:near(span:text(\"Shift Started\"))");
 
@@ -30,15 +28,15 @@ namespace HtmlRaportGenerator.Tests
         {
             await Page.GotoAsync(BaseUrl);
 
-            await Task.Delay(3000);
+            await Task.Delay(FirstLoadTimeOut);
 
-            await StartWorkAsync(Page, hour, quarter);
+            await StartWorkAsync(hour, quarter);
 
             await Page.ReloadAsync();
 
             await Task.Delay(1000);
 
-            string shiftStartedText = await Page.TextContentAsync("button:near(span:text(\"Shift Started\"))"); ;
+            string shiftStartedText = await Page.TextContentAsync("button:near(span:text(\"Shift Started\"))");
 
             Assert.Equal(displayTime, shiftStartedText);
 
@@ -50,11 +48,11 @@ namespace HtmlRaportGenerator.Tests
         {
             await Page.GotoAsync(BaseUrl);
 
-            await Task.Delay(3000);
+            await Task.Delay(FirstLoadTimeOut);
 
-            await StartWorkAsync(Page, "18", "3");
+            await StartWorkAsync("18", "3");
 
-            await EndWorkAsync(Page, "20", "2");
+            await EndWorkAsync("20", "2");
 
             string shiftEndedText = await Page.TextContentAsync("button:near(span:text(\"Shift Ended\"))");
 
@@ -68,11 +66,11 @@ namespace HtmlRaportGenerator.Tests
         {
             await Page.GotoAsync(BaseUrl);
 
-            await Task.Delay(3000);
+            await Task.Delay(FirstLoadTimeOut);
 
-            await StartWorkAsync(Page, hourFrom, quarterFrom);
+            await StartWorkAsync(hourFrom, quarterFrom);
 
-            await EndWorkAsync(Page, hourTo, quartetTo);
+            await EndWorkAsync(hourTo, quartetTo);
 
             string timeWorkedText = await Page.TextContentAsync("span:near(span:text(\"Time Worked\"))");
 
@@ -87,35 +85,21 @@ namespace HtmlRaportGenerator.Tests
         {
             await Page.GotoAsync(BaseUrl);
 
-            await Task.Delay(3000);
+            await Task.Delay(FirstLoadTimeOut);
 
-            await StartWorkAsync(Page, "15", "1");
+            await StartWorkAsync("15", "1");
 
-            await EndWorkAsync(Page, hour, quarter);
+            await EndWorkAsync(hour, quarter);
 
             await Page.ReloadAsync();
 
             await Task.Delay(1000);
 
-            string shiftStartedText = await Page.TextContentAsync("button:near(span:text(\"Shift Ended\"))"); ;
+            string shiftStartedText = await Page.TextContentAsync("button:near(span:text(\"Shift Ended\"))");
 
             Assert.Equal(displayTime, shiftStartedText);
         }
 
-        private static Task StartWorkAsync(IPage page, string hour, string quarter)
-            => InputWorkAsync(page, hour, quarter, "text=Start Shift");
-
-        private static Task EndWorkAsync(IPage page, string hour, string quarter)
-            => InputWorkAsync(page, hour, quarter, "text=End Shift");
-
-        private static async Task InputWorkAsync(IPage page, string hour, string quarter, string inputButtonText)
-        {
-            await page.ClickAsync(inputButtonText);
-
-            await page.SelectOptionAsync("select:below(label:text(\"Hour\"))", new[] { hour });
-            await page.SelectOptionAsync("select:below(label:text(\"Minutes\"))", new[] { quarter });
-
-            await page.ClickAsync("text=Submit");
-        }
+        //todo edit tests
     }
 }
