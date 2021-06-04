@@ -20,18 +20,14 @@ jobs:
         dotnet-version: 6.*
         include-prerelease: True
 
+    - name: restore project
+      run: dotnet restore ./HtmlRaportGenerator.sln
+
     - name: build project
-      run: dotnet build ./HtmlRaportGenerator/HtmlRaportGenerator.csproj -c Release
+      run: dotnet build ./HtmlRaportGenerator.sln -c Release --no-restore
 
     - name: start site
-      run: dotnet run --project ./HtmlRaportGenerator/HtmlRaportGenerator.csproj -c Release &
+      run: dotnet run --project ./HtmlRaportGenerator/HtmlRaportGenerator.csproj -c Release --no-build --no-restore &
 
     - name: run tests
-      run: dotnet test ./HtmlRaportGenerator.Tests/HtmlRaportGenerator.Tests.csproj -c Release
-
-    - name: start site
-      if: always()
-      uses: actions/upload-artifact@v2
-      with:
-        name: my-artifact
-        path: /home/runner/work/HtmlRaportGenerator/photo_clicked.png
+      run: dotnet test ./HtmlRaportGenerator.Tests/HtmlRaportGenerator.Tests.csproj -c Release --no-build --no-restore

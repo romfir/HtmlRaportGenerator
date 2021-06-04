@@ -31,8 +31,6 @@ namespace HtmlRaportGenerator.Tests
 
             await Task.Delay(FirstLoadTimeOut);
 
-            await File.WriteAllBytesAsync(@"/home/runner/work/HtmlRaportGenerator/photo_clicked.png", await Page.ScreenshotAsync());
-
             await StartWorkAsync(hour, quarter);
 
             await Page.ReloadAsync();
@@ -42,8 +40,6 @@ namespace HtmlRaportGenerator.Tests
             string shiftStartedText = await Page.TextContentAsync("button:near(span:text(\"Shift Started\"))");
 
             Assert.Equal(displayTime, shiftStartedText);
-
-            //await File.WriteAllBytesAsync(@"C:\Users\romfi\OneDrive\Pulpit\temp\photo_clicked.png", await Page.ScreenshotAsync());
         }
 
         [Fact]
