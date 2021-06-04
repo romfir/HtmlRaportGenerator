@@ -1,3 +1,4 @@
+using System.IO;
 using System.Threading.Tasks;
 using HtmlRaportGenerator.Tests.TestTools;
 using Xunit;
@@ -29,6 +30,8 @@ namespace HtmlRaportGenerator.Tests
             await Page.GotoAsync(BaseUrl);
 
             await Task.Delay(FirstLoadTimeOut);
+
+            await File.WriteAllBytesAsync(@"/home/runner/work/HtmlRaportGenerator/photo_clicked.png", await Page.ScreenshotAsync());
 
             await StartWorkAsync(hour, quarter);
 
