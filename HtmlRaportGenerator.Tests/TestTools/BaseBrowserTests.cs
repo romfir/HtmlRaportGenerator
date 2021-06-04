@@ -8,7 +8,7 @@ namespace HtmlRaportGenerator.Tests.TestTools
     {
         protected const float ActionTimeOut = 1000;
 
-        protected const int FirstLoadTimeOut = 3000;
+        protected const int FirstLoadTimeOut = 12000;
 
         protected const string BaseUrl = "https://localhost:5001";
 
