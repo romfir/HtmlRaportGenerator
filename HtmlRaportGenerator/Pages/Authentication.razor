@@ -1,28 +1,32 @@
 ﻿@attribute [RouteAttribute("/" + RelativePageUrls.Authentication + "/{action}")]
 
-@inject MonthStateService monthStateService
+@inject MonthStateService _monthStateService
 
 <RemoteAuthenticatorView Action="@Action"
-                         OnLogInSucceeded="() => monthStateService.LoadConfigurationFromGoogleDriveAsync()"
-                         OnLogOutSucceeded="() => monthStateService.ChangeDataStoreAsync(DataStore.LocalStorage)">
+						 OnLogInSucceeded="() => _monthStateService.LoadConfigurationFromGoogleDriveAsync()"
+						 OnLogOutSucceeded="() =>
+                                                    {
+                                                        _monthStateService.ClearCache();
+                                                        return _monthStateService.ChangeDataStoreAsync(DataStore.LocalStorage);
+                                                    }">
 
-    <CompletingLoggingIn>
-        <PageProgress Visible="true" />
-    </CompletingLoggingIn>
+	<CompletingLoggingIn>
+		<PageProgress Visible="true" />
+	</CompletingLoggingIn>
 
-    <CompletingLogOut>
-        <PageProgress Visible="true" />
-    </CompletingLogOut>
-    <LoggingIn>
-        <PageProgress Visible="true" />
-    </LoggingIn>
-    <LogOut>
-        You are logged out.
-    </LogOut>
+	<CompletingLogOut>
+		<PageProgress Visible="true" />
+	</CompletingLogOut>
+	<LoggingIn>
+		<PageProgress Visible="true" />
+	</LoggingIn>
+	<LogOut>
+		You are logged out.
+	</LogOut>
 
 </RemoteAuthenticatorView>
 
-@code{
-    [Parameter]
-    public string Action { get; set; } = null!;
+@code {
+	[Parameter]
+	public string Action { get; set; } = null!;
 }

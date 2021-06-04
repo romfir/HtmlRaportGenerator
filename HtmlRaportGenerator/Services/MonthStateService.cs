@@ -15,6 +15,8 @@ namespace HtmlRaportGenerator.Services
 
         private readonly AuthenticationStateProvider _authenticationStateProvider;
 
+        private Dictionary<string, List<Day>> _cachedDays = new();
+
         public MonthStateService(GoogleDriveService googleDriveService, ILocalStorageService localStorageService, AuthenticationStateProvider authenticationStateProvider)
         {
             _localStorageService = localStorageService;
@@ -29,58 +31,85 @@ namespace HtmlRaportGenerator.Services
 
         public async Task<bool> ChangeDataStoreAsync(DataStore nextStore)
         {
-            if (nextStore != _currentDataStore)
+            if (nextStore == _currentDataStore)
             {
-                _currentDataStore = nextStore;
-
-                await _localStorageService.SetItemAsync(StaticHelpers.DataStoreTypeKey, nextStore);
-
-                AuthenticationState state = await _authenticationStateProvider.GetAuthenticationStateAsync().ConfigureAwait(false);
-
-                if (state.User.Identity?.IsAuthenticated is true)
-                {
-                    await _googleDriveService.SaveAsync(StaticHelpers.DataStoreTypeKey, nextStore);
-                }
-
-                return true;
+                return false;
             }
 
-            return false;
+            _currentDataStore = nextStore;
+
+            await _localStorageService.SetItemAsync(StaticHelpers.DataStoreTypeKey, nextStore);
+
+            AuthenticationState state = await _authenticationStateProvider.GetAuthenticationStateAsync().ConfigureAwait(false);
+
+            if (state.User.Identity?.IsAuthenticated is true)
+            {
+                await _googleDriveService.SaveAsync(StaticHelpers.DataStoreTypeKey, nextStore);
+            }
+
+            ClearCache();
+
+            return true;
         }
 
         public async Task<bool> SaveAsync(List<Day> days, string yearMonth)
         {
             await LoadConfigurationIfEmptyAsync().ConfigureAwait(false);
 
-            if (_currentDataStore == DataStore.LocalStorage)
+            bool result;
+            switch (_currentDataStore)
             {
-                await _localStorageService.SetItemAsync(yearMonth, days).ConfigureAwait(false);
+                case DataStore.LocalStorage:
+                    await _localStorageService.SetItemAsync(yearMonth, days).ConfigureAwait(false);
 
-                return true;
+                    result = true;
+
+                    break;
+
+                case DataStore.GoogleDrive:
+                    result = await _googleDriveService.SaveAsync(yearMonth, days).ConfigureAwait(false);
+
+                    break;
+                default:
+                    result = false;
+                    break;
             }
-            else if (_currentDataStore == DataStore.GoogleDrive)
+
+            if (result)
             {
-                return await _googleDriveService.SaveAsync(yearMonth, days).ConfigureAwait(false);
+                _cachedDays[yearMonth] = days;
             }
 
-            return false;
+            return result;
         }
 
-        public async Task<List<Day>?> GetAsync(string yearMonth)
+        public async ValueTask<List<Day>?> GetAsync(string yearMonth)
         {
+            if (_cachedDays.TryGetValue(yearMonth, out List<Day>? result))
+            {
+                return result;
+            }
+
             await LoadConfigurationIfEmptyAsync().ConfigureAwait(false);
 
-            return _currentDataStore switch
+            List<Day>? days = _currentDataStore switch
             {
                 DataStore.LocalStorage => await _localStorageService.GetItemAsync<List<Day>>(yearMonth),
                 DataStore.GoogleDrive => await _googleDriveService.GetAsync<List<Day>>(yearMonth),
                 _ => null
             };
+
+            if (days is not null)
+            {
+                _cachedDays[yearMonth] = days;
+            }
+
+            return days;
         }
 
         public Task LoadConfigurationIfEmptyAsync()
         {
-            if (_currentDataStore is object)
+            if (_currentDataStore is not null)
             {
                 return Task.CompletedTask;
             }
@@ -94,7 +123,7 @@ namespace HtmlRaportGenerator.Services
 
             if (_currentDataStore is null)
             {
-                await LoadConfigurationFromGoogleDriveAsync();
+                await LoadConfigurationFromGoogleDriveAsync().ConfigureAwait(false);
             }
 
             _currentDataStore ??= DataStore.LocalStorage;
@@ -110,5 +139,8 @@ namespace HtmlRaportGenerator.Services
                 await _localStorageService.SetItemAsync(StaticHelpers.DataStoreTypeKey, CurrentDataStore).ConfigureAwait(false);
             }
         }
+
+        public void ClearCache()
+            => _cachedDays = new Dictionary<string, List<Day>>();
     }
 }

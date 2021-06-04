@@ -15,14 +15,16 @@ namespace HtmlRaportGenerator.Models
 
         public HourWithQuarter(double? time)
         {
-            if (time is object)
+            if (time is null)
             {
-                Hour = (int)time.Value;
-
-                int quarer = (int)Math.Floor((time.Value - Hour.Value) * 4);
-
-                Quarter = quarer;
+                return;
             }
+
+            Hour = (int)time.Value;
+
+            int quarter = (int)Math.Floor((time.Value - Hour.Value) * 4);
+
+            Quarter = quarter;
         }
 
         public HourWithQuarter(DateTime date)
@@ -69,7 +71,7 @@ namespace HtmlRaportGenerator.Models
 
             double from = Hour.Value;
 
-            if (Quarter is object)
+            if (Quarter is not null)
             {
                 from += Quarter.Value * 0.25;
             }

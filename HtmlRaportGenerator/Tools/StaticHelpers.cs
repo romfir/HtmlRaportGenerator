@@ -1,22 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace HtmlRaportGenerator.Tools
 {
     public static class StaticHelpers
     {
-        public static IEnumerable<DateTime> AllDatesInMonth(this DateTime month)
-        {
-            int days = DateTime.DaysInMonth(month.Year, month.Month);
-            for (int day = 1; day <= days; day++)
-            {
-                yield return new DateTime(month.Year, month.Month, day);
-            }
-        }
-
         public const string YearMonthFormat = "yyyy-MM";
-
-        public const string InputKey = "input";
 
         public const string DataStoreTypeKey = "DataStore";
 
@@ -33,21 +23,14 @@ namespace HtmlRaportGenerator.Tools
         /// <typeparam name="T"></typeparam>
         /// <param name="collection"></param>
         /// <returns></returns>
-        public static int GetCollectionHashCode<T>(this ICollection<T> collection)
+        public static int GetCollectionHashCode<T>(this ICollection<T>? collection)
         {
             if (collection is null)
             {
                 return 0;
             }
 
-            int hc = 0;
-
-            foreach (T item in collection)
-            {
-                hc ^= item?.GetHashCode() ?? 0;
-            }
-
-            return hc;
+            return collection.Aggregate(0, (current, item) => current ^ (item?.GetHashCode() ?? 0));
         }
     }
 }

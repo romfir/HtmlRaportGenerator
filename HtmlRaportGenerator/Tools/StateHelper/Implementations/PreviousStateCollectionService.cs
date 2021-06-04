@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using HtmlRaportGenerator.Models;
 using HtmlRaportGenerator.Tools.Mapper;
 using System.Collections.Generic;
 

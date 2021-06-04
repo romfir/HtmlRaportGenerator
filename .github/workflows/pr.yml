@@ -1,0 +1,33 @@
+name: Tests
+
+on:
+  pull_request:
+    branches: [ master ]
+env:
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT : true
+      DOTNET_MULTILEVEL_LOOKUP : true
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2.3.4
+
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v1.8.0
+      with:
+        dotnet-version: 6.*
+        include-prerelease: True
+
+    - name: restore project
+      run: dotnet restore ./HtmlRaportGenerator.sln
+
+    - name: build project
+      run: dotnet build ./HtmlRaportGenerator.sln -c Release --no-restore
+
+    - name: start site
+      run: dotnet run --project ./HtmlRaportGenerator/HtmlRaportGenerator.csproj -c Release --no-build --no-restore &
+
+    - name: run tests
+      run: dotnet test ./HtmlRaportGenerator.Tests/HtmlRaportGenerator.Tests.csproj -c Release --no-build --no-restore

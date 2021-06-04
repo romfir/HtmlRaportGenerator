@@ -16,7 +16,7 @@ namespace HtmlRaportGenerator
     {
         public static async Task Main(string[] args)
         {
-            WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
+            var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
             builder.Services
                           .AddBlazorise(options
@@ -28,7 +28,7 @@ namespace HtmlRaportGenerator
 
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
-            builder.Services.AddScoped(sp =>
+            builder.Services.AddScoped(_ =>
                     new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
             builder.Services.AddGoogleHttpClient();
