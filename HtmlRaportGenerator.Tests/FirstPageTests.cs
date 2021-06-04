@@ -37,7 +37,7 @@ namespace HtmlRaportGenerator.Tests
 
             await Page.ReloadAsync();
 
-            await Task.Delay(1000);
+            await Task.Delay(SiteChangeTimeOut);
 
             string shiftStartedText = await Page.TextContentAsync("button:near(span:text(\"Shift Started\"))");
 
@@ -96,7 +96,7 @@ namespace HtmlRaportGenerator.Tests
 
             await Page.ReloadAsync();
 
-            await Task.Delay(1000);
+            await Task.Delay(SiteChangeTimeOut);
 
             string shiftStartedText = await Page.TextContentAsync("button:near(span:text(\"Shift Ended\"))");
 

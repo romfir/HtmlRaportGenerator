@@ -20,7 +20,7 @@ namespace HtmlRaportGenerator.Tests
 
             await Page.GotoAsync(MonthEditUrl);
 
-            await Task.Delay(1000);
+            await Task.Delay(SiteChangeTimeOut);
 
             string shiftStartedTime = await Page.EvalOnSelectorAsync<string>(
                 $"tbody > tr:nth-child({currentDayNumber}) > td:nth-child(3) > input", "s => s.value");
@@ -42,7 +42,7 @@ namespace HtmlRaportGenerator.Tests
 
             await Page.GotoAsync(MonthEditUrl);
 
-            await Task.Delay(1000);
+            await Task.Delay(SiteChangeTimeOut);
 
             string shiftStartedTime = await Page.EvalOnSelectorAsync<string>(
                 $"tbody > tr:nth-child({currentDayNumber}) > td:nth-child(4) > input", "s => s.value");
@@ -66,7 +66,7 @@ namespace HtmlRaportGenerator.Tests
 
             await Page.GotoAsync(MonthEditUrl);
 
-            await Task.Delay(1000);
+            await Task.Delay(SiteChangeTimeOut);
 
             string shiftStartedTime =
                 await Page.TextContentAsync($"tbody > tr:nth-child({currentDayNumber}) > td:nth-child(5) > div");
