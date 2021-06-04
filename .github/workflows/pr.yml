@@ -25,13 +25,13 @@ jobs:
 
     - name: start site
       run: dotnet run --project ./HtmlRaportGenerator/HtmlRaportGenerator.csproj -c Release &
-      
+
+    - name: run tests
+      run: dotnet test ./HtmlRaportGenerator.Tests/HtmlRaportGenerator.Tests.csproj -c Release
+
     - name: start site
       if: always()
       uses: actions/upload-artifact@v2
       with:
         name: my-artifact
         path: /home/runner/work/HtmlRaportGenerator/photo_clicked.png
-
-    - name: run tests
-      run: dotnet test ./HtmlRaportGenerator.Tests/HtmlRaportGenerator.Tests.csproj -c Release
