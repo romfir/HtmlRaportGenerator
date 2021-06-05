@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <nullable>enable</nullable>
+    <!--<RunAOTCompilation>true</RunAOTCompilation>-->
     <PublishTrimmed>true</PublishTrimmed>
     <TrimMode>link</TrimMode>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
@@ -10,6 +11,12 @@
     <RepositoryType>git</RepositoryType>
     <MSBuildGitHashCommand>git describe --long --always</MSBuildGitHashCommand>
   </PropertyGroup>
+
+  <Target Name="RemoveSatelliteAssemblies" BeforeTargets="WasmBuildApp">
+    <ItemGroup>
+      <WasmAssembliesToBundle Remove="@(WasmAssembliesToBundle)" Condition="$([System.String]::Copy('%(Identity)').EndsWith('.resources.dll'))" />
+    </ItemGroup>
+  </Target>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
