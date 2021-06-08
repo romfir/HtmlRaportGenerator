@@ -5,6 +5,7 @@
 @inject MonthStateService _stateService
 @inject IPreviousState<ICollection<Day>> _previousStateDayService
 
+@*todo buttons prev + next month that inc/dec CurrentPage*@
 <Row Margin="Margin.Is2.FromTop.Is4.FromTop">
 	<Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
 		<Heading Size="HeadingSize.Is1" Alignment="TextAlignment.Center">
@@ -12,8 +13,6 @@
 		</Heading>
 	</Column>
 </Row>
-
-
 
 @if (Month is null)
 {
@@ -23,31 +22,28 @@
 	 </Column>
 	</Row>
 }
-else if (_days is null)
-{
-	<PageProgress Visible="true" />
-}
 else
 {
 	<DataGrid TItem="Day"
+		  CurrentPage="CurrentPage"
 		  ShowCaptions="true"
 		  CommandMode="DataGridCommandMode.Default"
 		  Editable="true"
 		  Data="_days"
-		  @bind-SelectedRow="_selectedDay"
-		  PageSize="_days.Count"
 		  Striped="true"
 		  Bordered="true"
 		  Hoverable="true"
 		  Responsive="true"
-		  Sortable="true"
+		  Sortable="false"
 		  SortMode="DataGridSortMode.Single"
 		  UseInternalEditing="true"
 		  EditMode="DataGridEditMode.Inline"
 		  RowRemoving="OnRowRemoving"
 		  RowStyling="OnRowStyling"
 		  Narrow="true"
-		  ShowValidationFeedback="true">
+		  ShowValidationFeedback="true"
+		  AggregateData="_days"
+		  ReadData="OnReadDataAsync">
 
 	 <DataGridAggregates>
 	  <DataGridAggregate TItem="Day"
@@ -67,11 +63,11 @@ else
 	   </EditCommandTemplate>
 	   <SaveCommandTemplate>
 		<Button Color="Color.Primary" Clicked="() =>
-                    {
-                        context.Clicked.InvokeAsync();
-                        _previousStateDayService.UpdateIsValueChanged();
-                        StateHasChanged();
-                    }">
+{
+    context.Clicked.InvokeAsync();
+    _previousStateDayService.UpdateIsValueChanged();
+    StateHasChanged();
+}">
 						@context.LocalizationString
 		</Button>
 	   </SaveCommandTemplate>
@@ -149,7 +145,7 @@ else
 			<EditTemplate>
 				<TimeEdit Style="text-align:center;"
 						  TValue="TimeSpan?"
-						  Time="context.CellValue is not null ? TimeSpan.FromHours((double)context.CellValue) : null"
+						  Time="(context.CellValue is not null ? TimeSpan.FromHours((double)context.CellValue) : null)"
 						  DelayTextOnKeyPress="true"
 						  DelayTextOnKeyPressInterval="300"
 						  step="900"
@@ -174,6 +170,10 @@ else
 			</EditTemplate>
 		</DataGridNumericColumn>
 	</DataGridColumns>
+	<LoadingTemplate>
+		<ProgressBar Visible="true" />
+	</LoadingTemplate>
+
 </DataGrid>
 
 	<Row Margin="Margin.Is4.FromBottom">
@@ -196,7 +196,7 @@ else
 
 @code {
 
-	private Day _selectedDay = null!;
+	//private Day _selectedDay = null!;
 
 	[Parameter]
 	public DateTime? Month { get; set; }
@@ -209,7 +209,9 @@ else
 			if (UrlChanged(value))
 			{
 				_days = null!;
-				ChangeUrl(value);
+				//ChangeUrl(value);
+				Month = value;
+				CurrentPage = Month.Value.Year * 100 + Month.Value.Month;
 			}
 			else
 			{
@@ -221,16 +223,19 @@ else
 
 	private List<Day>? _days;
 
+	private int CurrentPage { get; set; } //todo only for initial load
+
+
 	private bool _isTableSaving;
 
 	private string SaveButtonText
 		=> _isTableSaving ? "Saving..." : "Save Changes";
 
-	protected override Task OnParametersSetAsync()
+	protected override void OnParametersSet()
 	{
 		Month ??= DateTime.Now;
 
-		return UpdateCalendarGridAsync();
+		CurrentPage = Month.Value.Year * 100 + Month.Value.Month; //todo toolsy
 	}
 
 	private static void OnRowStyling(Day model, DataGridRowStyling styling)
@@ -255,8 +260,44 @@ else
 		_previousStateDayService.UpdateIsValueChanged();
 	}
 
+	private int _prevPage;
+	private Task OnReadDataAsync(DataGridReadDataEventArgs<Day> e)
+	{
+		//unnecesary? Both?> Only sec part to remove?
+		if (e.Page < 100000 || e.Page == _prevPage)
+		{
+			Console.WriteLine(e.Page);
+			return Task.CompletedTask;
+		}
+		_prevPage = e.Page;
+
+		//todo is it possible to sort in context of a single page?
+
+		//it can be done manually ofc
+
+		_days = null!;
+
+		//todo only if changed
+		int year = e.Page;
+		Console.WriteLine(e.Page);
+		//e.Page //202011
+
+		int month = year % 10; //todo tests
+		year /= 10;
+		month += year % 10 * 10;
+		year /= 10;
+
+		//MonthForInput = new DateTime(year, month, 1);
+		_ = new DateTime(year, month, 1);
+
+		//CurrentPage = e.Page;
+
+		return UpdateCalendarGridAsync();
+	}
+
 	private async Task UpdateCalendarGridAsync()
 	{
+		//SortedList<int, Day> d = new(); todo?
 		List<Day> days = await _stateService.GetAsync(Month!.Value.ToYearMonth()) ?? new List<Day>();
 
 		foreach (DateTime day in Month.Value.AllDatesInMonth())
@@ -283,6 +324,8 @@ else
 		_previousStateDayService.Load(_days);
 	}
 
+
+	//todo how to change url without reload?
 	private void ChangeUrl(DateTime? d)
 	{
 		if (d is not null)
