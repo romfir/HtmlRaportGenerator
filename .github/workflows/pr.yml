@@ -26,8 +26,11 @@ jobs:
     - name: build project
       run: dotnet build ./HtmlRaportGenerator.sln -c Release --no-restore
 
-    - name: install playwright tool
+    - name: install playwright dotnet tool
       run: dotnet tool install --global Microsoft.Playwright.CLI
+
+    - name: install playwright
+      run: playwright install
 
     - name: start site
       run: dotnet run --project ./HtmlRaportGenerator/HtmlRaportGenerator.csproj -c Release --no-build --no-restore &
