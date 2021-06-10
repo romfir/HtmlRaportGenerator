@@ -6,11 +6,11 @@ namespace HtmlRaportGenerator.Tests.TestTools
 {
     public abstract class BaseBrowserTests : IAsyncDisposable
     {
-        protected const float ActionTimeOut = 3000;
+        protected const float ActionTimeOut = 4000;
 
         protected const int FirstLoadTimeOut = 12000;
 
-        protected const int SiteChangeTimeOut = 3000;
+        protected const int SiteChangeTimeOut = 4000;
 
         protected const string BaseUrl = "https://localhost:5001";
 
