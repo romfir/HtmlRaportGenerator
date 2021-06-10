@@ -41,4 +41,4 @@ jobs:
       run: dotnet run --project ./HtmlRaportGenerator/HtmlRaportGenerator.csproj -c Release --no-build --no-restore &
 
     - name: run tests
-      run: dotnet test ./HtmlRaportGenerator.Tests/HtmlRaportGenerator.Tests.csproj -c Release --no-build --no-restore
+      run: dotnet test ./HtmlRaportGenerator.Tests/HtmlRaportGenerator.Tests.csproj -c Release --no-build --no-restore --logger GitHubActions
