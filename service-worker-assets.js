@@ -141,7 +141,7 @@
       "url": "_framework\/AutoMapper.Extensions.Microsoft.DependencyInjection.dll"
     },
     {
-      "hash": "sha256-TcFA5QZF0gtyVejGj9WtVja6TUlO91T102IftXHVKh0=",
+      "hash": "sha256-uY2ERHMILJtHL7xbvGDKMMPCgWikvrFjzBjfQHD95B4=",
       "url": "_framework\/Blazored.LocalStorage.dll"
     },
     {
@@ -241,7 +241,7 @@
       "url": "_framework\/Microsoft.Extensions.Primitives.dll"
     },
     {
-      "hash": "sha256-G3fzKHKQ8farlw3kTa+8vii8wbmsbrAeJKoT7X+2Tb4=",
+      "hash": "sha256-ydkWA58Bx\/3ZLIr5nsss3ftUN5h3+QOYRKgRIfw6wB0=",
       "url": "_framework\/Microsoft.JSInterop.dll"
     },
     {
@@ -257,7 +257,7 @@
       "url": "_framework\/System.IO.Pipelines.dll"
     },
     {
-      "hash": "sha256-ArQDINGpPfFpWf33IqbFV9LKv2aCRjDpn57T1MVCBWo=",
+      "hash": "sha256-ie6eQsBdIKymM2PVZbk5l1p6XDiNC9H6HCB6\/QYdiTo=",
       "url": "_framework\/HtmlRaportGenerator.dll"
     },
     {
@@ -461,7 +461,7 @@
       "url": "_framework\/zh-Hant\/Microsoft.VisualStudio.Validation.resources.dll"
     },
     {
-      "hash": "sha256-nRdgrLmv9ZC7z3GPNOUqr4Rqvt9yVpCrffxjSWAG3Zo=",
+      "hash": "sha256-tVEjpZjOBbp2k5vVhTNEaYiQZivCJdhIY0zOe7PuXg0=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -469,5 +469,5 @@
       "url": "_framework\/blazor.webassembly.js"
     }
   ],
-  "version": "lhaAkIyN"
+  "version": "ZNvDuu+\/"
 };
