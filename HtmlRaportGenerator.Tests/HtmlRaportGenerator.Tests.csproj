@@ -2,8 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-
+    <nullable>enable</nullable>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <IsPackable>false</IsPackable>
+    <AnalysisLevel>preview</AnalysisLevel>
   </PropertyGroup>
 
   <ItemGroup>

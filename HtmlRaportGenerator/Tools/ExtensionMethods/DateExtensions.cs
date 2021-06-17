@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace HtmlRaportGenerator.Tools.ExtensionMethods
 {
     public static class DateExtensions
     {
         public static string ToYearMonth(this DateOnly date)
-            => date.ToString(StaticHelpers.YearMonthFormat);
+            => date.ToString(StaticHelpers.YearMonthFormat, DateTimeFormatInfo.InvariantInfo);
 
         public static IEnumerable<DateTime> AllDatesInMonth(this DateTime month)
         {
@@ -18,6 +19,6 @@ namespace HtmlRaportGenerator.Tools.ExtensionMethods
         }
 
         public static string ToYearMonth(this DateTime date)
-            => date.ToString(StaticHelpers.YearMonthFormat);
+            => date.ToString(StaticHelpers.YearMonthFormat, DateTimeFormatInfo.InvariantInfo);
     }
 }

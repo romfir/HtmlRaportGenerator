@@ -10,7 +10,8 @@ namespace HtmlRaportGenerator.Tests
         [Fact]
         public async Task Start_Shift_Added_In_First_Page_Display_In_Table()
         {
-            await Page.GotoAsync(BaseUrl);
+            _ = await Page.GoToPageAndAssertSuccessAsync(BaseUrl)
+                .ConfigureAwait(false);
 
             await Task.Delay(FirstLoadTimeOut);
 
@@ -18,12 +19,15 @@ namespace HtmlRaportGenerator.Tests
 
             await StartWorkAsync("18", "3");
 
-            await Page.GotoAsync(MonthEditUrl);
+            _ = await Page.GoToPageAndAssertSuccessAsync(MonthEditUrl)
+                .ConfigureAwait(false);
 
             await Task.Delay(SiteChangeTimeOut);
 
             string shiftStartedTime = await Page.EvalOnSelectorAsync<string>(
                 $"tbody > tr:nth-child({currentDayNumber}) > td:nth-child(3) > input", "s => s.value");
+
+            Assert.NotEmpty(shiftStartedTime);
 
             Assert.Equal("18:45", shiftStartedTime);
         }
@@ -31,18 +35,25 @@ namespace HtmlRaportGenerator.Tests
         [Fact]
         public async Task End_Shift_Added_In_First_Page_Display_In_Table()
         {
-            await Page.GotoAsync(BaseUrl);
+            _ = await Page.GoToPageAndAssertSuccessAsync(BaseUrl)
+                .ConfigureAwait(false);
 
-            await Task.Delay(FirstLoadTimeOut);
+            await Task.Delay(FirstLoadTimeOut)
+                .ConfigureAwait(false);
 
             int currentDayNumber = DateTime.Now.Day;
 
-            await StartWorkAsync("18", "3");
-            await EndWorkAsync("20", "3");
+            await StartWorkAsync("18", "3")
+                .ConfigureAwait(false);
 
-            await Page.GotoAsync(MonthEditUrl);
+            await EndWorkAsync("20", "3")
+                .ConfigureAwait(false);
 
-            await Task.Delay(SiteChangeTimeOut);
+            _ = await Page.GoToPageAndAssertSuccessAsync(MonthEditUrl)
+                .ConfigureAwait(false);
+
+            await Task.Delay(SiteChangeTimeOut)
+                .ConfigureAwait(false);
 
             string shiftStartedTime = await Page.EvalOnSelectorAsync<string>(
                 $"tbody > tr:nth-child({currentDayNumber}) > td:nth-child(4) > input", "s => s.value");
@@ -55,21 +66,31 @@ namespace HtmlRaportGenerator.Tests
         [InlineData("15", "1", "15", "0", "23:45")]
         public async Task Hour_Sum_Added_In_First_Page_Display_In_Table(string hourFrom, string quarterFrom, string hourTo, string quartetTo, string timeWorked)
         {
-            await Page.GotoAsync(BaseUrl);
+            _ = await Page.GoToPageAndAssertSuccessAsync(BaseUrl)
+                .ConfigureAwait(false);
 
-            await Task.Delay(FirstLoadTimeOut);
+            await Task.Delay(FirstLoadTimeOut)
+                .ConfigureAwait(false);
 
             int currentDayNumber = DateTime.Now.Day;
 
-            await StartWorkAsync(hourFrom, quarterFrom);
-            await EndWorkAsync(hourTo, quartetTo);
+            await StartWorkAsync(hourFrom, quarterFrom)
+                .ConfigureAwait(false);
 
-            await Page.GotoAsync(MonthEditUrl);
+            await EndWorkAsync(hourTo, quartetTo)
+                .ConfigureAwait(false);
 
-            await Task.Delay(SiteChangeTimeOut);
+            _ = await Page.GotoAsync(MonthEditUrl)
+                .ConfigureAwait(false);
 
-            string shiftStartedTime =
-                await Page.TextContentAsync($"tbody > tr:nth-child({currentDayNumber}) > td:nth-child(5) > div");
+            await Task.Delay(SiteChangeTimeOut)
+                .ConfigureAwait(false);
+
+            string? shiftStartedTime =
+                await Page.TextContentAsync($"tbody > tr:nth-child({currentDayNumber}) > td:nth-child(5) > div")
+                .ConfigureAwait(false);
+
+            Assert.NotNull(shiftStartedTime);
 
             Assert.Equal(timeWorked, shiftStartedTime);
         }

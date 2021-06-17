@@ -31,20 +31,27 @@ namespace HtmlRaportGenerator.Services
 
         public async Task<bool> ChangeDataStoreAsync(DataStore nextStore)
         {
-            if (nextStore == _currentDataStore)
+            if (nextStore == _currentDataStore || nextStore == DataStore.None)
             {
                 return false;
             }
 
             _currentDataStore = nextStore;
 
-            await _localStorageService.SetItemAsync(StaticHelpers.DataStoreTypeKey, nextStore);
+            await _localStorageService.SetItemAsync(StaticHelpers.DataStoreTypeKey, nextStore)
+                .ConfigureAwait(false);
 
             AuthenticationState state = await _authenticationStateProvider.GetAuthenticationStateAsync().ConfigureAwait(false);
 
             if (state.User.Identity?.IsAuthenticated is true)
             {
-                await _googleDriveService.SaveAsync(StaticHelpers.DataStoreTypeKey, nextStore);
+                bool result = await _googleDriveService.SaveAsync(StaticHelpers.DataStoreTypeKey, nextStore)
+                    .ConfigureAwait(false);
+
+                if(!result)
+                {
+                    return false;
+                }
             }
 
             ClearCache();
@@ -54,6 +61,8 @@ namespace HtmlRaportGenerator.Services
 
         public async Task<bool> SaveAsync(List<Day> days, string yearMonth)
         {
+            days.CheckNotNull(nameof(days));
+
             await LoadConfigurationIfEmptyAsync().ConfigureAwait(false);
 
             bool result;
@@ -94,8 +103,10 @@ namespace HtmlRaportGenerator.Services
 
             List<Day>? days = _currentDataStore switch
             {
-                DataStore.LocalStorage => await _localStorageService.GetItemAsync<List<Day>>(yearMonth),
-                DataStore.GoogleDrive => await _googleDriveService.GetAsync<List<Day>>(yearMonth),
+                DataStore.LocalStorage => await _localStorageService.GetItemAsync<List<Day>>(yearMonth)
+                    .ConfigureAwait(false),
+                DataStore.GoogleDrive => await _googleDriveService.GetAsync<List<Day>>(yearMonth)
+                    .ConfigureAwait(false),
                 _ => null
             };
 
@@ -119,9 +130,10 @@ namespace HtmlRaportGenerator.Services
 
         public async Task LoadConfigurationAsync()
         {
-            _currentDataStore = await _localStorageService.GetItemAsync<DataStore?>(StaticHelpers.DataStoreTypeKey);
+            _currentDataStore = await _localStorageService.GetItemAsync<DataStore?>(StaticHelpers.DataStoreTypeKey)
+                .ConfigureAwait(false);
 
-            if (_currentDataStore is null)
+            if (_currentDataStore is null or DataStore.None)
             {
                 await LoadConfigurationFromGoogleDriveAsync().ConfigureAwait(false);
             }

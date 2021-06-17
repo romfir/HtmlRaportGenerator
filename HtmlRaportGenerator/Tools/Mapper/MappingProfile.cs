@@ -15,10 +15,10 @@ namespace HtmlRaportGenerator.Tools.Mapper
         {
             List<Type> types = assembly.GetExportedTypes()
             .Where(t => t.GetInterfaces()
-                                            .Any(i =>
-                                                        i.IsGenericType &&
-                                                        i.GetGenericTypeDefinition() == typeof(IMapFrom<>)
-                                                )
+                            .Any(i =>
+                                    i.IsGenericType &&
+                                    i.GetGenericTypeDefinition() == typeof(IMapFrom<>)
+                                )
                     )
             .ToList();
 

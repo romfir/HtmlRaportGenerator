@@ -14,11 +14,17 @@ namespace HtmlRaportGenerator.Services
     public class GoogleDriveService
     {
         private readonly HttpClient _httpClient;
-
         private List<GoogleFile>? _googleFiles;
 
         public GoogleDriveService(IHttpClientFactory httpClientFactory)
-            => _httpClient = httpClientFactory.CreateClient(StaticHelpers.HttpClientName);
+        {
+            _httpClient =
+            httpClientFactory
+            .CheckNotNull(nameof(httpClientFactory))
+            .CreateClient(StaticHelpers.HttpClientName);
+
+            _httpClient.BaseAddress.CheckNotNull(nameof(HttpClient.BaseAddress));
+        }
 
         /// <typeparam name="T"></typeparam>
         /// <param name="key">filename without .json</param>
@@ -32,14 +38,30 @@ namespace HtmlRaportGenerator.Services
 
             if (existingFile is null)
             {
-                await LoadFilesFromDriveAsync();
+                await LoadFilesFromDriveAsync().ConfigureAwait(false);
                 existingFile = _googleFiles?.FirstOrDefault(f => f.Name == fileName);
             }
 
-            MultipartFormDataContent multipartContent = new("----" + Guid.NewGuid())
+            using MultipartFormDataContent multipartContent = new("----" + Guid.NewGuid())
             {
-                { JsonContent.Create(new GoogleFileToSend { Description = $"File used by HtmlRaportGenerator", MimeType = "application/json", Name = key + ".json" }, new MediaTypeHeaderValue("application/json")), "Metadata" },
-                { JsonContent.Create(data, new MediaTypeHeaderValue("multipart/related")), "Media" }
+                {
+#pragma warning disable CA2000 // Dispose objects before losing scope, MultipartFormDataContent Disposes its child contents
+                    JsonContent.Create(new GoogleFileToSend 
+                    { 
+                        Description = $"File used by {nameof(HtmlRaportGenerator)}",
+                        MimeType = "application/json",
+                        Name = key + ".json" 
+                    },
+                    new MediaTypeHeaderValue("application/json")
+                    ),
+                    "Metadata"
+                },
+                { 
+                    JsonContent.Create(data, new MediaTypeHeaderValue("multipart/related")),
+                    "Media" 
+                }
+#pragma warning restore CA2000 // Dispose objects before losing scope
+
             };
 
             try
@@ -48,11 +70,23 @@ namespace HtmlRaportGenerator.Services
 
                 if (existingFile?.Id is not null)
                 {
-                    response = await _httpClient.PatchAsync(@$"upload/drive/v3/files/{existingFile.Id}?uploadType=multipart", multipartContent);
+                    response = await _httpClient.PatchAsync
+                        (
+                            new Uri(_httpClient.BaseAddress!, @$"upload/drive/v3/files/{existingFile.Id}?uploadType=multipart"),
+                            multipartContent
+                        )
+                        .ConfigureAwait(false);
                 }
                 else
                 {
-                    response = await _httpClient.PostAsync(@"upload/drive/v3/files?uploadType=multipart", multipartContent);
+                    response = await _httpClient.PostAsync
+                        (
+                            new Uri(_httpClient.BaseAddress!, @"upload/drive/v3/files?uploadType=multipart"),
+                            multipartContent
+                        )
+
+                        .ConfigureAwait(false);
+
                 }
 
                 if (!response.IsSuccessStatusCode)
@@ -61,12 +95,12 @@ namespace HtmlRaportGenerator.Services
                     return false;
                 }
 
-                GoogleFile? newFile = await response.Content.ReadFromJsonAsync<GoogleFile>().ConfigureAwait(false);
+                GoogleFile? newFile = await response.Content.ReadFromJsonAsync<GoogleFile>()
+                    .ConfigureAwait(false);
 
                 if (newFile is null)
                 {
-                    Console.WriteLine("Unable to parse Google Drive response");
-                    return false;
+                    throw new InvalidOperationException("Unable to parse Google Drive response");
                 }
 
                 if (_googleFiles is null)
@@ -96,7 +130,8 @@ namespace HtmlRaportGenerator.Services
 
             if (matchingFile is null)
             {
-                await LoadFilesFromDriveAsync().ConfigureAwait(false);
+                await LoadFilesFromDriveAsync()
+                    .ConfigureAwait(false);
 
                 matchingFile = _googleFiles?.FirstOrDefault(f => f.Name == fileName);
             }
@@ -106,14 +141,16 @@ namespace HtmlRaportGenerator.Services
                 return default;
             }
 
-            return await _httpClient.GetFromJsonAsync<T>($@"drive/v3/files/{Uri.EscapeDataString(matchingFile.Id)}?alt=media").ConfigureAwait(false);
+            return await _httpClient.GetFromJsonAsync<T>($@"drive/v3/files/{Uri.EscapeDataString(matchingFile.Id)}?alt=media")
+                .ConfigureAwait(false);
         }
 
         public async Task LoadFilesFromDriveAsync()
         {
             try
             {
-                GoogleFilesResponse? response = await _httpClient.GetFromJsonAsync<GoogleFilesResponse>(@"drive/v3/files").ConfigureAwait(false);
+                GoogleFilesResponse? response = await _httpClient.GetFromJsonAsync<GoogleFilesResponse>(@"drive/v3/files")
+                    .ConfigureAwait(false);
 
                 if (response?.Files is null || response.Files.Count == 0)
                 {

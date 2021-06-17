@@ -2,6 +2,7 @@
 {
     public enum DayInputState
     {
+        None = 0,
         DataLoading = 1,
         DataSaving = 2,
         ShiftNotStarted = 3,

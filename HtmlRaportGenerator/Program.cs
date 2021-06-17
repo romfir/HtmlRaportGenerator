@@ -12,7 +12,7 @@ using HtmlRaportGenerator.Tools.ServicesExtensions;
 
 namespace HtmlRaportGenerator
 {
-    public class Program
+    public static class Program
     {
         public static async Task Main(string[] args)
         {
@@ -31,9 +31,9 @@ namespace HtmlRaportGenerator
             builder.Services.AddScoped(_ =>
                     new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-            builder.Services.AddGoogleHttpClient();
-
-            builder.Services.AddGoogleAuthentication(builder);
+            builder.Services
+                .AddGoogleHttpClient()
+                .AddGoogleAuthentication(builder);
 
             builder.Services.AddBlazoredLocalStorage(config =>
                     config.JsonSerializerOptions.WriteIndented = true);
@@ -41,12 +41,12 @@ namespace HtmlRaportGenerator
             builder.Services.AddOptions();
             builder.Services.AddAuthorizationCore();
 
-            builder.Services.AddPreviousStateServices();
+            builder.Services
+                .AddPreviousStateServices()
+                .AddMonthStateService()
+                .AddGoogleDriveService();
 
-            builder.Services.AddMonthStateService();
-            builder.Services.AddGoogleDriveService();
-
-            await builder.Build().RunAsync();
+            await builder.Build().RunAsync().ConfigureAwait(false);
         }
     }
 }

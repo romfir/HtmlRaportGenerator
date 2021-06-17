@@ -62,21 +62,24 @@ namespace HtmlRaportGenerator.Models
             }
         }
 
-        public double? GetHourWithQuarterSum()
+        public double? HourWithQuarterSum
         {
-            if (Hour is null)
+            get
             {
-                return null;
+                if (Hour is null)
+                {
+                    return null;
+                }
+
+                double from = Hour.Value;
+
+                if (Quarter is not null)
+                {
+                    from += Quarter.Value * 0.25;
+                }
+
+                return from;
             }
-
-            double from = Hour.Value;
-
-            if (Quarter is not null)
-            {
-                from += Quarter.Value * 0.25;
-            }
-
-            return from;
         }
 
         public bool Equals(HourWithQuarter? other)
