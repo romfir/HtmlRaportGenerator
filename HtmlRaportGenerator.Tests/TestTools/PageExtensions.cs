@@ -6,19 +6,19 @@ namespace HtmlRaportGenerator.Tests.TestTools
 {
     public static class PageExtensions
     {
-        public static async Task<IResponse> GoToPageAndAssertSuccessAsync(this IPage page, string url)
+        public static async Task<IResponse> GoToPageAndAssertSuccessAsync(this IPage page, string url, bool goToResult = true)
         {
             IResponse? response = await page.GotoAsync(url)
                 .ConfigureAwait(false);
 
             Assert.NotNull(response);
 
-            Assert.True(response!.Ok);
+            Assert.Equal(goToResult, response!.Ok);
 
             return response;
         }
 
-        public static async Task<IResponse> ReloadAndAssertSuccessAsync(this IPage page)
+        public static async Task<IResponse> ReloadAndAssertSuccessAsync(this IPage page, bool reloadResult = false)
         {
             Assert.NotNull(page);
 
@@ -28,7 +28,7 @@ namespace HtmlRaportGenerator.Tests.TestTools
 
             Assert.NotNull(response);
 
-            Assert.True(response!.Ok);
+            Assert.Equal(reloadResult, response!.Ok);
 
             return response;
         }
