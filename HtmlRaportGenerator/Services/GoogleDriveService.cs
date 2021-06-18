@@ -1,5 +1,6 @@
 ﻿using HtmlRaportGenerator.Tools;
 using HtmlRaportGenerator.Tools.GoogleDriveDtos;
+using HtmlRaportGenerator.Tools.JsonContexts;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json.Serialization.Metadata;
 using System.Threading.Tasks;
 
 namespace HtmlRaportGenerator.Services
@@ -50,8 +52,9 @@ namespace HtmlRaportGenerator.Services
                     { 
                         Description = $"File used by {nameof(HtmlRaportGenerator)}",
                         MimeType = "application/json",
-                        Name = key + ".json" 
+                        Name = key + ".json"
                     },
+
                     new MediaTypeHeaderValue("application/json")
                     ),
                     "Metadata"
@@ -72,7 +75,7 @@ namespace HtmlRaportGenerator.Services
                 {
                     response = await _httpClient.PatchAsync
                         (
-                            new Uri(_httpClient.BaseAddress!, @$"upload/drive/v3/files/{existingFile.Id}?uploadType=multipart"),
+                            new Uri(_httpClient.BaseAddress!, @$"upload/drive/v3/files/{Uri.EscapeDataString(existingFile.Id)}?uploadType=multipart"),
                             multipartContent
                         )
                         .ConfigureAwait(false);
@@ -95,7 +98,7 @@ namespace HtmlRaportGenerator.Services
                     return false;
                 }
 
-                GoogleFile? newFile = await response.Content.ReadFromJsonAsync<GoogleFile>()
+                GoogleFile? newFile = await response.Content.ReadFromJsonAsync(GoogleDriveContext.Default.GoogleFile)
                     .ConfigureAwait(false);
 
                 if (newFile is null)
@@ -122,7 +125,7 @@ namespace HtmlRaportGenerator.Services
             return false;
         }
 
-        public async Task<T?> GetAsync<T>(string key)
+        public async Task<T?> GetAsync<T>(string key, JsonTypeInfo<T>? jsonTypeInfo = null)
         {
             string fileName = key + ".json";
 
@@ -141,7 +144,13 @@ namespace HtmlRaportGenerator.Services
                 return default;
             }
 
-            return await _httpClient.GetFromJsonAsync<T>($@"drive/v3/files/{Uri.EscapeDataString(matchingFile.Id)}?alt=media")
+            if(jsonTypeInfo is not null)
+            {
+                return await _httpClient.GetFromJsonAsync(new Uri(_httpClient.BaseAddress!, $@"drive/v3/files/{Uri.EscapeDataString(matchingFile.Id)}?alt=media"), jsonTypeInfo)
+                .ConfigureAwait(false);
+            }
+
+            return await _httpClient.GetFromJsonAsync<T>(new Uri(_httpClient.BaseAddress!, $@"drive/v3/files/{Uri.EscapeDataString(matchingFile.Id)}?alt=media"))
                 .ConfigureAwait(false);
         }
 
@@ -149,7 +158,7 @@ namespace HtmlRaportGenerator.Services
         {
             try
             {
-                GoogleFilesResponse? response = await _httpClient.GetFromJsonAsync<GoogleFilesResponse>(@"drive/v3/files")
+                GoogleFilesResponse? response = await _httpClient.GetFromJsonAsync<GoogleFilesResponse>(new Uri(_httpClient.BaseAddress!, @"drive/v3/files"))
                     .ConfigureAwait(false);
 
                 if (response?.Files is null || response.Files.Count == 0)
