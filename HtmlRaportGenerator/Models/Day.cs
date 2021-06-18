@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using HtmlRaportGenerator.Tools;
 using HtmlRaportGenerator.Tools.Mapper;
 using System;
 using System.ComponentModel;
@@ -28,7 +29,7 @@ namespace HtmlRaportGenerator.Models
         [Range(0, 23.99), JsonIgnore]
         public double? HourWithQuarterFromParsed
         {
-            get => From?.GetHourWithQuarterSum();
+            get => From?.HourWithQuarterSum;
             set
             {
                 From = new HourWithQuarter(value);
@@ -41,7 +42,7 @@ namespace HtmlRaportGenerator.Models
         [Range(0, 23.99), JsonIgnore]
         public double? HourWithQuarterToParsed
         {
-            get => To?.GetHourWithQuarterSum();
+            get => To?.HourWithQuarterSum;
             set
             {
                 To = new HourWithQuarter(value);
@@ -64,17 +65,17 @@ namespace HtmlRaportGenerator.Models
                     return null;
                 }
 
-                double from = From.GetHourWithQuarterSum()!.Value;
+                double from = From.HourWithQuarterSum!.Value;
 
                 double to;
 
                 if (To?.Hour is not null)
                 {
-                    to = To.GetHourWithQuarterSum()!.Value;
+                    to = To.HourWithQuarterSum!.Value;
                 }
                 else //IsToday == true
                 {
-                    to = new HourWithQuarter(DateTime.Now).GetHourWithQuarterSum()!.Value;
+                    to = new HourWithQuarter(DateTime.Now).HourWithQuarterSum!.Value;
                 }
 
                 //when shift starts on one day and ends on the other
@@ -107,7 +108,8 @@ namespace HtmlRaportGenerator.Models
             => HashCode.Combine(DayNumber, To, From);
 
         public void Mapping(Profile profile)
-            => profile.CreateMap<Day, Day>()
+            => profile.CheckNotNull(nameof(profile))
+                .CreateMap<Day, Day>()
                 .IgnoreAllPropertiesWithAnInaccessibleSetter()
                 .ForMember(dest => dest.IsToday, opt => opt.Ignore())
                 .ForMember(dest => dest.HourWithQuarterFromParsed, opt => opt.Ignore())

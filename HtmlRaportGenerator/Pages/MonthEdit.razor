@@ -34,7 +34,6 @@ else
 		  CommandMode="DataGridCommandMode.Default"
 		  Editable="true"
 		  Data="_days"
-		  @bind-SelectedRow="_selectedDay"
 		  PageSize="_days.Count"
 		  Striped="true"
 		  Bordered="true"
@@ -194,10 +193,8 @@ else
 	</Row>
 }
 
-@code {
-
-	private Day _selectedDay = null!;
-
+@code
+{
 	[Parameter]
 	public DateTime? Month { get; set; }
 

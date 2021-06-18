@@ -9,13 +9,19 @@ namespace HtmlRaportGenerator.Tests
         [Fact]
         public async Task Start_Shift_Works()
         {
-            await Page.GotoAsync(BaseUrl);
+            _ = await Page.GoToPageAndAssertSuccessAsync(BaseUrl)
+                .ConfigureAwait(false);
 
-            await Task.Delay(FirstLoadTimeOut);
+            await Task.Delay(FirstLoadTimeOut)
+                .ConfigureAwait(false);
 
-            await StartWorkAsync("18", "3");
+            await StartWorkAsync("18", "3")
+                .ConfigureAwait(false);
 
-            string shiftStartedText = await Page.TextContentAsync("button:near(span:text(\"Shift Started\"))");
+            string? shiftStartedText = await Page.TextContentAsync("button:near(span:text(\"Shift Started\"))")
+                .ConfigureAwait(false);
+
+            Assert.NotNull(shiftStartedText);
 
             Assert.Equal("18:45", shiftStartedText);
         }
@@ -26,17 +32,25 @@ namespace HtmlRaportGenerator.Tests
         [InlineData("23", "3", "23:45")]
         public async Task Start_Shift_Is_Saved_To_LocalStorage(string hour, string quarter, string displayTime)
         {
-            await Page.GotoAsync(BaseUrl);
+            _ = await Page.GoToPageAndAssertSuccessAsync(BaseUrl)
+                .ConfigureAwait(false);
 
-            await Task.Delay(FirstLoadTimeOut);
+            await Task.Delay(FirstLoadTimeOut)
+                .ConfigureAwait(false);
 
-            await StartWorkAsync(hour, quarter);
+            await StartWorkAsync(hour, quarter)
+                .ConfigureAwait(false);
 
-            await Page.ReloadAsync();
+            _ = await Page.ReloadAndAssertSuccessAsync()
+                .ConfigureAwait(false);
 
-            await Task.Delay(SiteChangeTimeOut);
+            await Task.Delay(SiteChangeTimeOut)
+                .ConfigureAwait(false);
 
-            string shiftStartedText = await Page.TextContentAsync("button:near(span:text(\"Shift Started\"))");
+            string? shiftStartedText = await Page.TextContentAsync("button:near(span:text(\"Shift Started\"))")
+                .ConfigureAwait(false);
+
+            Assert.NotNull(shiftStartedText);
 
             Assert.Equal(displayTime, shiftStartedText);
         }
@@ -44,15 +58,22 @@ namespace HtmlRaportGenerator.Tests
         [Fact]
         public async Task End_Shift_Works()
         {
-            await Page.GotoAsync(BaseUrl);
+            _ = await Page.GoToPageAndAssertSuccessAsync(BaseUrl)
+                .ConfigureAwait(false);
 
-            await Task.Delay(FirstLoadTimeOut);
+            await Task.Delay(FirstLoadTimeOut)
+                .ConfigureAwait(false);
 
-            await StartWorkAsync("18", "3");
+            await StartWorkAsync("18", "3")
+                .ConfigureAwait(false);
 
-            await EndWorkAsync("20", "2");
+            await EndWorkAsync("20", "2")
+                .ConfigureAwait(false);
 
-            string shiftEndedText = await Page.TextContentAsync("button:near(span:text(\"Shift Ended\"))");
+            string? shiftEndedText = await Page.TextContentAsync("button:near(span:text(\"Shift Ended\"))")
+                .ConfigureAwait(false);
+            
+            Assert.NotNull(shiftEndedText);
 
             Assert.Equal("20:30", shiftEndedText);
         }
@@ -62,15 +83,22 @@ namespace HtmlRaportGenerator.Tests
         [InlineData("15", "1", "15", "0", "23:45")]
         public async Task Time_Worked_Works(string hourFrom, string quarterFrom, string hourTo, string quartetTo, string timeWorked)
         {
-            await Page.GotoAsync(BaseUrl);
+            _ = await Page.GoToPageAndAssertSuccessAsync(BaseUrl)
+                .ConfigureAwait(false);
 
-            await Task.Delay(FirstLoadTimeOut);
+            await Task.Delay(FirstLoadTimeOut)
+                .ConfigureAwait(false);
 
-            await StartWorkAsync(hourFrom, quarterFrom);
+            await StartWorkAsync(hourFrom, quarterFrom)
+                .ConfigureAwait(false);
 
-            await EndWorkAsync(hourTo, quartetTo);
+            await EndWorkAsync(hourTo, quartetTo)
+                .ConfigureAwait(false);
 
-            string timeWorkedText = await Page.TextContentAsync("span:near(span:text(\"Time Worked\"))");
+            string? timeWorkedText = await Page.TextContentAsync("span:near(span:text(\"Time Worked\"))")
+                .ConfigureAwait(false);
+
+            Assert.NotNull(timeWorkedText);
 
             Assert.Equal(timeWorked, timeWorkedText);
         }
@@ -81,19 +109,28 @@ namespace HtmlRaportGenerator.Tests
         [InlineData("23", "3", "23:45")]
         public async Task End_Shift_Is_Saved_To_LocalStorage(string hour, string quarter, string displayTime)
         {
-            await Page.GotoAsync(BaseUrl);
+            _ = await Page.GoToPageAndAssertSuccessAsync(BaseUrl)
+                .ConfigureAwait(false);
 
-            await Task.Delay(FirstLoadTimeOut);
+            await Task.Delay(FirstLoadTimeOut)
+                .ConfigureAwait(false);
 
-            await StartWorkAsync("15", "1");
+            await StartWorkAsync("15", "1")
+                .ConfigureAwait(false);
 
-            await EndWorkAsync(hour, quarter);
+            await EndWorkAsync(hour, quarter)
+                .ConfigureAwait(false);
 
-            await Page.ReloadAsync();
+            _ = await Page.ReloadAndAssertSuccessAsync()
+                .ConfigureAwait(false);
 
-            await Task.Delay(SiteChangeTimeOut);
+            await Task.Delay(SiteChangeTimeOut)
+                .ConfigureAwait(false);
 
-            string shiftStartedText = await Page.TextContentAsync("button:near(span:text(\"Shift Ended\"))");
+            string? shiftStartedText = await Page.TextContentAsync("button:near(span:text(\"Shift Ended\"))")
+                .ConfigureAwait(false);
+
+            Assert.NotNull(shiftStartedText);
 
             Assert.Equal(displayTime, shiftStartedText);
         }

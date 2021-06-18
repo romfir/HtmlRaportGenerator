@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace HtmlRaportGenerator.Tools
@@ -15,7 +16,7 @@ namespace HtmlRaportGenerator.Tools
         public const string ProjectName = "Raport Generator";
 
         public static string FormatDoubleToTime(this double hour)
-            => TimeSpan.FromHours(hour).ToString(@"hh\:mm");
+            => TimeSpan.FromHours(hour).ToString(@"hh\:mm", DateTimeFormatInfo.InvariantInfo);
 
         /// <summary>
         /// use only when comparing collections of the same type

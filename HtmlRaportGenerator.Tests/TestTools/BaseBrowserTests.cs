@@ -51,8 +51,8 @@ namespace HtmlRaportGenerator.Tests.TestTools
         {
             await Page.ClickAsync($"text={inputButtonText}");
 
-            await Page.SelectOptionAsync("select:below(label:text(\"Hour\"))", hour);
-            await Page.SelectOptionAsync("select:below(label:text(\"Minutes\"))", quarter);
+            _ = await Page.SelectOptionAsync("select:below(label:text(\"Hour\"))", hour);
+            _ = await Page.SelectOptionAsync("select:below(label:text(\"Minutes\"))", quarter);
 
             await Page.ClickAsync("text=Submit");
         }

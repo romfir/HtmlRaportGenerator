@@ -64,6 +64,8 @@ namespace HtmlRaportGenerator.Tools.StateHelper.Implementations
         }
 
         private void UpdateIsValueChangedInternal()
-            => _isValueChanged = OriginalValue.Count != CurrentValue.Count || _originalHashCode != CurrentValue.GetCollectionHashCode();
+            => _isValueChanged =
+            OriginalValue.Count != CurrentValue.Count ||
+            _originalHashCode != CurrentValue.GetCollectionHashCode();
     }
 }

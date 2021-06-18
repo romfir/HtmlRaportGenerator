@@ -5,10 +5,10 @@
 <RemoteAuthenticatorView Action="@Action"
 						 OnLogInSucceeded="() => _monthStateService.LoadConfigurationFromGoogleDriveAsync()"
 						 OnLogOutSucceeded="() =>
-                                                    {
-                                                        _monthStateService.ClearCache();
-                                                        return _monthStateService.ChangeDataStoreAsync(DataStore.LocalStorage);
-                                                    }">
+                        {
+                            _monthStateService.ClearCache();
+                            return _monthStateService.ChangeDataStoreAsync(DataStore.LocalStorage);
+                        }">
 
 	<CompletingLoggingIn>
 		<PageProgress Visible="true" />
@@ -26,7 +26,8 @@
 
 </RemoteAuthenticatorView>
 
-@code {
+@code
+{
 	[Parameter]
 	public string Action { get; set; } = null!;
 }
