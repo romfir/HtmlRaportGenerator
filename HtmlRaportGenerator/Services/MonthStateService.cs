@@ -2,6 +2,7 @@
 using HtmlRaportGenerator.Models;
 using HtmlRaportGenerator.Tools;
 using HtmlRaportGenerator.Tools.Enums;
+using HtmlRaportGenerator.Tools.JsonContexts;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -105,7 +106,7 @@ namespace HtmlRaportGenerator.Services
             {
                 DataStore.LocalStorage => await _localStorageService.GetItemAsync<List<Day>>(yearMonth)
                     .ConfigureAwait(false),
-                DataStore.GoogleDrive => await _googleDriveService.GetAsync<List<Day>>(yearMonth)
+                DataStore.GoogleDrive => await _googleDriveService.GetAsync<List<Day>>(yearMonth, GoogleDriveContext.Default.ListHtmlRaportGeneratorModelsDay)
                     .ConfigureAwait(false),
                 _ => null
             };
@@ -147,7 +148,7 @@ namespace HtmlRaportGenerator.Services
 
             if (state.User.Identity?.IsAuthenticated is true)
             {
-                _currentDataStore = await _googleDriveService.GetAsync<DataStore?>(StaticHelpers.DataStoreTypeKey).ConfigureAwait(false);
+                _currentDataStore = await _googleDriveService.GetAsync(StaticHelpers.DataStoreTypeKey, GoogleDriveContext.Default.DataStore).ConfigureAwait(false);
                 await _localStorageService.SetItemAsync(StaticHelpers.DataStoreTypeKey, CurrentDataStore).ConfigureAwait(false);
             }
         }
