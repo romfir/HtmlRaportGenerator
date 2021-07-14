@@ -31,7 +31,7 @@ namespace HtmlRaportGenerator.Tests.TestTools
             //todo on gh actions its failing why?
             //Assert.Equal(reloadResult, response!.Ok);
 
-            return response;
+            return response!;
         }
     }
 }
