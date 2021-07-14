@@ -6,52 +6,52 @@
 <PageProgress Visible="_loading" />
 
 <Row Margin="Margin.Is4.FromTop">
-	<Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
-		<Field Horizontal="true">
-			<FieldLabel ColumnSize="ColumnSize.IsAuto">Data Store</FieldLabel>
-			<FieldBody ColumnSize="ColumnSize.IsAuto">
-				<Select TValue="DataStore" @bind-SelectedValue="SelectedStorage" Disabled="_loading">
-					<SelectItem Value="DataStore.LocalStorage">@DataStore.LocalStorage</SelectItem>
-					<SelectItem Value="DataStore.GoogleDrive" Disabled="(!_isUserAuthenticated)">@DataStore.GoogleDrive</SelectItem>
-				</Select>
-			</FieldBody>
-		</Field>
-	</Column>
+    <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
+        <Field Horizontal="true">
+            <FieldLabel ColumnSize="ColumnSize.IsAuto">Data Store</FieldLabel>
+            <FieldBody ColumnSize="ColumnSize.IsAuto">
+                <Select TValue="DataStore" @bind-SelectedValue="SelectedStorage" Disabled="_loading">
+                    <SelectItem Value="DataStore.LocalStorage">@DataStore.LocalStorage</SelectItem>
+                    <SelectItem Value="DataStore.GoogleDrive" Disabled="(!_isUserAuthenticated)">@DataStore.GoogleDrive</SelectItem>
+                </Select>
+            </FieldBody>
+        </Field>
+    </Column>
 </Row>
 
 @code
 {
-	private bool _loading = true;
-	private bool _isUserAuthenticated;
+    private bool _loading = true;
+    private bool _isUserAuthenticated;
 
-	private DataStore SelectedStorage
-	{
-		get => _stateService.CurrentDataStore;
+    private DataStore SelectedStorage
+    {
+        get => _stateService.CurrentDataStore;
 #pragma warning disable CS4014
-		set => ChangeDataStoreAsync(value);
+        set => ChangeDataStoreAsync(value);
 #pragma warning restore CS4014
-	}
+    }
 
-	protected override async Task OnInitializedAsync()
-	{
-		Task loadConfigAsync = _stateService.LoadConfigurationIfEmptyAsync();
+    protected override async Task OnInitializedAsync()
+    {
+        Task loadConfigAsync = _stateService.LoadConfigurationIfEmptyAsync();
 
-		Task<AuthenticationState> getAuthenticationAsync = _authenticationStateProvider.GetAuthenticationStateAsync();
+        Task<AuthenticationState> getAuthenticationAsync = _authenticationStateProvider.GetAuthenticationStateAsync();
 
-		await loadConfigAsync.ConfigureAwait(false);
-		AuthenticationState state = await getAuthenticationAsync;
+        await loadConfigAsync.ConfigureAwait(false);
+        AuthenticationState state = await getAuthenticationAsync;
 
-		_isUserAuthenticated = state.User.Identity?.IsAuthenticated is true;
+        _isUserAuthenticated = state.User.Identity?.IsAuthenticated is true;
 
-		_loading = false;
-	}
+        _loading = false;
+    }
 
-	private async Task ChangeDataStoreAsync(DataStore selectedStorage)
-	{
-		_loading = true;
-		await _stateService.ChangeDataStoreAsync(selectedStorage);
-		_loading = false;
+    private async Task ChangeDataStoreAsync(DataStore selectedStorage)
+    {
+        _loading = true;
+        await _stateService.ChangeDataStoreAsync(selectedStorage);
+        _loading = false;
 
-		StateHasChanged();
-	}
+        StateHasChanged();
+    }
 }
