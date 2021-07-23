@@ -3,112 +3,112 @@
 @using System.Globalization
 @using Blazorise.Localization
 <Layout Sider="true">
-	<LayoutSider>
-		<LayoutSiderContent>
-			<Bar @bind-Visible="_isLeftBarVisible" Breakpoint="Breakpoint.Desktop" NavigationBreakpoint="Breakpoint.Tablet" ThemeContrast="ThemeContrast.Dark"
-				 Mode="BarMode.VerticalInline" CollapseMode="BarCollapseMode.Small">
-				<BarToggler />
-				@if (_isLeftBarVisible)
-				{
-		<BarBrand>
-		 <BarItem>
-		  <BarLink To=@RelativePageUrls.MainView>
-		   <BarIcon IconName="IconName.Dashboard" />
-								@StaticHelpers.ProjectName
-		  </BarLink>
-		 </BarItem>
-		</BarBrand>
-				}
+    <LayoutSider>
+        <LayoutSiderContent>
+            <Bar @bind-Visible="_isLeftBarVisible" Breakpoint="Breakpoint.Desktop" NavigationBreakpoint="Breakpoint.Tablet" ThemeContrast="ThemeContrast.Dark"
+                 Mode="BarMode.VerticalInline" CollapseMode="BarCollapseMode.Small">
+                <BarToggler />
+                @if (_isLeftBarVisible)
+                {
+                    <BarBrand>
+                        <BarItem>
+                            <BarLink To=@RelativePageUrls.MainView>
+                                <BarIcon IconName="IconName.Dashboard" />
+                                @StaticHelpers.ProjectName
+                            </BarLink>
+                        </BarItem>
+                    </BarBrand>
+                }
 
-	<BarMenu>
-	 <BarStart>
-	  <BarItem>
-	   <BarLink To=@RelativePageUrls.MainView>
-		<BarIcon IconName="IconName.Add" />
-		Current Day
-	   </BarLink>
-	  </BarItem>
-	  <BarItem>
-	   <BarLink To=@RelativePageUrls.MonthEdit>
-		<BarIcon IconName="IconName.CalendarDay" />
-		Month Edit
-	   </BarLink>
-	  </BarItem>
+                <BarMenu>
+                    <BarStart>
+                        <BarItem>
+                            <BarLink To=@RelativePageUrls.MainView>
+                                <BarIcon IconName="IconName.Add" />
+                                Current Day
+                            </BarLink>
+                        </BarItem>
+                        <BarItem>
+                            <BarLink To=@RelativePageUrls.MonthEdit>
+                                <BarIcon IconName="IconName.CalendarDay" />
+                                Month Edit
+                            </BarLink>
+                        </BarItem>
 
-	 </BarStart>
-	 <BarEnd>
-	  <BarItem>
-	   <BarLink To=@RelativePageUrls.Settings>
-		<BarIcon IconName="IconName.Wrench" />
-		Settings
-	   </BarLink>
-	  </BarItem>
-	 </BarEnd>
-	</BarMenu>
-   </Bar>
-  </LayoutSiderContent>
- </LayoutSider>
- <Layout>
-  <LayoutHeader Fixed="true">
-   <Bar Visible="false" Breakpoint="Breakpoint.Desktop" Background="Background.Primary" ThemeContrast="ThemeContrast.Light">
-				@if (!_isLeftBarVisible)
-				{
-		<BarBrand>
-		 <BarItem>
-		  <BarLink To=@RelativePageUrls.MainView>
-		   <BarIcon IconName="IconName.Dashboard" />
-								@StaticHelpers.ProjectName
-		  </BarLink>
-		 </BarItem>
-		</BarBrand>
-				}
+                    </BarStart>
+                    <BarEnd>
+                        <BarItem>
+                            <BarLink To=@RelativePageUrls.Settings>
+                                <BarIcon IconName="IconName.Wrench" />
+                                Settings
+                            </BarLink>
+                        </BarItem>
+                    </BarEnd>
+                </BarMenu>
+            </Bar>
+        </LayoutSiderContent>
+    </LayoutSider>
+    <Layout>
+        <LayoutHeader Fixed="true">
+            <Bar Visible="false" Breakpoint="Breakpoint.Desktop" Background="Background.Primary" ThemeContrast="ThemeContrast.Light">
+                @if (!_isLeftBarVisible)
+                {
+                    <BarBrand>
+                        <BarItem>
+                            <BarLink To=@RelativePageUrls.MainView>
+                                <BarIcon IconName="IconName.Dashboard" />
+                                @StaticHelpers.ProjectName
+                            </BarLink>
+                        </BarItem>
+                    </BarBrand>
+                }
 
-	<BarToggler />
-	<BarMenu>
-	 <BarEnd>
-	  <BarItem>
-	   <LoginDisplay />
-	  </BarItem>
-	 </BarEnd>
-	</BarMenu>
-   </Bar>
-  </LayoutHeader>
-  <LayoutContent Padding="Padding.Is4.OnX">
-			@Body
-  </LayoutContent>
-  <LayoutFooter Fixed="true">
-   <Bar Breakpoint="Breakpoint.Desktop" Background="Background.Primary" ThemeContrast="ThemeContrast.Light" Alignment="Alignment.Center">
-	<Heading Size="HeadingSize.Is6" Alignment="TextAlignment.Center">Powered By @RuntimeInformation.FrameworkDescription and deployed from <Link Style="color: #212529;" To="@_repositoryUri?.ToString()">@_gitHash</Link></Heading>
-   </Bar>
-  </LayoutFooter>
- </Layout>
+                <BarToggler />
+                <BarMenu>
+                    <BarEnd>
+                        <BarItem>
+                            <LoginDisplay />
+                        </BarItem>
+                    </BarEnd>
+                </BarMenu>
+            </Bar>
+        </LayoutHeader>
+        <LayoutContent Padding="Padding.Is4.OnX">
+            @Body
+        </LayoutContent>
+        <LayoutFooter Fixed="true">
+            <Bar Breakpoint="Breakpoint.Desktop" Background="Background.Primary" ThemeContrast="ThemeContrast.Light" Alignment="Alignment.Center">
+                <Heading Size="HeadingSize.Is6" Alignment="TextAlignment.Center">Powered By @RuntimeInformation.FrameworkDescription and deployed from <Link Style="color: #212529;" To="@_repositoryUri?.ToString()">@_gitHash</Link></Heading>
+            </Bar>
+        </LayoutFooter>
+    </Layout>
 </Layout>
 
 @code
 {
-	private bool _isLeftBarVisible;
+    private bool _isLeftBarVisible;
 
-	private string? _gitHash;
+    private string? _gitHash;
 
-	private Uri? _repositoryUri;
+    private Uri? _repositoryUri;
 
-	protected override void OnInitialized()
-	{
-		IEnumerable<AssemblyMetadataAttribute> customAttributes = Assembly
-																			.GetAssembly(typeof(Program))
-																			.CheckNotNull("Assembly")
-																			.GetCustomAttributes<AssemblyMetadataAttribute>();
+    protected override void OnInitialized()
+    {
+        IEnumerable<AssemblyMetadataAttribute> customAttributes = Assembly
+                                                                            .GetAssembly(typeof(Program))
+                                                                            .CheckNotNull("Assembly")
+                                                                            .GetCustomAttributes<AssemblyMetadataAttribute>();
 
-		string? gitHash = customAttributes.FirstOrDefault(attr => attr.Key == "GitHash")?.Value;
-		string? repositoryUri = customAttributes.FirstOrDefault(attr => attr.Key == "RepositoryUrl")?.Value;
+        string? gitHash = customAttributes.FirstOrDefault(attr => attr.Key == "GitHash")?.Value;
+        string? repositoryUri = customAttributes.FirstOrDefault(attr => attr.Key == "RepositoryUrl")?.Value;
 
-		if (gitHash is null || repositoryUri is null)
-		{
-			return;
-		}
+        if (gitHash is null || repositoryUri is null)
+        {
+            return;
+        }
 
-		_gitHash = gitHash;
+        _gitHash = gitHash;
 
-		_repositoryUri = new Uri($"{repositoryUri}/commit/{gitHash}");
-	}
+        _repositoryUri = new Uri($"{repositoryUri}/commit/{gitHash}");
+    }
 }
