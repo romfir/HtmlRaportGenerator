@@ -19,8 +19,8 @@
                         <Select TValue="int?" @bind-SelectedValue="DataToEdit!.Hour">
                             <ChildContent>
                                 @foreach (int i in Enumerable.Range(0, 24))
-                                {
-                                    <SelectItem Value="@i">@i</SelectItem>
+                                        {
+                                <SelectItem Value="@i">@i</SelectItem>
                                 }
                             </ChildContent>
                             <Feedback>
@@ -37,8 +37,8 @@
                         <Select TValue="int?" @bind-SelectedValue="DataToEdit!.Quarter">
                             <ChildContent>
                                 @foreach (int i in Enumerable.Range(0, 4))
-                                {
-                                    <SelectItem Value="@i">@(i*15)</SelectItem>
+                                        {
+                                <SelectItem Value="@i">@(i*15)</SelectItem>
                                 }
                             </ChildContent>
                             <Feedback>
@@ -52,9 +52,18 @@
             </Validations>
         </ModalBody>
         <ModalFooter>
-            <Tooltip Text=@((!_isObjectNew && !_previousStateService.IsValueChanged()) ? "Unchanged Data" : null) Placement="Placement.Top" Margin="Margin.IsAuto">
-                <Button Color="Color.Primary" Clicked="SubmitAsync" Disabled="!_isObjectNew && !_previousStateService.IsValueChanged()">Submit</Button>
-            </Tooltip>
+            @if (!_isObjectNew && !_previousStateService.IsValueChanged())
+            {
+                <Tooltip Text="Unchanged Data"
+                     Placement="TooltipPlacement.Top" Margin="Margin.IsAuto">
+                    <Button Color="Color.Primary" Disabled="true">Submit</Button>
+                </Tooltip>
+            }
+            else
+            {
+                <Button Color="Color.Primary" Clicked="SubmitAsync">Submit</Button>
+            }
+
             <Button Color="Color.Secondary" Clicked="CancelAsync" Margin="Margin.IsAuto">Cancel</Button>
         </ModalFooter>
     </ModalContent>
