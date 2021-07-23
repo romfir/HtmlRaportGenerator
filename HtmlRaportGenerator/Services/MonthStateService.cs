@@ -49,7 +49,7 @@ namespace HtmlRaportGenerator.Services
                 bool result = await _googleDriveService.SaveAsync(StaticHelpers.DataStoreTypeKey, nextStore)
                     .ConfigureAwait(false);
 
-                if(!result)
+                if (!result)
                 {
                     return false;
                 }
@@ -106,7 +106,7 @@ namespace HtmlRaportGenerator.Services
             {
                 DataStore.LocalStorage => await _localStorageService.GetItemAsync<List<Day>>(yearMonth)
                     .ConfigureAwait(false),
-                DataStore.GoogleDrive => await _googleDriveService.GetAsync<List<Day>>(yearMonth, GoogleDriveContext.Default.ListHtmlRaportGeneratorModelsDay)
+                DataStore.GoogleDrive => await _googleDriveService.GetAsync<List<Day>>(yearMonth, GoogleDriveContext.Default.ListDay)
                     .ConfigureAwait(false),
                 _ => null
             };
