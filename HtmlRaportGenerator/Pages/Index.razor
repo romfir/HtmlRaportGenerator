@@ -133,7 +133,7 @@
     {
         ButtonState = DayInputState.DataLoading;
 
-        CurrentMonthDays = await _stateService.GetAsync(CurrentYearMonth).ConfigureAwait(false);
+        CurrentMonthDays = (await _stateService.GetAsync(CurrentYearMonth).ConfigureAwait(false))?.ToList();
         int currentDayNumber = _currentDate.Day;
 
         if (CurrentMonthDays is null)

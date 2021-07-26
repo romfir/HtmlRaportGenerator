@@ -16,7 +16,7 @@ namespace HtmlRaportGenerator.Services
 
         private readonly AuthenticationStateProvider _authenticationStateProvider;
 
-        private Dictionary<string, List<Day>> _cachedDays = new();
+        private Dictionary<string, IReadOnlyCollection<Day>> _cachedDays = new();
 
         public MonthStateService(GoogleDriveService googleDriveService, ILocalStorageService localStorageService, AuthenticationStateProvider authenticationStateProvider)
         {
@@ -60,7 +60,7 @@ namespace HtmlRaportGenerator.Services
             return true;
         }
 
-        public async Task<bool> SaveAsync(List<Day> days, string yearMonth)
+        public async Task<bool> SaveAsync(IReadOnlyCollection<Day> days, string yearMonth)
         {
             days.CheckNotNull(nameof(days));
 
@@ -93,20 +93,20 @@ namespace HtmlRaportGenerator.Services
             return result;
         }
 
-        public async ValueTask<List<Day>?> GetAsync(string yearMonth)
+        public async ValueTask<IReadOnlyCollection<Day>?> GetAsync(string yearMonth)
         {
-            if (_cachedDays.TryGetValue(yearMonth, out List<Day>? result))
+            if (_cachedDays.TryGetValue(yearMonth, out IReadOnlyCollection<Day>? result))
             {
                 return result;
             }
 
             await LoadConfigurationIfEmptyAsync().ConfigureAwait(false);
 
-            List<Day>? days = _currentDataStore switch
+            IReadOnlyCollection<Day>? days = _currentDataStore switch
             {
-                DataStore.LocalStorage => await _localStorageService.GetItemAsync<List<Day>>(yearMonth)
+                DataStore.LocalStorage => await _localStorageService.GetItemAsync<IReadOnlyCollection<Day>>(yearMonth)
                     .ConfigureAwait(false),
-                DataStore.GoogleDrive => await _googleDriveService.GetAsync<List<Day>>(yearMonth, GoogleDriveContext.Default.ListDay)
+                DataStore.GoogleDrive => await _googleDriveService.GetAsync<IReadOnlyCollection<Day>>(yearMonth, GoogleDriveContext.Default.ListDay)
                     .ConfigureAwait(false),
                 _ => null
             };
@@ -154,6 +154,6 @@ namespace HtmlRaportGenerator.Services
         }
 
         public void ClearCache()
-            => _cachedDays = new Dictionary<string, List<Day>>();
+            => _cachedDays = new Dictionary<string, IReadOnlyCollection<Day>>();
     }
 }
