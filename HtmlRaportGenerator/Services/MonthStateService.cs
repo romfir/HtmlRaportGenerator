@@ -106,7 +106,7 @@ namespace HtmlRaportGenerator.Services
             {
                 DataStore.LocalStorage => await _localStorageService.GetItemAsync<IReadOnlyCollection<Day>>(yearMonth)
                     .ConfigureAwait(false),
-                DataStore.GoogleDrive => await _googleDriveService.GetAsync<IReadOnlyCollection<Day>>(yearMonth, GoogleDriveContext.Default.ListDay)
+                DataStore.GoogleDrive => await _googleDriveService.GetAsync<IReadOnlyCollection<Day>>(yearMonth, GoogleDriveContext.Default.IReadOnlyCollectionDay)
                     .ConfigureAwait(false),
                 _ => null
             };

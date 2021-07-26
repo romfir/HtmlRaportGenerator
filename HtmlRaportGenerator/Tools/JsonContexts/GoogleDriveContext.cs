@@ -10,7 +10,7 @@ namespace HtmlRaportGenerator.Tools.JsonContexts
     //[JsonSerializable(typeof(GoogleFileToSend))]
     //[JsonSerializable(typeof(GoogleFilesResponse))]
     [JsonSerializable(typeof(DataStore))]
-    [JsonSerializable(typeof(List<Day>))]
+    [JsonSerializable(typeof(IReadOnlyCollection<Day>))]
     internal partial class GoogleDriveContext : JsonSerializerContext
     {
     }
