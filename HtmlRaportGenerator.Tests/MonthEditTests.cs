@@ -87,7 +87,7 @@ namespace HtmlRaportGenerator.Tests
                 .ConfigureAwait(false);
 
             string? shiftStartedTime =
-                await Page.TextContentAsync($"tbody > tr:nth-child({currentDayNumber}) > td:nth-child(5) > div")
+                await Page.TextContentAsync($"tbody > tr:nth-child({currentDayNumber}) > td:nth-child(5)")
                 .ConfigureAwait(false);
 
             Assert.NotNull(shiftStartedTime);
