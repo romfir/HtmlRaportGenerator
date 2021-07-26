@@ -8,7 +8,16 @@
 <Row Margin="Margin.Is2.FromTop.Is4.FromTop">
     <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
         <Heading Size="HeadingSize.Is1" Alignment="TextAlignment.Center">
-            <DatePicker TValue="DateTime?" @bind-Date="@MonthForInput" InputMode="DateInputMode.Month" />
+            <Addons>
+            <Addon AddonType="AddonType.Body">
+            <DatePicker TValue="DateTime?" @ref="@_monthPicker" @bind-Date="@MonthForInput" InputMode="DateInputMode.Month"/>
+            </Addon>
+            <Addon AddonType="AddonType.End">
+                <Button Color="Color.Dark" Clicked="@(()=>_monthPicker.ToggleAsync())">
+                    <Icon Name="IconName.CalendarDay" />
+                </Button>
+            </Addon>
+            </Addons>
         </Heading>
     </Column>
 </Row>
@@ -219,6 +228,8 @@ else
     }
 
     private List<Day>? _days;
+
+    private DatePicker<DateTime?> _monthPicker = null!;
 
     private bool _isTableSaving;
 
