@@ -8,7 +8,16 @@
 <Row Margin="Margin.Is2.FromTop.Is4.FromTop">
     <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
         <Heading Size="HeadingSize.Is1" Alignment="TextAlignment.Center">
-            <DateEdit TValue="DateTime?" @bind-Date="@MonthForInput" />
+            <Addons>
+            <Addon AddonType="AddonType.Body">
+            <DatePicker TValue="DateTime?" @ref="@_monthPicker" @bind-Date="@MonthForInput" InputMode="DateInputMode.Month"/>
+            </Addon>
+            <Addon AddonType="AddonType.End">
+                <Button Color="Color.Dark" Clicked="@(()=>_monthPicker.ToggleAsync())">
+                    <Icon Name="IconName.CalendarDay" />
+                </Button>
+            </Addon>
+            </Addons>
         </Heading>
     </Column>
 </Row>
@@ -77,114 +86,116 @@ else
                 <DeleteCommandTemplate>
                     @if (context.Item.AnyRelevantValueExists())
                     {
-                        <Button Color="Color.Danger" Clicked="context.Clicked">Clear</Button>
-                    }
-                </DeleteCommandTemplate>
-                <CancelCommandTemplate>
-                    <Button Color="Color.Secondary" Clicked="context.Clicked">
-                        @context.LocalizationString
-                    </Button>
-                </CancelCommandTemplate>
-                <ClearFilterCommandTemplate>
-                    <Button Color="Color.Warning" Clicked="context.Clicked">
-                        @context.LocalizationString
-                    </Button>
-                </ClearFilterCommandTemplate>
-            </DataGridCommandColumn>
-            <DataGridNumericColumn TItem="Day"
+                <Button Color="Color.Danger" Clicked="context.Clicked">Clear</Button>
+                }
+            </DeleteCommandTemplate>
+            <CancelCommandTemplate>
+                <Button Color="Color.Secondary" Clicked="context.Clicked">
+                    @context.LocalizationString
+                </Button>
+            </CancelCommandTemplate>
+            <ClearFilterCommandTemplate>
+                <Button Color="Color.Warning" Clicked="context.Clicked">
+                    @context.LocalizationString
+                </Button>
+            </ClearFilterCommandTemplate>
+        </DataGridCommandColumn>
+        <DataGridNumericColumn TItem="Day"
                                Field="@nameof(Day.DayNumber)"
                                Caption="Day of Month"
                                Readonly="true"
                                HeaderTextAlignment="TextAlignment.Center"
                                TextAlignment="TextAlignment.Center">
-                <DisplayTemplate>
-                    <Text Alignment="TextAlignment.Center">
-                        @context.DayNumber
-                    </Text>
-                </DisplayTemplate>
-            </DataGridNumericColumn>
-            <DataGridNumericColumn TItem="Day"
+            <DisplayTemplate>
+                <Text Alignment="TextAlignment.Center">
+                    @context.DayNumber
+                </Text>
+            </DisplayTemplate>
+        </DataGridNumericColumn>
+        <DataGridNumericColumn TItem="Day"
                                Field="@nameof(Day.HourWithQuarterFromParsed)"
                                Caption="Start Time"
                                Editable="true"
                                HeaderTextAlignment="TextAlignment.Center"
                                TextAlignment="TextAlignment.Center">
-                <DisplayTemplate>
-                    @if (context.HourWithQuarterFromParsed is not null)
+            <DisplayTemplate>
+                @if (context.HourWithQuarterFromParsed is not null)
                     {
-                        <TimeEdit Style="text-align:center;"
+                <TimeEdit Style="text-align:center;"
                           TValue="TimeSpan?"
                           Time="TimeSpan.FromHours((double)context.HourWithQuarterFromParsed)"
+                          Step="900"
                           ReadOnly="true" />
-                    }
-                </DisplayTemplate>
+                }
+            </DisplayTemplate>
 
-                <EditTemplate>
-                    <TimeEdit Style="text-align:center;"
+            <EditTemplate>
+                <TimeEdit Style="text-align:center;"
                           TValue="TimeSpan?"
                           Time="(context.CellValue is not null ? TimeSpan.FromHours((double)context.CellValue) : null)"
                           DelayTextOnKeyPress="true"
                           DelayTextOnKeyPressInterval="300"
-                          step="900"
+                          Step="900"
                           TimeChanged="@(v => context.CellValue = v?.TotalHours)" />
-                </EditTemplate>
-            </DataGridNumericColumn>
+            </EditTemplate>
+        </DataGridNumericColumn>
 
-            <DataGridNumericColumn TItem="Day"
+        <DataGridNumericColumn TItem="Day"
                                Field="@nameof(Day.HourWithQuarterToParsed)"
                                Caption="End Time"
                                Editable="true"
                                HeaderTextAlignment="TextAlignment.Center"
                                TextAlignment="TextAlignment.Center">
-                <DisplayTemplate>
-                    @if (context.HourWithQuarterToParsed is not null)
+            <DisplayTemplate>
+                @if (context.HourWithQuarterToParsed is not null)
                     {
-                        <TimeEdit Style="text-align:center;"
+                <TimeEdit Style="text-align:center;"
                           TValue="TimeSpan?"
                           Time="TimeSpan.FromHours((double)context.HourWithQuarterToParsed)"
+                          Step="900"
                           ReadOnly="true" />
-                    }
-                </DisplayTemplate>
-                <EditTemplate>
-                    <TimeEdit Style="text-align:center;"
+                }
+            </DisplayTemplate>
+            <EditTemplate>
+                <TimeEdit Style="text-align:center;"
                           TValue="TimeSpan?"
                           Time="context.CellValue is not null ? TimeSpan.FromHours((double)context.CellValue) : null"
                           DelayTextOnKeyPress="true"
                           DelayTextOnKeyPressInterval="300"
-                          step="900"
+                          Step="900"
                           TimeChanged="@(v => context.CellValue = v?.TotalHours)" />
-                </EditTemplate>
-            </DataGridNumericColumn>
+            </EditTemplate>
+        </DataGridNumericColumn>
 
-            <DataGridNumericColumn TItem="Day"
+        <DataGridNumericColumn TItem="Day"
                                Field="@nameof(Day.HourSum)"
                                Caption="Hours Sum"
                                HeaderTextAlignment="TextAlignment.Center"
                                TextAlignment="TextAlignment.Center">
-                <DisplayTemplate>
-                    <Text Alignment="TextAlignment.Center">
-                        @context.HourSum?.FormatDoubleToTime()
-                    </Text>
-                </DisplayTemplate>
-                <EditTemplate>
-                    <Text Alignment="TextAlignment.Center">
-                        @context.Item.HourSum?.FormatDoubleToTime()
-                    </Text>
-                </EditTemplate>
-            </DataGridNumericColumn>
-        </DataGridColumns>
-    </DataGrid>
+            <DisplayTemplate>
+                <Text Alignment="TextAlignment.Center">
+                    @context.HourSum?.FormatDoubleToTime()
+                </Text>
+            </DisplayTemplate>
+            <EditTemplate>
+                <Text Alignment="TextAlignment.Center">
+                    @context.Item.HourSum?.FormatDoubleToTime()
+                </Text>
+            </EditTemplate>
+        </DataGridNumericColumn>
+    </DataGridColumns>
+</DataGrid>
 
     <Row Margin="Margin.Is4.FromBottom">
         <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
-            <Tooltip Text=@(_previousStateDayService.IsValueChanged() ? null : "Unchanged Data") Placement="Placement.Top" Margin="Margin.IsAuto">
+            <Tooltip Text=@(_previousStateDayService.IsValueChanged() ? null : "Unchanged Data") Placement="TooltipPlacement.Top" Margin="Margin.IsAuto">
                 <Button Color="Color.Primary" Loading="_isTableSaving" Disabled="_isTableSaving || !_previousStateDayService.IsValueChanged()" Clicked="HandleValidSubmitAsync">
                     @SaveButtonText
                 </Button>
             </Tooltip>
         </Column>
         <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
-            <Tooltip Text=@(_previousStateDayService.IsValueChanged() ? null : "Unchanged Data") Placement="Placement.Top" Margin="Margin.IsAuto">
+            <Tooltip Text=@(_previousStateDayService.IsValueChanged() ? null : "Unchanged Data") Placement="TooltipPlacement.Top" Margin="Margin.IsAuto">
                 <Button Color="Color.Danger" Disabled="_isTableSaving || !_previousStateDayService.IsValueChanged()" Clicked="_previousStateDayService.Rollback">
                     Clear Changes
                 </Button>
@@ -217,6 +228,8 @@ else
     }
 
     private List<Day>? _days;
+
+    private DatePicker<DateTime?> _monthPicker = null!;
 
     private bool _isTableSaving;
 
@@ -254,7 +267,7 @@ else
 
     private async Task UpdateCalendarGridAsync()
     {
-        List<Day> days = await _stateService.GetAsync(Month!.Value.ToYearMonth()) ?? new List<Day>();
+        List<Day> days = (await _stateService.GetAsync(Month!.Value.ToYearMonth()))?.ToList() ?? new List<Day>();
 
         foreach (DateTime day in Month.Value.AllDatesInMonth())
         {

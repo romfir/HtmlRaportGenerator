@@ -33,7 +33,10 @@ namespace HtmlRaportGenerator.Tests.TestTools
             _playwright = await Playwright.CreateAsync().ConfigureAwait(false);
 
             Browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
-            { Timeout = 5000, Headless = _headless })
+            {
+                Timeout = 5000,
+                Headless = _headless
+            })
                 .ConfigureAwait(false);
 
             Page = await Browser.NewPageAsync(new BrowserNewPageOptions { IgnoreHTTPSErrors = true })
