@@ -10,6 +10,7 @@
     <RepositoryType>git</RepositoryType>
     <MSBuildGitHashCommand>git describe --long --always</MSBuildGitHashCommand>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
