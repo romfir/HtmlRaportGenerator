@@ -6,6 +6,7 @@
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <IsPackable>false</IsPackable>
     <AnalysisLevel>preview</AnalysisLevel>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
