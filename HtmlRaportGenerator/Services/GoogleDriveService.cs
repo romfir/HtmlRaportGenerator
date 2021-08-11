@@ -48,8 +48,8 @@ namespace HtmlRaportGenerator.Services
             {
                 {
 #pragma warning disable CA2000 // Dispose objects before losing scope, MultipartFormDataContent Disposes its child contents
-                    JsonContent.Create(new GoogleFileToSend 
-                    { 
+                    JsonContent.Create(new GoogleFileToSend
+                    {
                         Description = $"File used by {nameof(HtmlRaportGenerator)}",
                         MimeType = "application/json",
                         Name = key + ".json"
@@ -59,9 +59,9 @@ namespace HtmlRaportGenerator.Services
                     ),
                     "Metadata"
                 },
-                { 
+                {
                     JsonContent.Create(data, new MediaTypeHeaderValue("multipart/related")),
-                    "Media" 
+                    "Media"
                 }
 #pragma warning restore CA2000 // Dispose objects before losing scope
 
@@ -144,7 +144,7 @@ namespace HtmlRaportGenerator.Services
                 return default;
             }
 
-            if(jsonTypeInfo is not null)
+            if (jsonTypeInfo is not null)
             {
                 return await _httpClient.GetFromJsonAsync(new Uri(_httpClient.BaseAddress!, $@"drive/v3/files/{Uri.EscapeDataString(matchingFile.Id)}?alt=media"), jsonTypeInfo)
                 .ConfigureAwait(false);

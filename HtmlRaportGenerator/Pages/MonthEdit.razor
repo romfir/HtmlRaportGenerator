@@ -9,14 +9,14 @@
     <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
         <Heading Size="HeadingSize.Is1" Alignment="TextAlignment.Center">
             <Addons>
-            <Addon AddonType="AddonType.Body">
-            <DatePicker TValue="DateTime?" @ref="@_monthPicker" @bind-Date="@MonthForInput" InputMode="DateInputMode.Month"/>
-            </Addon>
-            <Addon AddonType="AddonType.End">
-                <Button Color="Color.Dark" Clicked="@(()=>_monthPicker.ToggleAsync())">
-                    <Icon Name="IconName.CalendarDay" />
-                </Button>
-            </Addon>
+                <Addon AddonType="AddonType.Body">
+                    <DatePicker TValue="DateTime?" @ref="@_monthPicker" @bind-Date="@MonthForInput" InputMode="DateInputMode.Month" />
+                </Addon>
+                <Addon AddonType="AddonType.End">
+                    <Button Color="Color.Dark" Clicked="@(()=>_monthPicker.ToggleAsync())">
+                        <Icon Name="IconName.CalendarDay" />
+                    </Button>
+                </Addon>
             </Addons>
         </Heading>
     </Column>
@@ -268,6 +268,12 @@ else
     private async Task UpdateCalendarGridAsync()
     {
         List<Day> days = (await _stateService.GetAsync(Month!.Value.ToYearMonth()))?.ToList() ?? new List<Day>();
+
+        foreach (Day day in days)
+        {
+            Console.WriteLine(day.DayNumber);
+            Console.WriteLine(day.From.HourWithQuarterSum);
+        }
 
         foreach (DateTime day in Month.Value.AllDatesInMonth())
         {
