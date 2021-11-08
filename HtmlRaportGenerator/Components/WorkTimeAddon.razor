@@ -1,25 +1,26 @@
 ﻿<Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
-    <Addons>
-        <Addon AddonType="AddonType.Start">
-            <AddonLabel>
-                @LabelText
-            </AddonLabel>
-        </Addon>
-        <Addon AddonType="AddonType.End" Class="text-center">
-            <Button Color="Color.Primary" Clicked="Clicked">
-                @ButtonText
-            </Button>
-        </Addon>
-    </Addons>
+	<Addons>
+		<Addon AddonType="AddonType.Start">
+			<AddonLabel>
+				@LabelText
+			</AddonLabel>
+		</Addon>
+		<Addon AddonType="AddonType.End" Class="text-center">
+			<Button Color="Color.Primary" Clicked="Clicked">
+				@ButtonText
+			</Button>
+		</Addon>
+	</Addons>
 </Column>
 
-@code {
-    [Parameter]
-    public string LabelText { get; set; } = null!;
+@code
+{
+	[Parameter]
+	public string LabelText { get; set; } = null!;
 
-    [Parameter]
-    public string ButtonText { get; set; } = null!;
+	[Parameter]
+	public string ButtonText { get; set; } = null!;
 
-    [Parameter]
-    public EventCallback Clicked { get; set; }
+	[Parameter]
+	public EventCallback Clicked { get; set; }
 }
