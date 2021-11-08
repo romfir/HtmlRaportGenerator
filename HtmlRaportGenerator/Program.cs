@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using HtmlRaportGenerator.Tools.ServicesExtensions;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace HtmlRaportGenerator
 {
@@ -25,6 +26,7 @@ namespace HtmlRaportGenerator
                           .AddFontAwesomeIcons();
 
             builder.RootComponents.Add<App>("#app");
+            builder.RootComponents.Add<HeadOutlet>("head::after");
 
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 

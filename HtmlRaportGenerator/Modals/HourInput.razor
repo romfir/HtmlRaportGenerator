@@ -1,163 +1,163 @@
 ﻿@inject IPreviousState<HourWithQuarter> _previousStateService
 
 <Modal @ref="_modalRef" Closing="OnModalClosingInternal">
-    <ModalContent Centered="true" Size="ModalSize.Small">
-        <ModalHeader>
-            <Heading Size="HeadingSize.Is1" Alignment="TextAlignment.Center">
-                <ModalTitle>
-                    @_title
-                </ModalTitle>
-            </Heading>
+	<ModalContent Centered="true" Size="ModalSize.Small">
+		<ModalHeader>
+			<Heading Size="HeadingSize.Is1" Alignment="TextAlignment.Center">
+				<ModalTitle>
+					@_title
+				</ModalTitle>
+			</Heading>
 
-            <CloseButton Clicked="async () => await RestoreEditedOrSendNewAsync().ConfigureAwait(false)" />
-        </ModalHeader>
-        <ModalBody>
-            <Validations Mode="ValidationMode.Auto" Model="@DataToEdit" @ref="_validations">
-                <Validation>
-                    <Field>
-                        <FieldLabel>Hour</FieldLabel>
-                        <Select TValue="int?" @bind-SelectedValue="DataToEdit!.Hour">
-                            <ChildContent>
-                                @foreach (int i in Enumerable.Range(0, 24))
-                                        {
-                                <SelectItem Value="@i">@i</SelectItem>
-                                }
-                            </ChildContent>
-                            <Feedback>
-                                <ValidationNone />
-                                <ValidationSuccess />
-                                <ValidationError />
-                            </Feedback>
-                        </Select>
-                    </Field>
-                </Validation>
-                <Validation>
-                    <Field>
-                        <FieldLabel>Minutes</FieldLabel>
-                        <Select TValue="int?" @bind-SelectedValue="DataToEdit!.Quarter">
-                            <ChildContent>
-                                @foreach (int i in Enumerable.Range(0, 4))
-                                        {
-                                <SelectItem Value="@i">@(i*15)</SelectItem>
-                                }
-                            </ChildContent>
-                            <Feedback>
-                                <ValidationNone />
-                                <ValidationSuccess />
-                                <ValidationError />
-                            </Feedback>
-                        </Select>
-                    </Field>
-                </Validation>
-            </Validations>
-        </ModalBody>
-        <ModalFooter>
-            @if (!_isObjectNew && !_previousStateService.IsValueChanged())
-            {
-                <Tooltip Text="Unchanged Data"
+			<CloseButton Clicked="async () => await RestoreEditedOrSendNewAsync().ConfigureAwait(false)" />
+		</ModalHeader>
+		<ModalBody>
+			<Validations Mode="ValidationMode.Auto" Model="@DataToEdit" @ref="_validations">
+				<Validation>
+					<Field>
+						<FieldLabel>Hour</FieldLabel>
+						<Select TValue="int?" @bind-SelectedValue="DataToEdit!.Hour">
+							<ChildContent>
+								@foreach (int i in Enumerable.Range(0, 24))
+								{
+									<SelectItem Value="@i">@i</SelectItem>
+								}
+							</ChildContent>
+							<Feedback>
+								<ValidationNone />
+								<ValidationSuccess />
+								<ValidationError />
+							</Feedback>
+						</Select>
+					</Field>
+				</Validation>
+				<Validation>
+					<Field>
+						<FieldLabel>Minutes</FieldLabel>
+						<Select TValue="int?" @bind-SelectedValue="DataToEdit!.Quarter">
+							<ChildContent>
+								@foreach (int i in Enumerable.Range(0, 4))
+								{
+									<SelectItem Value="@i">@(i*15)</SelectItem>
+								}
+							</ChildContent>
+							<Feedback>
+								<ValidationNone />
+								<ValidationSuccess />
+								<ValidationError />
+							</Feedback>
+						</Select>
+					</Field>
+				</Validation>
+			</Validations>
+		</ModalBody>
+		<ModalFooter>
+			@if (!_isObjectNew && !_previousStateService.IsValueChanged())
+			{
+					<Tooltip Text="Unchanged Data"
                      Placement="TooltipPlacement.Top" Margin="Margin.IsAuto">
-                    <Button Color="Color.Primary" Disabled="true">Submit</Button>
-                </Tooltip>
-            }
-            else
-            {
-                <Button Color="Color.Primary" Clicked="SubmitAsync">Submit</Button>
-            }
+						<Button Color="Color.Primary" Disabled="true">Submit</Button>
+					</Tooltip>
+			}
+			else
+			{
+					<Button Color="Color.Primary" Clicked="SubmitAsync">Submit</Button>
+			}
 
-            <Button Color="Color.Secondary" Clicked="CancelAsync" Margin="Margin.IsAuto">Cancel</Button>
-        </ModalFooter>
-    </ModalContent>
+			<Button Color="Color.Secondary" Clicked="CancelAsync" Margin="Margin.IsAuto">Cancel</Button>
+		</ModalFooter>
+	</ModalContent>
 </Modal>
 
 @code {
-    [Parameter]
-    public EventCallback OnFormSubmitted { get; set; }
+	[Parameter]
+	public EventCallback OnFormSubmitted { get; set; }
 
-    [Parameter]
-    public EventCallback<HourWithQuarter?> OnFormCancel { get; set; }
+	[Parameter]
+	public EventCallback<HourWithQuarter?> OnFormCancel { get; set; }
 
-    [Parameter]
-    public EventCallback HoursHaveChanged { get; set; }
+	[Parameter]
+	public EventCallback HoursHaveChanged { get; set; }
 
-    private HourWithQuarter? DataToEdit { get; set; } = null;
+	private HourWithQuarter? DataToEdit { get; set; } = null;
 
-    private Modal _modalRef = null!;
+	private Modal _modalRef = null!;
 
-    private Validations? _validations;
+	private Validations? _validations;
 
-    private string _title = null!;
+	private string _title = null!;
 
-    private bool _isObjectNew;
+	private bool _isObjectNew;
 
-    private async Task SubmitAsync()
-    {
-        if (_validations!.ValidateAll())
-        {
-            HideModal();
+	private async Task SubmitAsync()
+	{
+		if (_validations!.ValidateAll())
+		{
+			HideModal();
 
-            await OnFormSubmitted.InvokeAsync();
-        }
-    }
+			await OnFormSubmitted.InvokeAsync();
+		}
+	}
 
-    private void HideModal()
-        => _modalRef.Hide();
+	private void HideModal()
+		=> _modalRef.Hide();
 
-    public void ShowModal(string title, HourWithQuarter existingHour, bool isObjectNew)
-    {
-        _isObjectNew = isObjectNew;
+	public void ShowModal(string title, HourWithQuarter existingHour, bool isObjectNew)
+	{
+		_isObjectNew = isObjectNew;
 
-        existingHour.PropertyChanged += async (s, e) => await HoursHaveChanged.InvokeAsync();
+		existingHour.PropertyChanged += async (s, e) => await HoursHaveChanged.InvokeAsync();
 
-        _previousStateService.Load(existingHour);
+		_previousStateService.Load(existingHour);
 
-        DataToEdit = existingHour;
+		DataToEdit = existingHour;
 
-        ShowModal(title);
-    }
+		ShowModal(title);
+	}
 
-    private void ShowModal(string title)
-    {
-        _title = title;
+	private void ShowModal(string title)
+	{
+		_title = title;
 
-        _modalRef.Show();
-    }
+		_modalRef.Show();
+	}
 
-    private async Task CancelAsync()
-    {
-        HideModal();
+	private async Task CancelAsync()
+	{
+		HideModal();
 
-        await RestoreEditedOrSendNewAsync().ConfigureAwait(false);
-    }
+		await RestoreEditedOrSendNewAsync().ConfigureAwait(false);
+	}
 
-    private async Task RestoreEditedOrSendNewAsync()
-    {
-        if (_isObjectNew)
-        {
-            await OnFormCancel.InvokeAsync(DataToEdit).ConfigureAwait(false);
-        }
-        else if (_previousStateService.IsValueChanged())
-        {
-            await RestoreOriginalStateAsync();
-            await OnFormCancel.InvokeAsync(null).ConfigureAwait(false);
-        }
-    }
+	private async Task RestoreEditedOrSendNewAsync()
+	{
+		if (_isObjectNew)
+		{
+			await OnFormCancel.InvokeAsync(DataToEdit).ConfigureAwait(false);
+		}
+		else if (_previousStateService.IsValueChanged())
+		{
+			await RestoreOriginalStateAsync();
+			await OnFormCancel.InvokeAsync(null).ConfigureAwait(false);
+		}
+	}
 
-    protected override void OnParametersSet()
-    {
-        DataToEdit ??= new HourWithQuarter(DateTime.Now);
-    }
+	protected override void OnParametersSet()
+	{
+		DataToEdit ??= new HourWithQuarter(DateTime.Now);
+	}
 
-    private void OnModalClosingInternal(ModalClosingEventArgs e)
-    {
-        if (e.CloseReason == CloseReason.FocusLostClosing)
-        {
-            e.Cancel = true;
-        }
-    }
+	private void OnModalClosingInternal(ModalClosingEventArgs e)
+	{
+		if (e.CloseReason == CloseReason.FocusLostClosing)
+		{
+			e.Cancel = true;
+		}
+	}
 
-    private Task RestoreOriginalStateAsync()
-    {
-        _previousStateService.Rollback();
-        return HoursHaveChanged.InvokeAsync();
-    }
+	private Task RestoreOriginalStateAsync()
+	{
+		_previousStateService.Rollback();
+		return HoursHaveChanged.InvokeAsync();
+	}
  }
