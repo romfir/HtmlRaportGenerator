@@ -17,7 +17,7 @@ jobs:
     - name: Setup .NET 5 and 6 SDK (5 for playwright)
       uses: actions/setup-dotnet@v1.9.0
       with:
-        dotnet-version: | 
+        dotnet-version: |
           3.*
           5.*
         include-prerelease: True
