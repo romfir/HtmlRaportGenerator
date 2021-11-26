@@ -18,8 +18,8 @@ jobs:
       uses: actions/setup-dotnet@v1.9.0
       with:
         dotnet-version: |
-          3.*
           5.*
+          6.*
         include-prerelease: True
 
     - name: restore project
