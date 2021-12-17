@@ -57,7 +57,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-RsAPK+U+sr1\/jFb3oAQxO71gaAvzinT6LXGUtCtC7n8=",
+      "hash": "sha256-0WonFIU5lVkm9JGXPE3BWep9prNEOIFWXKvVH7zLNKc=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -89,7 +89,7 @@
       "url": "_framework\/Blazorise.Icons.FontAwesome.dll"
     },
     {
-      "hash": "sha256-OfMvKuVBV620HGeGYNnEovuwnGhabVM1w5yySMkt78I=",
+      "hash": "sha256-sa5GvllbP5Dsezd7d\/t6Px1\/XBas6IZtbjTaCp2SGf8=",
       "url": "_framework\/HtmlRaportGenerator.dll"
     },
     {
@@ -117,7 +117,7 @@
       "url": "_framework\/Microsoft.AspNetCore.Components.WebAssembly.Authentication.dll"
     },
     {
-      "hash": "sha256-TzNA9k+CvmrjysXBKPJ60gdQpan+2u2s6c1txDhoVsc=",
+      "hash": "sha256-ucTMTzDvh1croadneRau6rNEOYrRNr1kEYQ5iSWTiM4=",
       "url": "_framework\/Microsoft.AspNetCore.Components.WebAssembly.dll"
     },
     {
@@ -177,7 +177,7 @@
       "url": "_framework\/Microsoft.JSInterop.dll"
     },
     {
-      "hash": "sha256-vnE\/f0iqOlVKaRjTpLiArMb+lw6INqH0HhqcMh9FPe0=",
+      "hash": "sha256-tih3TKmOjYrl+o3SczeBm5S8k9z64PGQPF13n7WOKl0=",
       "url": "_framework\/Microsoft.JSInterop.WebAssembly.dll"
     },
     {
@@ -417,5 +417,5 @@
       "url": "_content\/Microsoft.AspNetCore.Components.WebAssembly.Authentication\/AuthenticationService.js"
     }
   ],
-  "version": "Er6iUcYp"
+  "version": "0UJ+L1G7"
 };
