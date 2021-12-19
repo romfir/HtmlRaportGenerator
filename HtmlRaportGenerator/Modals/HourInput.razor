@@ -1,6 +1,6 @@
 ﻿@inject IPreviousState<HourWithQuarter> _previousStateService
 
-<Modal @ref="_modalRef" Closing="OnModalClosingInternal">
+<Modal @ref="_modalRef" Closing="OnModalClosingInternalAsync">
 	<ModalContent Centered="true" Size="ModalSize.Small">
 		<ModalHeader>
 			<Heading Size="HeadingSize.Is1" Alignment="TextAlignment.Center">
@@ -69,7 +69,8 @@
 	</ModalContent>
 </Modal>
 
-@code {
+@code
+{
 	[Parameter]
 	public EventCallback OnFormSubmitted { get; set; }
 
@@ -91,7 +92,7 @@
 
 	private async Task SubmitAsync()
 	{
-		if (_validations!.ValidateAll())
+		if (await _validations!.ValidateAll())
 		{
 			HideModal();
 
@@ -106,7 +107,7 @@
 	{
 		_isObjectNew = isObjectNew;
 
-		existingHour.PropertyChanged += async (s, e) => await HoursHaveChanged.InvokeAsync();
+		existingHour.PropertyChanged += async (_, _) => await HoursHaveChanged.InvokeAsync();
 
 		_previousStateService.Load(existingHour);
 
@@ -147,12 +148,14 @@
 		DataToEdit ??= new HourWithQuarter(DateTime.Now);
 	}
 
-	private void OnModalClosingInternal(ModalClosingEventArgs e)
+	private Task OnModalClosingInternalAsync(ModalClosingEventArgs e)
 	{
 		if (e.CloseReason == CloseReason.FocusLostClosing)
 		{
 			e.Cancel = true;
 		}
+
+	    return Task.CompletedTask;
 	}
 
 	private Task RestoreOriginalStateAsync()
