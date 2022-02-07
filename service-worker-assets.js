@@ -57,11 +57,11 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-lhwddRD+qkf8wo\/5hntNPDMiROrHi2NeEVkrMKNVDko=",
+      "hash": "sha256-ZoZVpMzjGtdtUQ0urGT\/wDAr0OxRfX0sfPo3MW3R00k=",
       "url": "_framework\/blazor.boot.json"
     },
     {
-      "hash": "sha256-aVHUhM8BAPs0l3zE2kxwbmWoaUsGBIe72HEH7NA3WMc=",
+      "hash": "sha256-uNYyaL9rpjmA2uF9zP55k5t9afAfIQUk0oArKTAeAS0=",
       "url": "_framework\/AutoMapper.dll"
     },
     {
@@ -89,7 +89,7 @@
       "url": "_framework\/Blazorise.Icons.FontAwesome.dll"
     },
     {
-      "hash": "sha256-kupGY45hdPYc+Qb0iSFto7CuO9ditGr3mEQ\/zRdES+s=",
+      "hash": "sha256-hdw1pT+vyEyae7OmsfhlX4\/wIJpnjbRH0m8+dd5sloY=",
       "url": "_framework\/HtmlRaportGenerator.dll"
     },
     {
@@ -193,7 +193,7 @@
       "url": "_framework\/System.Collections.Concurrent.dll"
     },
     {
-      "hash": "sha256-9IvMN2e3KDomDnWpwNODar3LZhVv7s3cBTOiRlZrkbc=",
+      "hash": "sha256-w2ceMsRaSckoJo7Eu\/399QOpTGitAHmRr\/LEhzimqso=",
       "url": "_framework\/System.Collections.dll"
     },
     {
@@ -513,5 +513,5 @@
       "url": "_content\/Microsoft.AspNetCore.Components.WebAssembly.Authentication\/AuthenticationService.js"
     }
   ],
-  "version": "4xyznn1D"
+  "version": "oeA6iwf8"
 };
