@@ -57,7 +57,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-4pCusRN4LYY4iBTd9QHsMook3h9bexS+PUjt\/y79NEk=",
+      "hash": "sha256-lhwddRD+qkf8wo\/5hntNPDMiROrHi2NeEVkrMKNVDko=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -69,7 +69,7 @@
       "url": "_framework\/AutoMapper.Extensions.Microsoft.DependencyInjection.dll"
     },
     {
-      "hash": "sha256-ItMv+HytRb8SgPKYiz75PK0k+DFgN1E247PZT\/8lODs=",
+      "hash": "sha256-6RRoYeDP3d0xabXmcCMF66wXeJlXVPem28Trs8sQiis=",
       "url": "_framework\/Blazored.LocalStorage.dll"
     },
     {
@@ -89,7 +89,7 @@
       "url": "_framework\/Blazorise.Icons.FontAwesome.dll"
     },
     {
-      "hash": "sha256-kY9lhqbp4VvkBWQF4N+3r6t2cogvZjZQhDo2c2YDhg4=",
+      "hash": "sha256-kupGY45hdPYc+Qb0iSFto7CuO9ditGr3mEQ\/zRdES+s=",
       "url": "_framework\/HtmlRaportGenerator.dll"
     },
     {
@@ -513,5 +513,5 @@
       "url": "_content\/Microsoft.AspNetCore.Components.WebAssembly.Authentication\/AuthenticationService.js"
     }
   ],
-  "version": "FDST\/CnP"
+  "version": "4xyznn1D"
 };
