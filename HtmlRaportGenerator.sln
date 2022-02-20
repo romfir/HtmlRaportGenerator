@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31019.194
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32210.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlRaportGenerator", "HtmlRaportGenerator\HtmlRaportGenerator.csproj", "{9B882FA5-2E11-4F94-8097-7AD3272A197F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlRaportGenerator.Tests", "HtmlRaportGenerator.Tests\HtmlRaportGenerator.Tests.csproj", "{DF6C5261-8A98-4A15-A02F-03C3A338F4A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlRaportGenerator.Tests", "HtmlRaportGenerator.Tests\HtmlRaportGenerator.Tests.csproj", "{DF6C5261-8A98-4A15-A02F-03C3A338F4A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

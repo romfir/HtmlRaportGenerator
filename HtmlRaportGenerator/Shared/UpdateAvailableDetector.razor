@@ -1,0 +1,41 @@
+﻿@inject IJSRuntime _jsRuntime
+
+<Row>
+    <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
+        <Alert Color="Color.Info" @bind-Visible="@_newVersionAvailable" TextAlignment="TextAlignment.Center">
+            <Heading Size="HeadingSize.Is1" TextColor="TextColor.Primary" Alignment="TextAlignment.Center">
+                New update is available!
+                <Button onclick="window.location.reload()" Color="Color.Primary">Update</Button>
+            </Heading>
+        </Alert>
+    </Column>
+</Row>
+
+@code
+{
+
+    private bool _newVersionAvailable;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RegisterForUpdateAvailableNotification();
+    }
+
+    private async Task RegisterForUpdateAvailableNotification()
+    {
+        await _jsRuntime.InvokeAsync<object>(
+            identifier: "registerForUpdateAvailableNotification",
+            DotNetObjectReference.Create(this),
+            nameof(OnUpdateAvailableAsync));
+    }
+
+    [JSInvokable(nameof(OnUpdateAvailableAsync))]
+    public Task OnUpdateAvailableAsync()
+    {
+        _newVersionAvailable = true;
+
+        StateHasChanged();
+
+        return Task.CompletedTask;
+    }
+}
