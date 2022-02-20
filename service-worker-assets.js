@@ -61,7 +61,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-J8KxjSstPeIVGCH6ax98bOcM6ZFALlIAWMXxGZWABtc=",
+      "hash": "sha256-\/gXyF7uWUnWqh\/3jXnKg1p3m073BPZI+N2EzRh\/BAf8=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -93,7 +93,7 @@
       "url": "_framework\/Blazorise.Icons.FontAwesome.dll"
     },
     {
-      "hash": "sha256-GNymXRnSjmOLG1eeJWR8xk69RwLsrV5oBLmTQNQD9GM=",
+      "hash": "sha256-zMLzVGVry5XeM9sL0WlS4dicngeYYzWnWh1hl4NGk+E=",
       "url": "_framework\/HtmlRaportGenerator.dll"
     },
     {
@@ -513,5 +513,5 @@
       "url": "_content\/Microsoft.AspNetCore.Components.WebAssembly.Authentication\/AuthenticationService.js"
     }
   ],
-  "version": "+8PKyaYs"
+  "version": "WwT0DGts"
 };
