@@ -6,318 +6,318 @@
 @inject IPreviousState<ICollection<Day>> _previousStateDayService
 
 <Row Margin="Margin.Is2.FromTop.Is4.FromTop">
-	<Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
-		<Heading Size="HeadingSize.Is1" Alignment="TextAlignment.Center">
-			<Addons>
-				<Addon AddonType="AddonType.Body">
-					<DatePicker TValue="DateTime?" @ref="@_monthPicker" @bind-Date="@MonthForInput" InputMode="DateInputMode.Month" />
-				</Addon>
-				<Addon AddonType="AddonType.End">
-					<Button Color="Color.Dark" Clicked="@(()=>_monthPicker.ToggleAsync())">
-						<Icon Name="IconName.CalendarDay" />
-					</Button>
-				</Addon>
-			</Addons>
-		</Heading>
-	</Column>
+    <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
+        <Heading Size="HeadingSize.Is1" Alignment="TextAlignment.Center">
+            <Addons>
+                <Addon AddonType="AddonType.Body">
+                    <DatePicker TValue="DateTime?" @ref="@_monthPicker" @bind-Date="@MonthForInput" InputMode="DateInputMode.Month" />
+                </Addon>
+                <Addon AddonType="AddonType.End">
+                    <Button Color="Color.Dark" Clicked="@(()=>_monthPicker.ToggleAsync())">
+                        <Icon Name="IconName.CalendarDay" />
+                    </Button>
+                </Addon>
+            </Addons>
+        </Heading>
+    </Column>
 </Row>
 
 
 
 @if (Month is null)
 {
-	<Row Margin="Margin.Is4.FromTop">
-		<Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
-			<Heading Size="HeadingSize.Is1" Alignment="TextAlignment.Center">Please choose a month</Heading>
-		</Column>
-	</Row>
+    <Row Margin="Margin.Is4.FromTop">
+        <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
+            <Heading Size="HeadingSize.Is1" Alignment="TextAlignment.Center">Please choose a month</Heading>
+        </Column>
+    </Row>
 }
 else if (_days is null)
 {
-	<PageProgress Visible="true" />
+    <PageProgress Visible="true" />
 }
 else
 {
-	<DataGrid TItem="Day"
-		  ShowCaptions="true"
-		  CommandMode="DataGridCommandMode.Default"
-		  Editable="true"
-		  Data="_days"
-		  PageSize="_days.Count"
-		  Striped="true"
-		  Bordered="true"
-		  Hoverable="true"
-		  Responsive="true"
-		  Sortable="true"
-		  SortMode="DataGridSortMode.Single"
-		  UseInternalEditing="true"
-		  EditMode="DataGridEditMode.Inline"
-		  RowRemoving="OnRowRemoving"
-		  RowStyling="OnRowStyling"
-		  Narrow="true"
-		  ShowValidationFeedback="true">
+    <DataGrid TItem="Day"
+          ShowCaptions="true"
+          CommandMode="DataGridCommandMode.Default"
+          Editable="true"
+          Data="_days"
+          PageSize="_days.Count"
+          Striped="true"
+          Bordered="true"
+          Hoverable="true"
+          Responsive="true"
+          Sortable="true"
+          SortMode="DataGridSortMode.Single"
+          UseInternalEditing="true"
+          EditMode="DataGridEditMode.Inline"
+          RowRemoving="OnRowRemoving"
+          RowStyling="OnRowStyling"
+          Narrow="true"
+          ShowValidationFeedback="true">
 
-		<DataGridAggregates>
-			<DataGridAggregate TItem="Day"
-						   Field="@nameof(Day.HourSum)"
-						   Aggregate="DataGridAggregateType.Sum"
-						   DisplayFormat="Hour Sum: {0}" />
-		</DataGridAggregates>
+        <DataGridAggregates>
+            <DataGridAggregate TItem="Day"
+                           Field="@nameof(Day.HourSum)"
+                           Aggregate="DataGridAggregateType.Sum"
+                           DisplayFormat="Hour Sum: {0}" />
+        </DataGridAggregates>
 
-		<DataGridColumns>
-			<DataGridCommandColumn TItem="Day" Width="170px">
-				<NewCommandTemplate>
-				</NewCommandTemplate>
-				<EditCommandTemplate>
-					<Button Color="Color.Primary" Clicked="@context.Clicked">
-						@context.LocalizationString
-					</Button>
-				</EditCommandTemplate>
-				<SaveCommandTemplate>
-					<Button Color="Color.Primary" Clicked="() =>
+        <DataGridColumns>
+            <DataGridCommandColumn TItem="Day" Width="170px">
+                <NewCommandTemplate>
+                </NewCommandTemplate>
+                <EditCommandTemplate>
+                    <Button Color="Color.Primary" Clicked="@context.Clicked">
+                        @context.LocalizationString
+                    </Button>
+                </EditCommandTemplate>
+                <SaveCommandTemplate>
+                    <Button Color="Color.Primary" Clicked="() =>
                     {
                         context.Clicked.InvokeAsync();
                         _previousStateDayService.UpdateIsValueChanged();
                         StateHasChanged();
                     }">
-						@context.LocalizationString
-					</Button>
-				</SaveCommandTemplate>
-				<DeleteCommandTemplate>
-					@if (context.Item.AnyRelevantValueExists())
-					{
-						<Button Color="Color.Danger" Clicked="context.Clicked">Clear</Button>
-					}
-				</DeleteCommandTemplate>
-				<CancelCommandTemplate>
-					<Button Color="Color.Secondary" Clicked="context.Clicked">
-						@context.LocalizationString
-					</Button>
-				</CancelCommandTemplate>
-				<ClearFilterCommandTemplate>
-					<Button Color="Color.Warning" Clicked="context.Clicked">
-						@context.LocalizationString
-					</Button>
-				</ClearFilterCommandTemplate>
-			</DataGridCommandColumn>
-			<DataGridNumericColumn TItem="Day"
-							   Field="@nameof(Day.DayNumber)"
-							   Caption="Day of Month"
-							   Readonly="true"
-							   HeaderTextAlignment="TextAlignment.Center"
-							   TextAlignment="TextAlignment.Center">
-				<DisplayTemplate>
-					<Text Alignment="TextAlignment.Center">
-						@context.DayNumber
-					</Text>
-				</DisplayTemplate>
-			</DataGridNumericColumn>
-			<DataGridNumericColumn TItem="Day"
-							   Field="@nameof(Day.HourWithQuarterFromParsed)"
-							   Caption="Start Time"
-							   Editable="true"
-							   HeaderTextAlignment="TextAlignment.Center"
-							   TextAlignment="TextAlignment.Center">
-				<DisplayTemplate>
-					@if (context.HourWithQuarterFromParsed is not null)
-					{
-						<TimeEdit Style="text-align:center;"
-						  TValue="TimeSpan?"
-						  Time="TimeSpan.FromHours((double)context.HourWithQuarterFromParsed)"
-						  Step="900"
-						  ReadOnly="true" />
-					}
-				</DisplayTemplate>
+                        @context.LocalizationString
+                    </Button>
+                </SaveCommandTemplate>
+                <DeleteCommandTemplate>
+                    @if (context.Item.AnyRelevantValueExists())
+                    {
+                        <Button Color="Color.Danger" Clicked="context.Clicked">Clear</Button>
+                    }
+                </DeleteCommandTemplate>
+                <CancelCommandTemplate>
+                    <Button Color="Color.Secondary" Clicked="context.Clicked">
+                        @context.LocalizationString
+                    </Button>
+                </CancelCommandTemplate>
+                <ClearFilterCommandTemplate>
+                    <Button Color="Color.Warning" Clicked="context.Clicked">
+                        @context.LocalizationString
+                    </Button>
+                </ClearFilterCommandTemplate>
+            </DataGridCommandColumn>
+            <DataGridNumericColumn TItem="Day"
+                               Field="@nameof(Day.DayNumber)"
+                               Caption="Day of Month"
+                               Readonly="true"
+                               HeaderTextAlignment="TextAlignment.Center"
+                               TextAlignment="TextAlignment.Center">
+                <DisplayTemplate>
+                    <Text Alignment="TextAlignment.Center">
+                        @context.DayNumber
+                    </Text>
+                </DisplayTemplate>
+            </DataGridNumericColumn>
+            <DataGridNumericColumn TItem="Day"
+                               Field="@nameof(Day.HourWithQuarterFromParsed)"
+                               Caption="Start Time"
+                               Editable="true"
+                               HeaderTextAlignment="TextAlignment.Center"
+                               TextAlignment="TextAlignment.Center">
+                <DisplayTemplate>
+                    @if (context.HourWithQuarterFromParsed is not null)
+                    {
+                        <TimeEdit Style="text-align:center;"
+                          TValue="TimeSpan?"
+                          Time="TimeSpan.FromHours((double)context.HourWithQuarterFromParsed)"
+                          Step="900"
+                          ReadOnly="true" />
+                    }
+                </DisplayTemplate>
 
-				<EditTemplate>
-					<TimeEdit Style="text-align:center;"
-						  TValue="TimeSpan?"
-						  Time="(context.CellValue is not null ? TimeSpan.FromHours((double)context.CellValue) : null)"
-						  DelayTextOnKeyPress="true"
-						  DelayTextOnKeyPressInterval="300"
-						  Step="900"
-						  TimeChanged="@(v => context.CellValue = v?.TotalHours)" />
-				</EditTemplate>
-			</DataGridNumericColumn>
+                <EditTemplate>
+                    <TimeEdit Style="text-align:center;"
+                          TValue="TimeSpan?"
+                          Time="(context.CellValue is not null ? TimeSpan.FromHours((double)context.CellValue) : null)"
+                          DelayTextOnKeyPress="true"
+                          DelayTextOnKeyPressInterval="300"
+                          Step="900"
+                          TimeChanged="@(v => context.CellValue = v?.TotalHours)" />
+                </EditTemplate>
+            </DataGridNumericColumn>
 
-			<DataGridNumericColumn TItem="Day"
-							   Field="@nameof(Day.HourWithQuarterToParsed)"
-							   Caption="End Time"
-							   Editable="true"
-							   HeaderTextAlignment="TextAlignment.Center"
-							   TextAlignment="TextAlignment.Center">
-				<DisplayTemplate>
-					@if (context.HourWithQuarterToParsed is not null)
-					{
-						<TimeEdit Style="text-align:center;"
-						  TValue="TimeSpan?"
-						  Time="TimeSpan.FromHours((double)context.HourWithQuarterToParsed)"
-						  Step="900"
-						  ReadOnly="true" />
-					}
-				</DisplayTemplate>
-				<EditTemplate>
-					<TimeEdit Style="text-align:center;"
-						  TValue="TimeSpan?"
-						  Time="context.CellValue is not null ? TimeSpan.FromHours((double)context.CellValue) : null"
-						  DelayTextOnKeyPress="true"
-						  DelayTextOnKeyPressInterval="300"
-						  Step="900"
-						  TimeChanged="@(v => context.CellValue = v?.TotalHours)" />
-				</EditTemplate>
-			</DataGridNumericColumn>
+            <DataGridNumericColumn TItem="Day"
+                               Field="@nameof(Day.HourWithQuarterToParsed)"
+                               Caption="End Time"
+                               Editable="true"
+                               HeaderTextAlignment="TextAlignment.Center"
+                               TextAlignment="TextAlignment.Center">
+                <DisplayTemplate>
+                    @if (context.HourWithQuarterToParsed is not null)
+                    {
+                        <TimeEdit Style="text-align:center;"
+                          TValue="TimeSpan?"
+                          Time="TimeSpan.FromHours((double)context.HourWithQuarterToParsed)"
+                          Step="900"
+                          ReadOnly="true" />
+                    }
+                </DisplayTemplate>
+                <EditTemplate>
+                    <TimeEdit Style="text-align:center;"
+                          TValue="TimeSpan?"
+                          Time="context.CellValue is not null ? TimeSpan.FromHours((double)context.CellValue) : null"
+                          DelayTextOnKeyPress="true"
+                          DelayTextOnKeyPressInterval="300"
+                          Step="900"
+                          TimeChanged="@(v => context.CellValue = v?.TotalHours)" />
+                </EditTemplate>
+            </DataGridNumericColumn>
 
-			<DataGridNumericColumn TItem="Day"
-							   Field="@nameof(Day.HourSum)"
-							   Caption="Hours Sum"
-							   HeaderTextAlignment="TextAlignment.Center"
-							   TextAlignment="TextAlignment.Center">
-				<DisplayTemplate>
-					<Text Alignment="TextAlignment.Center">
-						@context.HourSum?.FormatDoubleToTime()
-					</Text>
-				</DisplayTemplate>
-				<EditTemplate>
-					<Text Alignment="TextAlignment.Center">
-						@context.Item.HourSum?.FormatDoubleToTime()
-					</Text>
-				</EditTemplate>
-			</DataGridNumericColumn>
-		</DataGridColumns>
-	</DataGrid>
+            <DataGridNumericColumn TItem="Day"
+                               Field="@nameof(Day.HourSum)"
+                               Caption="Hours Sum"
+                               HeaderTextAlignment="TextAlignment.Center"
+                               TextAlignment="TextAlignment.Center">
+                <DisplayTemplate>
+                    <Text Alignment="TextAlignment.Center">
+                        @context.HourSum?.FormatDoubleToTime()
+                    </Text>
+                </DisplayTemplate>
+                <EditTemplate>
+                    <Text Alignment="TextAlignment.Center">
+                        @context.Item.HourSum?.FormatDoubleToTime()
+                    </Text>
+                </EditTemplate>
+            </DataGridNumericColumn>
+        </DataGridColumns>
+    </DataGrid>
 
-	<Row Margin="Margin.Is4.FromBottom">
-		<Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
-			<Tooltip Text=@(_previousStateDayService.IsValueChanged() ? null : "Unchanged Data") Placement="TooltipPlacement.Top" Margin="Margin.IsAuto">
-				<Button Color="Color.Primary" Loading="_isTableSaving" Disabled="_isTableSaving || !_previousStateDayService.IsValueChanged()" Clicked="HandleValidSubmitAsync">
-					@SaveButtonText
-				</Button>
-			</Tooltip>
-		</Column>
-		<Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
-			<Tooltip Text=@(_previousStateDayService.IsValueChanged() ? null : "Unchanged Data") Placement="TooltipPlacement.Top" Margin="Margin.IsAuto">
-				<Button Color="Color.Danger" Disabled="_isTableSaving || !_previousStateDayService.IsValueChanged()" Clicked="_previousStateDayService.Rollback">
-					Clear Changes
-				</Button>
-			</Tooltip>
-		</Column>
-	</Row>
+    <Row Margin="Margin.Is4.FromBottom">
+        <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
+            <Tooltip Text=@(_previousStateDayService.IsValueChanged() ? null : "Unchanged Data") Placement="TooltipPlacement.Top" Margin="Margin.IsAuto">
+                <Button Color="Color.Primary" Loading="_isTableSaving" Disabled="_isTableSaving || !_previousStateDayService.IsValueChanged()" Clicked="HandleValidSubmitAsync">
+                    @SaveButtonText
+                </Button>
+            </Tooltip>
+        </Column>
+        <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
+            <Tooltip Text=@(_previousStateDayService.IsValueChanged() ? null : "Unchanged Data") Placement="TooltipPlacement.Top" Margin="Margin.IsAuto">
+                <Button Color="Color.Danger" Disabled="_isTableSaving || !_previousStateDayService.IsValueChanged()" Clicked="_previousStateDayService.Rollback">
+                    Clear Changes
+                </Button>
+            </Tooltip>
+        </Column>
+    </Row>
 }
 
 @code
 {
-	[Parameter]
-	public DateTime? Month { get; set; }
+    [Parameter]
+    public DateTime? Month { get; set; }
 
-	public DateTime? MonthForInput
-	{
-		get => Month;
-		set
-		{
-			if (UrlChanged(value))
-			{
-				_days = null!;
-				ChangeUrl(value);
-			}
-			else
-			{
-				//temporary till I get input type month working, just to keep datepicker correct state
-				Month = value;
-			}
-		}
-	}
+    public DateTime? MonthForInput
+    {
+        get => Month;
+        set
+        {
+            if (UrlChanged(value))
+            {
+                _days = null!;
+                ChangeUrl(value);
+            }
+            else
+            {
+                //temporary till I get input type month working, just to keep datepicker correct state
+                Month = value;
+            }
+        }
+    }
 
-	private List<Day>? _days;
+    private List<Day>? _days;
 
-	private DatePicker<DateTime?> _monthPicker = null!;
+    private DatePicker<DateTime?> _monthPicker = null!;
 
-	private bool _isTableSaving;
+    private bool _isTableSaving;
 
-	private string SaveButtonText
-		=> _isTableSaving ? "Saving..." : "Save Changes";
+    private string SaveButtonText
+        => _isTableSaving ? "Saving..." : "Save Changes";
 
-	protected override Task OnParametersSetAsync()
-	{
-		Month ??= DateTime.Now;
+    protected override Task OnParametersSetAsync()
+    {
+        Month ??= DateTime.Now;
 
-		return UpdateCalendarGridAsync();
-	}
+        return UpdateCalendarGridAsync();
+    }
 
-	private static void OnRowStyling(Day model, DataGridRowStyling styling)
-	{
-		if (model.IsToday)
-		{
-			styling.Color = Color.Warning;
-		}
-		else if (model.IsHoliday)
-		{
-			styling.Color = Color.Info;
-		}
-	}
+    private static void OnRowStyling(Day model, DataGridRowStyling styling)
+    {
+        if (model.IsToday)
+        {
+            styling.Color = Color.Warning;
+        }
+        else if (model.IsHoliday)
+        {
+            styling.Color = Color.Info;
+        }
+    }
 
-	private void OnRowRemoving(CancellableRowChange<Day> rowChange)
-	{
-		rowChange.Cancel = true;
+    private void OnRowRemoving(CancellableRowChange<Day> rowChange)
+    {
+        rowChange.Cancel = true;
 
-		rowChange.Item.From.Clear();
-		rowChange.Item.To.Clear();
+        rowChange.Item.From.Clear();
+        rowChange.Item.To.Clear();
 
-		_previousStateDayService.UpdateIsValueChanged();
-	}
+        _previousStateDayService.UpdateIsValueChanged();
+    }
 
-	private async Task UpdateCalendarGridAsync()
-	{
-		List<Day> days = (await _stateService.GetAsync(Month!.Value.ToYearMonth()))?.ToList() ?? new List<Day>();
+    private async Task UpdateCalendarGridAsync()
+    {
+        List<Day> days = (await _stateService.GetAsync(Month!.Value.ToYearMonth()))?.ToList() ?? new List<Day>();
 
-		foreach (DateTime day in Month.Value.AllDatesInMonth())
-		{
-			Day? dayItem = days.FirstOrDefault(d => d.DayNumber == day.Day);
+        foreach (DateTime day in Month.Value.AllDatesInMonth())
+        {
+            Day? dayItem = days.FirstOrDefault(d => d.DayNumber == day.Day);
 
-			if (dayItem is null)
-			{
-				dayItem = new Day(day.Day, day.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday);
-				days.Add(dayItem);
-			}
+            if (dayItem is null)
+            {
+                dayItem = new Day(day.Day, day.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday);
+                days.Add(dayItem);
+            }
 
-			dayItem.IsToday = false;
-			if (DateTime.Now.Date == day)
-			{
-				dayItem!.IsToday = true;
-			}
-		}
+            dayItem.IsToday = false;
+            if (DateTime.Now.Date == day)
+            {
+                dayItem!.IsToday = true;
+            }
+        }
 
-		_days = days.OrderBy(d => d.DayNumber).ToList();
+        _days = days.OrderBy(d => d.DayNumber).ToList();
 
-		StateHasChanged();
+        StateHasChanged();
 
-		_previousStateDayService.Load(_days);
-	}
+        _previousStateDayService.Load(_days);
+    }
 
-	private void ChangeUrl(DateTime? d)
-	{
-		if (d is not null)
-		{
-			_nav.NavigateTo($"{RelativePageUrls.MonthEdit}/{d.Value.ToYearMonth()}");
-		}
-		else
-		{
-			_nav.NavigateTo(RelativePageUrls.MonthEdit);
-		}
-	}
+    private void ChangeUrl(DateTime? d)
+    {
+        if (d is not null)
+        {
+            _nav.NavigateTo($"{RelativePageUrls.MonthEdit}/{d.Value.ToYearMonth()}");
+        }
+        else
+        {
+            _nav.NavigateTo(RelativePageUrls.MonthEdit);
+        }
+    }
 
-	private bool UrlChanged(DateTime? newDate)
-	=> newDate?.ToYearMonth() != Month?.ToYearMonth();
+    private bool UrlChanged(DateTime? newDate)
+    => newDate?.ToYearMonth() != Month?.ToYearMonth();
 
-	private async Task HandleValidSubmitAsync()
-	{
-		_isTableSaving = true;
+    private async Task HandleValidSubmitAsync()
+    {
+        _isTableSaving = true;
 
-		await _stateService.SaveAsync(_days.CheckNotNull(nameof(_days)).Where(d => d.AnyRelevantValueExists()).ToList(), Month!.Value.ToYearMonth());
+        await _stateService.SaveAsync(_days.CheckNotNull(nameof(_days)).Where(d => d.AnyRelevantValueExists()).ToList(), Month!.Value.ToYearMonth());
 
-		_previousStateDayService.Update();
+        _previousStateDayService.Update();
 
-		_isTableSaving = false;
+        _isTableSaving = false;
 
-		StateHasChanged();
-	}
-	}
+        StateHasChanged();
+    }
+}
