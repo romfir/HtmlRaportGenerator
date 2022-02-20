@@ -13,7 +13,6 @@
 
 @code
 {
-
     private bool _newVersionAvailable;
 
     protected override async Task OnInitializedAsync()
@@ -23,10 +22,7 @@
 
     private async Task RegisterForUpdateAvailableNotification()
     {
-        await _jsRuntime.InvokeAsync<object>(
-            identifier: "registerForUpdateAvailableNotification",
-            DotNetObjectReference.Create(this),
-            nameof(OnUpdateAvailableAsync));
+        await _jsRuntime.InvokeAsync<object>("registerForUpdateAvailableNotification", DotNetObjectReference.Create(this), nameof(OnUpdateAvailableAsync));
     }
 
     [JSInvokable(nameof(OnUpdateAvailableAsync))]
