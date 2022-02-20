@@ -14,12 +14,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2.4.0
 
-    - name: Setup .NET 5 and 6 SDK (5 for playwright)
+    - name: Setup .NET 5 and 7 SDK (5 for playwright)
       uses: actions/setup-dotnet@v1.9.0
       with:
         dotnet-version: |
           5.*
-          6.*
+          7.*
         include-prerelease: True
 
     - name: restore project

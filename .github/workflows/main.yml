@@ -17,7 +17,7 @@ jobs:
     - name: Setup .NET Core SDK
       uses: actions/setup-dotnet@v1.9.0
       with:
-        dotnet-version: 6.*
+        dotnet-version: 7.*
         include-prerelease: True
 
     # changes the base-tag in index.html from '/' to 'HtmlRaportGenerator' to match GitHub Pages repository subdirectory
