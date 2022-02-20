@@ -17,7 +17,7 @@
       "url": "icon-512.png"
     },
     {
-      "hash": "sha256-WqqqlYdOlR9lmS33HqbbwK8UR4uFW9pBHI1ruRSFDF0=",
+      "hash": "sha256-qPNZsHg6JlDlxGd6yJZu9O3meU\/QYsDAR8hSO1JJaJ8=",
       "url": "index.html"
     },
     {
@@ -57,7 +57,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-qCVdtDzbhnq+gqbxZ4ODlGRHh\/vzMFKUhtIUcPMNyJE=",
+      "hash": "sha256-09Exz5ynft6TBdAf7HTkRsUAMpqzeeN+IjimfrlU1xA=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -73,23 +73,23 @@
       "url": "_framework\/Blazored.LocalStorage.dll"
     },
     {
-      "hash": "sha256-i2UNQa7fYPzVAJhUzFVtFtgDP2SXrmuB8CEr0XZ0ioU=",
+      "hash": "sha256-aQipOUy9n0slGHxgpZ3RhyVBFuDbCG8yUnyzL5Sfw7Y=",
       "url": "_framework\/Blazorise.Bootstrap.dll"
     },
     {
-      "hash": "sha256-e6pdiMRjBwKfZGeCrcLkUzU604qHNIk1Z59Qu+bz+FE=",
+      "hash": "sha256-tyS76oMnId\/y5ujNGGF4VV1jATGchgj+I+sB3QWTIIc=",
       "url": "_framework\/Blazorise.DataGrid.dll"
     },
     {
-      "hash": "sha256-dQEE9f2kAOxsWGzx8sihzcVsP03LEZK4nkq8YBweT1Q=",
+      "hash": "sha256-LcmoCIE4iIdS3UJikyw+N5i\/wxyOSJdDurQZ2bfg+iE=",
       "url": "_framework\/Blazorise.dll"
     },
     {
-      "hash": "sha256-R+TmIEzw+eywlPUE9iHf7FfkDsucw\/5em+niSmDBQEo=",
+      "hash": "sha256-ibTBDybgyKZCBnnKeYw69uKjOVhj\/gdnYN5gYwLSi7I=",
       "url": "_framework\/Blazorise.Icons.FontAwesome.dll"
     },
     {
-      "hash": "sha256-mGj1SMVJwKZTlN7TDL61QpJaA7fLibz09Mv61S2lynE=",
+      "hash": "sha256-yLXTxIcsmbWIKK\/V+fKQS6kz8TrzS9CUYwBxEy1Omrg=",
       "url": "_framework\/HtmlRaportGenerator.dll"
     },
     {
@@ -409,7 +409,7 @@
       "url": "_content\/Blazorise\/breakpoint.js"
     },
     {
-      "hash": "sha256-q4GpZfCbwjvCryqDoZjTg3SqcNNfgDllenl0uBpMGY0=",
+      "hash": "sha256-lx3id70cbR4Z1kEom\/r0lB1vRTekiuMjFOeGm08czFc=",
       "url": "_content\/Blazorise\/button.js"
     },
     {
@@ -421,15 +421,15 @@
       "url": "_content\/Blazorise\/colorPicker.js"
     },
     {
-      "hash": "sha256-hlMZnPrlnTHvDtEqw0TfQ\/k4jqOv7gbuNAkvpPV1yGA=",
+      "hash": "sha256-O3kLTWcSkZ98J6OKwHu093lZ2klW2Vq9N6DuxvJbJFs=",
       "url": "_content\/Blazorise\/datePicker.js"
     },
     {
-      "hash": "sha256-dyqDkRDoRTpTZ19\/rj6x2fbh2oF3\/0UIDuYbnFqRF6Q=",
+      "hash": "sha256-PNemRYSQmvqSEOqjuITVDJh9QCsdGAmaBkTh+WUWV1o=",
       "url": "_content\/Blazorise\/fileEdit.js"
     },
     {
-      "hash": "sha256-TeGcDB\/FScJ5oMoVeAaPAYv0Mrh+ksKAECuXwryT11Y=",
+      "hash": "sha256-BKsXaGRp7NsmyO5HF1jniDvcEhewkqG4ivPh7XvKVE8=",
       "url": "_content\/Blazorise\/inputMask.js"
     },
     {
@@ -465,7 +465,7 @@
       "url": "_content\/Blazorise\/timePicker.js"
     },
     {
-      "hash": "sha256-qriUQR20YH4n5g83rM4C2BfSm4FrwXGBG5viaqbvDSw=",
+      "hash": "sha256-j8\/Ol7WUfg\/WoG78oDhFfNpRDR5f9nqna9JcbquQiy4=",
       "url": "_content\/Blazorise\/tooltip.js"
     },
     {
@@ -509,5 +509,5 @@
       "url": "_content\/Microsoft.AspNetCore.Components.WebAssembly.Authentication\/AuthenticationService.js"
     }
   ],
-  "version": "YqqzV\/Ag"
+  "version": "c1+aG3lF"
 };
