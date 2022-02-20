@@ -1,7 +1,6 @@
 ﻿@layout RootLayout
 @inherits LayoutComponentBase
-@using System.Globalization
-@using Blazorise.Localization
+
 <Layout Sider="true">
 	<LayoutSider>
 		<LayoutSiderContent>
@@ -75,12 +74,13 @@
 		</LayoutHeader>
 		<LayoutContent Padding="Padding.Is4.OnX">
 			@Body
-		</LayoutContent>
-		<LayoutFooter Fixed="true">
-			<Bar Breakpoint="Breakpoint.Desktop" Background="Background.Primary" ThemeContrast="ThemeContrast.Light" Alignment="Alignment.Center">
-				<Heading Size="HeadingSize.Is6" Alignment="TextAlignment.Center">Powered By @RuntimeInformation.FrameworkDescription and deployed from <Link Style="color: #212529;" To="@_repositoryUri?.ToString()">@_gitHash</Link></Heading>
-			</Bar>
-		</LayoutFooter>
+        </LayoutContent>
+        <LayoutFooter Fixed="true">
+            <UpdateAvailableDetector/>
+            <Bar Breakpoint="Breakpoint.Desktop" Background="Background.Primary" ThemeContrast="ThemeContrast.Light" Alignment="Alignment.Center">
+                <Heading Size="HeadingSize.Is6" Alignment="TextAlignment.Center">Powered By @RuntimeInformation.FrameworkDescription and deployed from <Link Style="color: #212529;" To="@_repositoryUri?.ToString()">@_gitHash</Link></Heading>
+            </Bar>
+        </LayoutFooter>
 	</Layout>
 </Layout>
 
