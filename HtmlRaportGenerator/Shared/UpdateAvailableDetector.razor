@@ -16,14 +16,10 @@
     private bool _newVersionAvailable;
 
     protected override async Task OnInitializedAsync()
-    {
-        await RegisterForUpdateAvailableNotification();
-    }
+        => await RegisterForUpdateAvailableNotification();
 
     private async Task RegisterForUpdateAvailableNotification()
-    {
-        await _jsRuntime.InvokeAsync<object>("registerForUpdateAvailableNotification", DotNetObjectReference.Create(this), nameof(OnUpdateAvailableAsync));
-    }
+        => await _jsRuntime.InvokeAsync<object>("registerForUpdateAvailableNotification", DotNetObjectReference.Create(this), nameof(OnUpdateAvailableAsync));
 
     [JSInvokable(nameof(OnUpdateAvailableAsync))]
     public Task OnUpdateAvailableAsync()
