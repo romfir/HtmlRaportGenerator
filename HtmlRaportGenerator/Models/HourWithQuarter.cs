@@ -3,105 +3,104 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace HtmlRaportGenerator.Models
+namespace HtmlRaportGenerator.Models;
+
+public class HourWithQuarter : INotifyPropertyChanged, IMapFrom<HourWithQuarter>, IEquatable<HourWithQuarter>
 {
-    public class HourWithQuarter : INotifyPropertyChanged, IMapFrom<HourWithQuarter>, IEquatable<HourWithQuarter>
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public HourWithQuarter()
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
+    }
 
-        public HourWithQuarter()
+    public HourWithQuarter(double? time)
+    {
+        if (time is null)
         {
+            return;
         }
 
-        public HourWithQuarter(double? time)
+        Hour = (int)time.Value;
+
+        int quarter = (int)Math.Floor((time.Value - Hour.Value) * 4);
+
+        Quarter = quarter;
+    }
+
+    public HourWithQuarter(DateTime date)
+    {
+        Hour = date.Hour;
+
+        Quarter = date.Minute / 15;
+    }
+
+    private int? _hour;
+
+    [Required, Range(0, 23)]
+    public int? Hour
+    {
+        get => _hour;
+        set
         {
-            if (time is null)
+            _hour = value;
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Hour)));
+        }
+    }
+
+    private int? _quarter;
+
+    [Required, Range(0, 3)]
+    public int? Quarter
+    {
+        get => _quarter;
+        set
+        {
+            _quarter = value;
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Quarter)));
+        }
+    }
+
+    public double? HourWithQuarterSum
+    {
+        get
+        {
+            if (Hour is null)
             {
-                return;
+                return null;
             }
 
-            Hour = (int)time.Value;
+            double from = Hour.Value;
 
-            int quarter = (int)Math.Floor((time.Value - Hour.Value) * 4);
-
-            Quarter = quarter;
-        }
-
-        public HourWithQuarter(DateTime date)
-        {
-            Hour = date.Hour;
-
-            Quarter = date.Minute / 15;
-        }
-
-        private int? _hour;
-
-        [Required, Range(0, 23)]
-        public int? Hour
-        {
-            get => _hour;
-            set
+            if (Quarter is not null)
             {
-                _hour = value;
-
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Hour)));
-            }
-        }
-
-        private int? _quarter;
-
-        [Required, Range(0, 3)]
-        public int? Quarter
-        {
-            get => _quarter;
-            set
-            {
-                _quarter = value;
-
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Quarter)));
-            }
-        }
-
-        public double? HourWithQuarterSum
-        {
-            get
-            {
-                if (Hour is null)
-                {
-                    return null;
-                }
-
-                double from = Hour.Value;
-
-                if (Quarter is not null)
-                {
-                    from += Quarter.Value * 0.25;
-                }
-
-                return from;
-            }
-        }
-
-        public bool Equals(HourWithQuarter? other)
-        {
-            if (other is null)
-            {
-                return false;
+                from += Quarter.Value * 0.25;
             }
 
-            return GetHashCode() == other.GetHashCode();
+            return from;
         }
+    }
 
-        public override bool Equals(object? obj)
-            => Equals(obj as HourWithQuarter);
-
-        public override int GetHashCode()
-            => HashCode.Combine(Hour, Quarter);
-
-        public void Clear()
+    public bool Equals(HourWithQuarter? other)
+    {
+        if (other is null)
         {
-            Quarter = null;
-            Hour = null;
+            return false;
         }
+
+        return GetHashCode() == other.GetHashCode();
+    }
+
+    public override bool Equals(object? obj)
+        => Equals(obj as HourWithQuarter);
+
+    public override int GetHashCode()
+        => HashCode.Combine(Hour, Quarter);
+
+    public void Clear()
+    {
+        Quarter = null;
+        Hour = null;
     }
 }

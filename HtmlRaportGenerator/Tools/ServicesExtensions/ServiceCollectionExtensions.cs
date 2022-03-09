@@ -9,41 +9,40 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 
-namespace HtmlRaportGenerator.Tools.ServicesExtensions
+namespace HtmlRaportGenerator.Tools.ServicesExtensions;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static IServiceCollection AddGoogleHttpClient(this IServiceCollection serviceCollection)
     {
-        public static IServiceCollection AddGoogleHttpClient(this IServiceCollection serviceCollection)
-        {
-            serviceCollection.AddHttpClient(StaticHelpers.HttpClientName,
-                   client => client.BaseAddress = new Uri("https://www.googleapis.com/"))
-               .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
+        serviceCollection.AddHttpClient(StaticHelpers.HttpClientName,
+                client => client.BaseAddress = new Uri("https://www.googleapis.com/"))
+            .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
 
-            serviceCollection.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
-                .CreateClient(StaticHelpers.HttpClientName));
+        serviceCollection.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
+            .CreateClient(StaticHelpers.HttpClientName));
 
-            return serviceCollection;
-        }
-
-        public static IServiceCollection AddPreviousStateServices(this IServiceCollection serviceCollection)
-            => serviceCollection.AddScoped(typeof(IPreviousState<HourWithQuarter>), typeof(PreviousStateService<HourWithQuarter>))
-                .AddScoped(typeof(IPreviousState<ICollection<Day>>), typeof(PreviousStateCollectionService<Day>));
-
-        public static IServiceCollection AddGoogleDriveService(this IServiceCollection serviceCollection)
-            => serviceCollection.AddScoped<GoogleDriveService>();
-
-        public static IServiceCollection AddGoogleAuthentication(this IServiceCollection serviceCollection, WebAssemblyHostBuilder builder)
-        {
-            serviceCollection.AddOidcAuthentication(options =>
-               builder.Configuration.Bind("Google", options.ProviderOptions)
-           );
-
-            serviceCollection.AddScoped<CustomAuthorizationMessageHandler>();
-
-            return serviceCollection;
-        }
-
-        public static IServiceCollection AddMonthStateService(this IServiceCollection serviceCollection)
-            => serviceCollection.AddScoped<MonthStateService>();
+        return serviceCollection;
     }
+
+    public static IServiceCollection AddPreviousStateServices(this IServiceCollection serviceCollection)
+        => serviceCollection.AddScoped(typeof(IPreviousState<HourWithQuarter>), typeof(PreviousStateService<HourWithQuarter>))
+            .AddScoped(typeof(IPreviousState<ICollection<Day>>), typeof(PreviousStateCollectionService<Day>));
+
+    public static IServiceCollection AddGoogleDriveService(this IServiceCollection serviceCollection)
+        => serviceCollection.AddScoped<GoogleDriveService>();
+
+    public static IServiceCollection AddGoogleAuthentication(this IServiceCollection serviceCollection, WebAssemblyHostBuilder builder)
+    {
+        serviceCollection.AddOidcAuthentication(options =>
+            builder.Configuration.Bind("Google", options.ProviderOptions)
+        );
+
+        serviceCollection.AddScoped<CustomAuthorizationMessageHandler>();
+
+        return serviceCollection;
+    }
+
+    public static IServiceCollection AddMonthStateService(this IServiceCollection serviceCollection)
+        => serviceCollection.AddScoped<MonthStateService>();
 }

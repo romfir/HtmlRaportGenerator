@@ -1,13 +1,12 @@
-﻿namespace HtmlRaportGenerator.Tools
+﻿namespace HtmlRaportGenerator.Tools;
+
+public static class RelativePageUrls
 {
-    public static class RelativePageUrls
-    {
-        public const string MainView = "";
+    public const string MainView = "";
 
-        public const string MonthEdit = "MonthEdit";
+    public const string MonthEdit = "MonthEdit";
 
-        public const string Settings = "Settings";
+    public const string Settings = "Settings";
 
-        public const string Authentication = "authentication";
-    }
+    public const string Authentication = "authentication";
 }
