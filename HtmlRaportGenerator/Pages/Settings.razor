@@ -1,4 +1,4 @@
-﻿@attribute [RouteAttribute("/" + RelativePageUrls.Settings)]
+﻿@attribute [Route("/" + RelativePageUrls.Settings)]
 
 @inject MonthStateService _stateService
 @inject AuthenticationStateProvider _authenticationStateProvider
@@ -10,7 +10,7 @@
         <Field Horizontal="true">
             <FieldLabel ColumnSize="ColumnSize.IsAuto">Data Store</FieldLabel>
             <FieldBody ColumnSize="ColumnSize.IsAuto">
-                <Select TValue="DataStore" @bind-SelectedValue="SelectedStorage" Disabled="_loading">
+                <Select TValue="DataStore" SelectedValue="SelectedStorage" Disabled="_loading">
                     <SelectItem Value="DataStore.LocalStorage">@DataStore.LocalStorage</SelectItem>
                     <SelectItem Value="DataStore.GoogleDrive" Disabled="(!_isUserAuthenticated)">@DataStore.GoogleDrive</SelectItem>
                 </Select>
