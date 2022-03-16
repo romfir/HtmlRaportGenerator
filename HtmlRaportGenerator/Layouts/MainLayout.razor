@@ -4,7 +4,7 @@
 <Layout Sider="true">
 	<LayoutSider>
 		<LayoutSiderContent>
-			<Bar @bind-Visible="_isLeftBarVisible" Breakpoint="Breakpoint.Desktop" NavigationBreakpoint="Breakpoint.Tablet" ThemeContrast="ThemeContrast.Dark"
+			<Bar Visible="_isLeftBarVisible" Breakpoint="Breakpoint.Desktop" NavigationBreakpoint="Breakpoint.Tablet" ThemeContrast="ThemeContrast.Dark"
 				 Mode="BarMode.VerticalInline" CollapseMode="BarCollapseMode.Small">
 				<BarToggler />
 				@if (_isLeftBarVisible)
@@ -78,7 +78,7 @@
         <LayoutFooter Fixed="true">
             <UpdateAvailableDetector/>
             <Bar Breakpoint="Breakpoint.Desktop" Background="Background.Primary" ThemeContrast="ThemeContrast.Light" Alignment="Alignment.Center">
-                <Heading Size="HeadingSize.Is6" Alignment="TextAlignment.Center">Powered By @RuntimeInformation.FrameworkDescription and deployed from <Link Style="color: #212529;" To="@_repositoryUri?.ToString()">@_gitHash</Link></Heading>
+                <Heading Size="HeadingSize.Is6" TextAlignment="TextAlignment.Center">Powered By @RuntimeInformation.FrameworkDescription and deployed from <Link Style="color: #212529;" To="@_repositoryUri?.ToString()">@_gitHash</Link></Heading>
             </Bar>
         </LayoutFooter>
 	</Layout>

@@ -1,9 +1,8 @@
-﻿namespace HtmlRaportGenerator.Tools.Enums
+﻿namespace HtmlRaportGenerator.Tools.Enums;
+
+public enum DataStore
 {
-    public enum DataStore
-    {
-        None = 0,
-        LocalStorage = 1,
-        GoogleDrive = 2
-    }
+    None = 0,
+    LocalStorage = 1,
+    GoogleDrive = 2
 }

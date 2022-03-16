@@ -11,44 +11,42 @@ using System.Threading.Tasks;
 using HtmlRaportGenerator.Tools.ServicesExtensions;
 using Microsoft.AspNetCore.Components.Web;
 
-namespace HtmlRaportGenerator
+namespace HtmlRaportGenerator;
+
+public static class Program
 {
-    public static class Program
+    public static async Task Main(string[] args)
     {
-        public static async Task Main(string[] args)
-        {
-            var builder = WebAssemblyHostBuilder.CreateDefault(args);
+        var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-            builder.Services
-                          .AddBlazorise(options
-                            => options.Immediate = true)
-                          .AddBootstrapProviders()
-                          .AddFontAwesomeIcons();
+        builder.Services
+            .AddBlazorise(options => options.Immediate = true)
+            .AddBootstrapProviders()
+            .AddFontAwesomeIcons();
 
-            builder.RootComponents.Add<App>("#app");
-            builder.RootComponents.Add<HeadOutlet>("head::after");
+        builder.RootComponents.Add<App>("#app");
+        builder.RootComponents.Add<HeadOutlet>("head::after");
 
-            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
-            builder.Services.AddScoped(_ =>
-                    new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+        builder.Services.AddScoped(_ =>
+            new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-            builder.Services
-                .AddGoogleHttpClient()
-                .AddGoogleAuthentication(builder);
+        builder.Services
+            .AddGoogleHttpClient()
+            .AddGoogleAuthentication(builder);
 
-            builder.Services.AddBlazoredLocalStorage(config =>
-                    config.JsonSerializerOptions.WriteIndented = true);
+        builder.Services.AddBlazoredLocalStorage(config =>
+            config.JsonSerializerOptions.WriteIndented = true);
 
-            builder.Services.AddOptions();
-            builder.Services.AddAuthorizationCore();
+        builder.Services.AddOptions();
+        builder.Services.AddAuthorizationCore();
 
-            builder.Services
-                .AddPreviousStateServices()
-                .AddMonthStateService()
-                .AddGoogleDriveService();
+        builder.Services
+            .AddPreviousStateServices()
+            .AddMonthStateService()
+            .AddGoogleDriveService();
 
-            await builder.Build().RunAsync().ConfigureAwait(false);
-        }
+        await builder.Build().RunAsync().ConfigureAwait(false);
     }
 }

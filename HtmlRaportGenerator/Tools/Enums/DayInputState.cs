@@ -1,13 +1,12 @@
-﻿namespace HtmlRaportGenerator.Tools.Enums
+﻿namespace HtmlRaportGenerator.Tools.Enums;
+
+public enum DayInputState
 {
-    public enum DayInputState
-    {
-        None = 0,
-        DataLoading = 1,
-        DataSaving = 2,
-        ShiftNotStarted = 3,
-        ShiftStarted = 4,
-        ShiftEnded = 5,
-        AwaitingInput = 6
-    }
+    None = 0,
+    DataLoading = 1,
+    DataSaving = 2,
+    ShiftNotStarted = 3,
+    ShiftStarted = 4,
+    ShiftEnded = 5,
+    AwaitingInput = 6
 }

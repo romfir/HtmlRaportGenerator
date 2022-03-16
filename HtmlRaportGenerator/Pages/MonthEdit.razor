@@ -1,16 +1,15 @@
-﻿@attribute [RouteAttribute("/" + RelativePageUrls.MonthEdit + "/{Month:datetime?}")]
+﻿@attribute [Route("/" + RelativePageUrls.MonthEdit + "/{Month:datetime?}")]
 
 @inject NavigationManager _nav
-@inject ILocalStorageService _localStorage
 @inject MonthStateService _stateService
 @inject IPreviousState<ICollection<Day>> _previousStateDayService
 
 <Row Margin="Margin.Is2.FromTop.Is4.FromTop">
     <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
-        <Heading Size="HeadingSize.Is1" Alignment="TextAlignment.Center">
+        <Heading Size="HeadingSize.Is1" TextAlignment="TextAlignment.Center">
             <Addons>
                 <Addon AddonType="AddonType.Body">
-                    <DatePicker TValue="DateTime?" @ref="@_monthPicker" @bind-Date="@MonthForInput" InputMode="DateInputMode.Month" />
+                    <DatePicker TValue="DateTime?" @ref="@_monthPicker" Date="@MonthForInput" InputMode="DateInputMode.Month" />
                 </Addon>
                 <Addon AddonType="AddonType.End">
                     <Button Color="Color.Dark" Clicked="@(()=>_monthPicker.ToggleAsync())">
@@ -28,7 +27,7 @@
 {
     <Row Margin="Margin.Is4.FromTop">
         <Column ColumnSize="ColumnSize.IsAuto" Margin="Margin.IsAuto">
-            <Heading Size="HeadingSize.Is1" Alignment="TextAlignment.Center">Please choose a month</Heading>
+            <Heading Size="HeadingSize.Is1" TextAlignment="TextAlignment.Center">Please choose a month</Heading>
         </Column>
     </Row>
 }
@@ -107,7 +106,7 @@ else
                                HeaderTextAlignment="TextAlignment.Center"
                                TextAlignment="TextAlignment.Center">
                 <DisplayTemplate>
-                    <Text Alignment="TextAlignment.Center">
+                    <Text TextAlignment="TextAlignment.Center">
                         @context.DayNumber
                     </Text>
                 </DisplayTemplate>
@@ -130,13 +129,14 @@ else
                 </DisplayTemplate>
 
                 <EditTemplate>
-                    <TimeEdit Style="text-align:center;"
-                          TValue="TimeSpan?"
-                          Time="(context.CellValue is not null ? TimeSpan.FromHours((double)context.CellValue) : null)"
-                          DelayTextOnKeyPress="true"
-                          DelayTextOnKeyPressInterval="300"
-                          Step="900"
-                          TimeChanged="@(v => context.CellValue = v?.TotalHours)" />
+                    <TimePicker Style="text-align:center;"
+                              TValue="TimeSpan?"
+                              Time="context.CellValue is not null ? TimeSpan.FromHours((double)context.CellValue) : null"
+                              Debounce="true"
+                              DebounceInterval="300"
+                              TimeAs24hr="true"
+                          
+                              TimeChanged="@(v => context.CellValue = v?.TotalHours)" />
                 </EditTemplate>
             </DataGridNumericColumn>
 
@@ -157,12 +157,11 @@ else
                     }
                 </DisplayTemplate>
                 <EditTemplate>
-                    <TimeEdit Style="text-align:center;"
+                    <TimePicker Style="text-align:center;"
                           TValue="TimeSpan?"
                           Time="context.CellValue is not null ? TimeSpan.FromHours((double)context.CellValue) : null"
-                          DelayTextOnKeyPress="true"
-                          DelayTextOnKeyPressInterval="300"
-                          Step="900"
+                          Debounce="true"
+                          DebounceInterval="300"
                           TimeChanged="@(v => context.CellValue = v?.TotalHours)" />
                 </EditTemplate>
             </DataGridNumericColumn>
@@ -173,12 +172,12 @@ else
                                HeaderTextAlignment="TextAlignment.Center"
                                TextAlignment="TextAlignment.Center">
                 <DisplayTemplate>
-                    <Text Alignment="TextAlignment.Center">
+                    <Text TextAlignment="TextAlignment.Center">
                         @context.HourSum?.FormatDoubleToTime()
                     </Text>
                 </DisplayTemplate>
                 <EditTemplate>
-                    <Text Alignment="TextAlignment.Center">
+                    <Text TextAlignment="TextAlignment.Center">
                         @context.Item.HourSum?.FormatDoubleToTime()
                     </Text>
                 </EditTemplate>
