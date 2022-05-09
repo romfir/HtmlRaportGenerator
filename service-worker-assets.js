@@ -61,7 +61,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-rOr7jwVIjJCU9Ad9PcPU3YWCXgLgh4c1oyXwcOOVZm0=",
+      "hash": "sha256-JBnU5ok1rnVP7WCk3Scaicwu3GUws9TDiYE9aQss+os=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -93,7 +93,7 @@
       "url": "_framework\/Blazorise.Icons.FontAwesome.dll"
     },
     {
-      "hash": "sha256-AOORB2Mm+NIYpXH0i8SnLMHrebeym4JDdWtQMsSVyRo=",
+      "hash": "sha256-E8JpLGhzNwEd9IWSPWeqvP0Pl8c9XkvDRcvkIYVkD+Q=",
       "url": "_framework\/HtmlRaportGenerator.dll"
     },
     {
@@ -185,7 +185,7 @@
       "url": "_framework\/Microsoft.JSInterop.WebAssembly.dll"
     },
     {
-      "hash": "sha256-vts2V2cfRZzHeeDAcFseAKhoJOW0VwiS4c\/B5amYIs0=",
+      "hash": "sha256-dJ5VWwlPllqfxSH75cXVlv5eUCYGrhSg41Ax9lDkc9Q=",
       "url": "_framework\/Microsoft.VisualStudio.Validation.dll"
     },
     {
@@ -329,55 +329,55 @@
       "url": "appsettings.json"
     },
     {
-      "hash": "sha256-TgUKknFLKrkHdulpeRSetDjII8W04FW0aqXHIhGFiMU=",
+      "hash": "sha256-VRKfzJ8fl5tk6xJjVEkkB30775NAb0Dl59VIP\/qlgJQ=",
       "url": "_framework\/cs\/Microsoft.VisualStudio.Validation.resources.dll"
     },
     {
-      "hash": "sha256-dZ\/\/4BLLLjYxu6CkiSzap1lARe0PturLd+KEBvxNL48=",
+      "hash": "sha256-j0QtZ6Aw1VorEKp1mtxYI2XEfHFrcq1J9VVCEIAuab0=",
       "url": "_framework\/de\/Microsoft.VisualStudio.Validation.resources.dll"
     },
     {
-      "hash": "sha256-1yaG6AKJfGfx\/SPqIDHykVV4XO9KHfwq6WY3jDdNefk=",
+      "hash": "sha256-uI0T4FZfhnTw4QYcOIuRNBkxhxFOqllR7oT\/Ww7MYVg=",
       "url": "_framework\/es\/Microsoft.VisualStudio.Validation.resources.dll"
     },
     {
-      "hash": "sha256-TxmtkQYNICtPwdVeoTUM3X4P+nw\/ozYbdsSBbYFJC+o=",
+      "hash": "sha256-\/j0d\/T+uzeRULRWCRb489Jf6I\/BcU84JCT\/r2umRqqU=",
       "url": "_framework\/fr\/Microsoft.VisualStudio.Validation.resources.dll"
     },
     {
-      "hash": "sha256-MdQWtR6xVxrguDHhJ8Ae1+y993\/DP9YFouFvuaa3+io=",
+      "hash": "sha256-z3OYT8YfUBeVdJGzlUbC\/kEIIt0vZTS7br50zoDe8D8=",
       "url": "_framework\/it\/Microsoft.VisualStudio.Validation.resources.dll"
     },
     {
-      "hash": "sha256-PguB4lnCFcgP49AM4N+NIhNLOZkLt7QYhbJgJ6hcays=",
+      "hash": "sha256-7zcJpH\/Xj94LR4zsHiJ2+JvjF6Z87IhWOEFlFKVKzBY=",
       "url": "_framework\/ja\/Microsoft.VisualStudio.Validation.resources.dll"
     },
     {
-      "hash": "sha256-hcMkWAobuK7E7Vyyq14pyTOEwOcy3CzvW4BXEBale2o=",
+      "hash": "sha256-uM6a8jfbfqI7inmeSaQRHipOJfQkERWY4dRccFFnVSI=",
       "url": "_framework\/ko\/Microsoft.VisualStudio.Validation.resources.dll"
     },
     {
-      "hash": "sha256-dEsA6AfunuY3C2tIaINzfsC6\/XH29knyETtF2qmqQ+M=",
+      "hash": "sha256-DEoaWJ7O+9tde\/8B8z9VXMrI8m4NW8i6\/3CCSqF6Axw=",
       "url": "_framework\/pl\/Microsoft.VisualStudio.Validation.resources.dll"
     },
     {
-      "hash": "sha256-FyGq7Rq3JdP8+3Pnma5S9xV25N9zmZtIMZZD0TOolqY=",
+      "hash": "sha256-ZrCJbf78133M03woRaiH567psIa4R3r2F0kvqBHbDqc=",
       "url": "_framework\/pt-BR\/Microsoft.VisualStudio.Validation.resources.dll"
     },
     {
-      "hash": "sha256-\/EEz9mRoTTWYK1SraNiZgmQaNX8Ow18vkDodl5RvdaI=",
+      "hash": "sha256-VzMf0WzUrBRfPZMtaee4IfWrUtR16scX9ESU1enwNok=",
       "url": "_framework\/ru\/Microsoft.VisualStudio.Validation.resources.dll"
     },
     {
-      "hash": "sha256-ukX\/iBev8CT6sukZhtsxNrhvvSViqX+rGVxuUhgChII=",
+      "hash": "sha256-G4bMUYAbWxyPvgQ73GmSVuyRI10w8ZBDO9fZ2LiPqeA=",
       "url": "_framework\/tr\/Microsoft.VisualStudio.Validation.resources.dll"
     },
     {
-      "hash": "sha256-FDu7xRw1lYKgYd\/Rgt8m7B0kDID\/7qPv+q0qBhilch0=",
+      "hash": "sha256-lxXMXH1D9ys6oTwObcig2NXXF2X64iK+M78OKbDqFBA=",
       "url": "_framework\/zh-Hans\/Microsoft.VisualStudio.Validation.resources.dll"
     },
     {
-      "hash": "sha256-Y5L52jPe4LzhOExmALTvTQE3vaLlkVOqP89ZPU0PbYI=",
+      "hash": "sha256-91us7yoxKhzc8hpGEzeUvjKvYnjdqLOfR1DmPS8k91s=",
       "url": "_framework\/zh-Hant\/Microsoft.VisualStudio.Validation.resources.dll"
     },
     {
@@ -529,5 +529,5 @@
       "url": "_content\/Microsoft.AspNetCore.Components.WebAssembly.Authentication\/AuthenticationService.js"
     }
   ],
-  "version": "9I\/\/gX\/Q"
+  "version": "lAR8Qzbb"
 };
