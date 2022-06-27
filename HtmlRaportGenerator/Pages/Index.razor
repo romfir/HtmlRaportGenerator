@@ -1,5 +1,10 @@
-﻿@attribute [Route("/" + RelativePageUrls.MainView)]
-
+﻿@using QuestPDF.Helpers
+@using QuestPDF.Infrastructure
+@using QuestPDF.Fluent
+@using System.IO
+@attribute [Route("/" + RelativePageUrls.MainView)]
+@inject IHttpClientFactory _clientFactory
+@inject IJSRuntime  JSRuntime
 @inject MonthStateService _stateService
 
 <PageProgress Visible="_buttonState == DayInputState.DataLoading" />
@@ -56,10 +61,71 @@
            OnFormSubmitted="async () => await OnFormSubmittedAsync()"
            OnFormCancel="OnFormCancel"
            HoursHaveChanged="StateHasChanged" />
+
+    <Button Clicked="Foo">Click Me</Button>
 }
 
 @code
 {
+    private async Task Foo()
+    {
+        var s = new MemoryStream();
+
+        var x = new HttpClient();
+
+
+       // var stream = await x.GetStreamAsync(@"https://github.com/matomo-org/travis-scripts/blob/master/fonts/Arial.ttf?raw=true");
+
+        
+
+        //todo [dr] cache font on the drive on startup?
+
+        var client = _clientFactory.CreateClient("LocalFiles");
+
+        QuestPDF.Drawing.FontManager.RegisterFont(await client.GetStreamAsync("calibri.ttf"));
+        // QuestPDF.Drawing.FontManager.RegisterFont(File.OpenRead();
+
+        Document.Create(container =>
+        {
+            container.Page(page =>
+            {
+                page.Size(PageSizes.A4);
+                page.Margin(2, Unit.Centimetre);
+                page.PageColor(Colors.White);
+                page.DefaultTextStyle(x => x.FontSize(20));
+
+                page.Header()
+                    .Text("Hello PDF!")
+                    .SemiBold().FontSize(36).FontColor(Colors.Blue.Medium);
+
+                page.Content()
+                    .PaddingVertical(1, Unit.Centimetre)
+                    .Column(x =>
+                    {
+                        x.Spacing(20);
+
+                        x.Item().Text(Placeholders.LoremIpsum());
+                        x.Item().Image(Placeholders.Image(200, 100));
+                    });
+
+                page.Footer()
+                    .AlignCenter()
+                    .Text(x =>
+                    {
+                        x.Span("Page ");
+                        x.CurrentPageNumber();
+                    });
+            });
+        })
+            //.GeneratePdf(s);
+            .GeneratePdf(s);
+
+        Console.WriteLine(s.Length);
+        //todo [dr] https://github.com/arivera12/BlazorDownloadFile
+
+        await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "file.pdf", "application/pdf", s.ToArray());
+    }
+
     private const string HourFromTitle = "Hour From";
     private const string HourToTitle = "Hour To";
 

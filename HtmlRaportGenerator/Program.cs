@@ -31,6 +31,9 @@ public static class Program
 
         builder.Services.AddScoped(_ =>
             new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+        
+        builder.Services.AddHttpClient("LocalFiles", c =>
+            c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
         builder.Services
             .AddGoogleHttpClient()
